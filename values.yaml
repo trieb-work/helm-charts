@@ -1,0 +1,119 @@
+# Default values for saleor-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: registry.gitlab.com/trieb.work/pfeffer-frost/saleor
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: 
+  - name: generated
+
+fullnameOverride: saleor-api
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+celeryrunner:
+  fullname: celery-worker
+  resources:
+    limits:
+      cpu: 50m
+      memory: 500Mi
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Settings concerning the redis server goes here:
+redis:
+  cluster:
+    enabled: false
+  resources:
+    requests:
+      cpu: 30m
+      memory: 70Mi
+    limits:
+      cpu: 80m
+      memory: 80Mi
+
+# Settings concerning the postgresql server goes here:
+postgresql:
+  persistence:
+    size: 10Gi
+  replication:
+    enabled: false
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi 
+    requests:
+      cpu: 100m
+      memory: 100Mi   
+ 
+# global settings both for saleor and postgresql. Set the password to something save ;) 
+global:
+  postgresql:
+    postgresqlDatabase: saleor
+    postgresqlUsername: saleor
+    postgresqlPassword: privacy-disarray-mop0
+  redis:
+    password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
+  emailUrl: smtp://test@triebwork.com:XXXXXXXX@smtp.mailgun.org:465/?ssl=True
+  secretKey: sefb68-2133r-24577v-tgnqetb-qe5zb
+  env: 
+    - name: DEFAULT_CURRENCY
+      value: DE
+    - name: DEFAULT_COUNTRY
+      value: DE
+    - name: REDIS_URL
+      value: redis://:w6736iu-1346726hz12-578-2h228u3576jh24658-456h@saleor-redis-master:6379/0
+    - name: CELERY_BROKER_URL
+      value: redis://saleor-redis-master:6379/1  
+
+
+# settings for the image pull secret if needed
+imageCredentials:
+  enabled: true
+  registry: registry.gitlab.com
+  username: someone
+  password: sillyness
