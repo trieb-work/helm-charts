@@ -30,7 +30,7 @@ spec:
           env:
           {{- range .Values.global.env }}
             - name: {{ .name }}
-              value: {{ .value }}
+              value: {{ .value | quote }}
           {{- end }}
           envFrom:
           - secretRef:

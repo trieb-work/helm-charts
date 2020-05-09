@@ -54,7 +54,7 @@ celeryrunner:
   fullname: celery-worker
   resources:
     limits:
-      cpu: 50m
+      cpu: 80m
       memory: 500Mi
 
 
@@ -94,7 +94,7 @@ postgresql:
 global:
   postgresql:
     postgresqlDatabase: saleor
-    postgresqlUsername: saleor
+    postgresqlUsername: postgres
     postgresqlPassword: privacy-disarray-mop0
   redis:
     password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
@@ -108,7 +108,9 @@ global:
     - name: REDIS_URL
       value: redis://:w6736iu-1346726hz12-578-2h228u3576jh24658-456h@saleor-redis-master:6379/0
     - name: CELERY_BROKER_URL
-      value: redis://saleor-redis-master:6379/1  
+      value: redis://:w6736iu-1346726hz12-578-2h228u3576jh24658-456h@saleor-redis-master:6379/1
+    - name: DEBUG
+      value: "False"    
 
 
 # settings for the image pull secret if needed
