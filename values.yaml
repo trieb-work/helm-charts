@@ -101,7 +101,7 @@ global:
   secretKey: sefb68-2133r-24577v-tgnqetb-qe5zb
   env: 
     - name: DEFAULT_CURRENCY
-      value: DE
+      value: EUR
     - name: DEFAULT_COUNTRY
       value: DE
     - name: DEBUG
