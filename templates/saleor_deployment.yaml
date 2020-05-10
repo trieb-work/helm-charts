@@ -32,6 +32,10 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
           {{- end }}
+            - name: ALLOWED_HOSTS
+              value: {{ .Values.global.allowedHosts }}
+            - name: ALLOWED_CLIENT_HOSTS
+              value: {{ .Values.global.allowedHosts }}
           envFrom:
           - secretRef:
               name: saleor-secrets
