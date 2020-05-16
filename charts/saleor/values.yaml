@@ -99,7 +99,13 @@ global:
     password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
   emailUrl: smtp://test@triebwork.com:XXXXXXXX@smtp.mailgun.org:465/?ssl=True
   secretKey: sefb68-2133r-24577v-tgnqetb-qe5zb
-  vatlayerAccessKey:
+  AWS_S3_ENDPOINT_URL:
+  AWS_S3_CUSTOM_DOMAIN:
+  AWS_ACCESS_KEY_ID:
+  AWS_STORAGE_BUCKET_NAME:
+  AWS_MEDIA_BUCKET_NAME:
+  AWS_MEDIA_CUSTOM_DOMAIN:
+  AWS_QUERYSTRING_AUTH: True
   env: 
     - name: DEFAULT_CURRENCY
       value: EUR
