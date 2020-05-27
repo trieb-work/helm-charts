@@ -75,6 +75,13 @@ redis:
       cpu: 80m
       memory: 80Mi
 
+# enable the cronjob to create the Google Merchant Productfeed. Works only when S3 storage is active!
+productfeedJob:
+  enabled: false
+
+
+
+
 # Settings concerning the postgresql server goes here:
 postgresql:
   persistence:

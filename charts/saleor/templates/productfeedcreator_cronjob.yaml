@@ -1,0 +1,43 @@
+{{- if .Values.productfeedJob.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  annotations:
+  labels:
+  name: productfeed-creator
+spec:
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          annotations:
+        spec:
+          containers:
+          - image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+            imagePullPolicy: Always
+            name: productfeed-creator
+            resources: {}
+            env:
+            {{- range .Values.global.env }}
+              - name: {{ .name }}
+                value: {{ .value | quote }}
+            {{- end }}
+              - name: ALLOWED_HOSTS
+                value: {{ .Values.global.allowedHosts }}
+              - name: ALLOWED_CLIENT_HOSTS
+                value: {{ .Values.global.allowedHosts }}
+            envFrom:
+            - secretRef:
+                name: saleor-secrets
+            securityContext:
+              allowPrivilegeEscalation: false
+              privileged: false
+              readOnlyRootFilesystem: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+  schedule: 0 * * * *
+  successfulJobsHistoryLimit: 3
+{{- end -}}
