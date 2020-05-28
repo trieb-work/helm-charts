@@ -43,7 +43,9 @@ ingress:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
   hosts:
     - host: chart-example.local
-      paths: []
+      paths: 
+        - '/graphql'
+        - '/feeds/google'
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

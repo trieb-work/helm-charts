@@ -7,9 +7,9 @@ metadata:
   name: productfeed-creator
 spec:
   failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
-      creationTimestamp: null
     spec:
       template:
         metadata:
@@ -32,6 +32,10 @@ spec:
             envFrom:
             - secretRef:
                 name: saleor-secrets
+            args:
+              - python
+              - manage.py
+              - update_feeds  
             securityContext:
               allowPrivilegeEscalation: false
               privileged: false
