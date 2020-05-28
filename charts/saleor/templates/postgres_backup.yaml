@@ -1,0 +1,62 @@
+{{- if .Values.postgresBackup.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  annotations:
+  labels:
+  name: postgres-backup
+spec:
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    metadata:
+    spec:
+      template:
+        metadata:
+          annotations:
+        spec:
+          containers:
+          - image: registry.gitlab.com/trieb.work/postgres-backup-s3
+            imagePullPolicy: Always
+            name: productfeed-creator
+            resources: {}
+            env:
+              - name: NUMBER_OF_VERSIONS
+                value: {{ .Values.postgresBackup.historyLimit | quote }}
+              - name: S3_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: AWS_ACCESS_KEY_ID
+                    name: saleor-secrets
+                    optional: false
+              - name: S3_ENDPOINT
+                valueFrom:
+                  secretKeyRef:
+                    key: AWS_S3_ENDPOINT_URL
+                    name: saleor-secrets
+              - name: S3_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    key: AWS_SECRET_ACCESS_KEY
+                    name: saleor-secrets
+              - name: POSTGRES_DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: postgresql-password
+                    name: saleor-postgresql  
+              - name: POSTGRES_DB_USER
+                value: {{ .Values.global.postgresql.postgresqlUsername }}   
+              - name: POSTGRES_DB_HOST
+                value: "saleor-postgresql"     
+            envFrom:
+            - secretRef:
+                name: saleor-secrets
+            securityContext:
+              allowPrivilegeEscalation: false
+              privileged: false
+              readOnlyRootFilesystem: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+  schedule: {{ .Values.postgresBackup.schedule }}
+  successfulJobsHistoryLimit: 3
+{{- end -}}

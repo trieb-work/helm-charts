@@ -81,7 +81,11 @@ redis:
 productfeedJob:
   enabled: false
 
-
+# enable the cronnjob to create DB backups to S3. You can specify how many DB dumps should be kept.
+postgresBackup:
+  enabled: false
+  historyLimit: 5
+  schedule: 0 */8 * * *
 
 
 # Settings concerning the postgresql server goes here:
