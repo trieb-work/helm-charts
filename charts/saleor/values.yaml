@@ -86,6 +86,7 @@ postgresBackup:
   enabled: false
   historyLimit: 5
   schedule: 0 */8 * * *
+  bucketName: postgres-backup
 
 
 # Settings concerning the postgresql server goes here:

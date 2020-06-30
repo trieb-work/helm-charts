@@ -41,6 +41,8 @@ spec:
                   secretKeyRef:
                     key: AWS_SECRET_ACCESS_KEY
                     name: saleor-secrets
+              - name: S3_BUCKET_NAME
+                value: {{ .Values.postgresBackup.bucketName | quote }}      
               - name: POSTGRES_DB_PASSWORD
                 valueFrom:
                   secretKeyRef:
