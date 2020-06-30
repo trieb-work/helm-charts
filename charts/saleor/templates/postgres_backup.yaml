@@ -23,6 +23,8 @@ spec:
             env:
               - name: NUMBER_OF_VERSIONS
                 value: {{ .Values.postgresBackup.historyLimit | quote }}
+              - name: DATABASES
+                value: {{ .Values.global.postgresql.postgresqlDatabase | quote }}     
               - name: S3_KEY
                 valueFrom:
                   secretKeyRef:
@@ -47,7 +49,7 @@ spec:
               - name: POSTGRES_DB_USER
                 value: {{ .Values.global.postgresql.postgresqlUsername }}   
               - name: POSTGRES_DB_HOST
-                value: "saleor-postgresql"     
+                value: "saleor-postgresql"  
             envFrom:
             - secretRef:
                 name: saleor-secrets
