@@ -36,6 +36,8 @@ spec:
               value: {{ .Values.global.allowedHosts }}
             - name: ALLOWED_CLIENT_HOSTS
               value: {{ .Values.global.allowedHosts }}
+            - name: SENTRY_DSN
+              value: {{ .Values.global.SENTRY_DSN }}
           envFrom:
           - secretRef:
               name: saleor-secrets

@@ -123,13 +123,14 @@ global:
   AWS_QUERYSTRING_AUTH: True
   # this tells django how long the item is accessible with querystring auth. Setting this to five days
   AWS_QUERYSTRING_EXPIRE: "432000"
+  SENTRY_DSN: ""
   env: 
     - name: DEFAULT_CURRENCY
       value: EUR
     - name: DEFAULT_COUNTRY
       value: DE
     - name: DEBUG
-      value: "False"
+      value: "False" 
   allowedHosts: test-api.example.com         
 
 
