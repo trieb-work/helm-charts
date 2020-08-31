@@ -18,7 +18,7 @@ version: 0.1.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 2.10.1-trieb.work1
+appVersion: 2.11.0-trieb.work2
 
 dependencies:
 - name: postgresql
