@@ -54,8 +54,11 @@ ingress:
 celeryrunner:
   fullname: celery-worker
   resources:
-    limits:
+    requests:
       cpu: 80m
+      memory: 400Mi
+    limits:
+      cpu: 280m
       memory: 500Mi
 
 
