@@ -51,6 +51,16 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+saleor:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 850Mi
+    limits:
+      cpu: 500m
+      memory: 850Mi
+  
+
 celeryrunner:
   fullname: celery-worker
   resources:
@@ -100,7 +110,7 @@ postgresql:
     enabled: false
   resources:
     limits:
-      cpu: 100m
+      cpu: 200m
       memory: 100Mi 
     requests:
       cpu: 100m
