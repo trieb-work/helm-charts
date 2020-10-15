@@ -54,10 +54,10 @@ ingress:
 saleor:
   resources:
     requests:
-      cpu: 100m
+      cpu: 300m
       memory: 850Mi
     limits:
-      cpu: 500m
+      cpu: 800m
       memory: 850Mi
   
 
@@ -111,10 +111,10 @@ postgresql:
   resources:
     limits:
       cpu: 300m
-      memory: 100Mi 
+      memory: 300Mi 
     requests:
       cpu: 200m
-      memory: 100Mi   
+      memory: 200Mi   
  
 # global settings both for saleor and postgresql. Set the password to something save ;) 
 global:
