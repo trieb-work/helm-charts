@@ -57,7 +57,7 @@ saleor:
       cpu: 300m
       memory: 850Mi
     limits:
-      cpu: 800m
+      cpu: 700m
       memory: 850Mi
   
 
@@ -78,8 +78,10 @@ tolerations: []
 
 affinity:
   podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
 
 # Settings concerning the redis server goes here:
 redis:
@@ -147,7 +149,14 @@ global:
       value: DE
     - name: DEBUG
       value: "False" 
-  allowedHosts: test-api.example.com         
+  allowedHosts: test-api.example.com
+  elasticApm:
+    enabled: "False"
+    serviceName: "saleor-services"
+    secretToken:
+    serverUrl:
+    environment: "dev"
+
 
 
 # settings for the image pull secret if needed

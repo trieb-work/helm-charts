@@ -24,7 +24,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            runAsUser: 999
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
@@ -40,13 +40,11 @@ spec:
           - secretRef:
               name: saleor-secrets
           args:
-            - celery
-            - -A
-            - saleor
+            - celery 
+            - --app=saleor 
+            - --app=saleor.celeryconf:app 
             - worker
-            - --app=saleor.celeryconf:app
-            - --loglevel=info
-            - -E
+            - --loglevel=INFO
           resources:
             {{- toYaml .Values.celeryrunner.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
