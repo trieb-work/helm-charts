@@ -73,6 +73,9 @@ spec:
             timeoutSeconds: 3
           resources:
             {{- toYaml .Values.saleor.resources | nindent 12 }}
+          volumeMounts:
+          - mountPath: /cache
+            name: cache-volume   
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -85,3 +88,9 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      volumes:
+      - name: cache-volume
+        emptyDir: {
+          medium: "Memory"
+        }
+
