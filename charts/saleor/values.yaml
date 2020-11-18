@@ -114,7 +114,6 @@ postgresql:
     enabled: false
   resources:
     limits:
-      cpu: 300m
       memory: 300Mi 
     requests:
       cpu: 200m
@@ -149,6 +148,8 @@ global:
     - name: DEBUG
       value: "False" 
   allowedHosts: test-api.example.com
+  # maximum nu,ber of checkout line items. Normal value is 50
+  maxCheckoutLine: "100"
   elasticApm:
     enabled: "False"
     serviceName: "saleor-services"
