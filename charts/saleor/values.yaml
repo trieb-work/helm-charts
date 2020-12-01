@@ -153,9 +153,13 @@ global:
   elasticApm:
     enabled: "False"
     serviceName: "saleor-services"
-    secretToken:
-    serverUrl:
+    secretToken: ""
+    serverUrl: ""
     environment: "dev"
+    disabledMetrics: "*.cpu.*,*.memory.*"
+    serverTimeout: "10s"
+    metricsInterval: "0s"
+    logLevel: "critical"
 
 
 
