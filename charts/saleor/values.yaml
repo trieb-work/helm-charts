@@ -86,13 +86,16 @@ affinity:
 redis:
   cluster:
     enabled: false
-  resources:
-    requests:
-      cpu: 30m
-      memory: 70Mi
-    limits:
-      cpu: 80m
-      memory: 80Mi
+  master:
+    resources:
+      requests:
+        cpu: 30m
+        memory: 70Mi
+      limits:
+        cpu: 80m
+        memory: 80Mi
+    persistence:
+      enabled: false    
 
 # enable the cronjob to create the Google Merchant Productfeed. Works only when S3 storage is active!
 productfeedJob:
