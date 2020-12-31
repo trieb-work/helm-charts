@@ -151,8 +151,10 @@ global:
     - name: DEBUG
       value: "False" 
   allowedHosts: test-api.example.com
-  # maximum nu,ber of checkout line items. Normal value is 50
+  # maximum number of checkout line items. Normal value is 50
   maxCheckoutLine: "100"
+  jwtTTLrefresh: "365 days"
+  jwtTTLaccess: "3 days"
   elasticApm:
     enabled: "False"
     serviceName: "saleor-services"
