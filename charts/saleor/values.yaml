@@ -113,6 +113,7 @@ postgresBackup:
 
 # Settings concerning the postgresql server goes here:
 postgresql:
+  enabled: true
   persistence:
     size: 10Gi
   replication:
@@ -130,6 +131,8 @@ global:
     postgresqlDatabase: saleor
     postgresqlUsername: postgres
     postgresqlPassword: privacy-disarray-mop0
+    postgresqlHost: saleor-postgresql
+    postgresqlPort: "5432"
   redis:
     password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
   emailUrl: smtp://test@triebwork.com:XXXXXXXX@smtp.mailgun.org:465/?ssl=True
