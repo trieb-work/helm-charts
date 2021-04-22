@@ -1,4 +1,13 @@
-# Saleor-Helm-Chart
-This helm chart bootstraps a saleor-core instance to your Kubernetes cluster. Storefront and Dashboard are currently not included.
+# trieb.work HELM Charts
+This repo is used to create and host our helm charts.
 
-The service uses a stable saleor-core, ingress, postgreSQL with persistency, celery taskrunner and a redis DB 
+Install our helm repo:
+
+```
+helm repo add trieb.work https://trieb-work.github.io/helm-charts/
+```
+
+We open-sourced the following charts:
+
+## Saleor
+The saleor chart is used to deploy our maintained and stable saleor core with Postgres, Redis and Task Runner (Celery)
