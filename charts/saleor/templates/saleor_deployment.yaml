@@ -39,7 +39,7 @@ spec:
             - name: SENTRY_DSN
               value: {{ .Values.global.SENTRY_DSN }}
             - name: KEEP_ALIVE
-              value: 20  
+              value: "20"  
           envFrom:
           - secretRef:
               name: saleor-secrets
