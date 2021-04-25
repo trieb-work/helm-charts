@@ -51,22 +51,22 @@ spec:
               - /bin/sh
               - -c
               - timeout 10 celery -b $CELERY_BROKER_URL inspect ping -d celery@$HOSTNAME
-              failureThreshold: 1
-              initialDelaySeconds: 30
-              periodSeconds: 40
-              successThreshold: 1
-              timeoutSeconds: 10  
+            failureThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 40
+            successThreshold: 1
+            timeoutSeconds: 10  
           readinessProbe:
             exec:
               command:
-              - /bin/sh
-              - -c
-              - timeout 10 celery -b $CELERY_BROKER_URL inspect ping -d celery@$HOSTNAME
-              failureThreshold: 1
-              initialDelaySeconds: 30
-              periodSeconds: 40
-              successThreshold: 1
-              timeoutSeconds: 10  
+                - /bin/sh
+                - -c
+                - timeout 10 celery -b $CELERY_BROKER_URL inspect ping -d celery@$HOSTNAME
+            failureThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 40
+            successThreshold: 1
+            timeoutSeconds: 10  
           resources:
             {{- toYaml .Values.celeryrunner.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
