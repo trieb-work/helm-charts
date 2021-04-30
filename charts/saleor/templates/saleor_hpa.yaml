@@ -1,0 +1,23 @@
+{{- if .Values.saleor.enableHpa -}}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    field.cattle.io/displayName: saleor-api-autoscaler
+  labels:
+  name: saleor-api-autoscaler
+spec:
+  maxReplicas: {{ .Values.saleor.maxReplicas }}
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 80
+        type: Utilization
+    type: Resource
+  minReplicas: {{ .Values.saleor.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    name: saleor-api
+{{- end }}    

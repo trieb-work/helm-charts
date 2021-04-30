@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "saleor-helm.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.saleor.minReplicas }}
   selector:
     matchLabels:
       {{- include "saleor-helm.selectorLabels" . | nindent 6 }}

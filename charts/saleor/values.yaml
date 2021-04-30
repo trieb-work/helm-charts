@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 image:
   repository: registry.gitlab.com/trieb.work/saleor
   pullPolicy: IfNotPresent
@@ -54,6 +52,9 @@ ingress:
   #      - chart-example.local
 
 saleor:
+  enableHpa: true
+  maxReplicas: 3
+  minReplicas: 2
   resources:
     requests:
       cpu: 300m
