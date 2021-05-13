@@ -52,7 +52,7 @@ spec:
               - -c
               - timeout 10 celery -b $CELERY_BROKER_URL inspect ping -d celery@$HOSTNAME
             failureThreshold: 1
-            initialDelaySeconds: 30
+            initialDelaySeconds: 40
             periodSeconds: 40
             successThreshold: 1
             timeoutSeconds: 10  
@@ -63,7 +63,7 @@ spec:
                 - -c
                 - timeout 10 celery -b $CELERY_BROKER_URL inspect ping -d celery@$HOSTNAME
             failureThreshold: 1
-            initialDelaySeconds: 30
+            initialDelaySeconds: 40
             periodSeconds: 40
             successThreshold: 1
             timeoutSeconds: 10  
