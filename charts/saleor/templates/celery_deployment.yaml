@@ -1,3 +1,4 @@
+{{- if .Values.celeryrunner.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,7 +26,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             runAsUser: 999
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.appVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           {{- range .Values.global.env }}
@@ -47,6 +48,8 @@ spec:
             - --loglevel=INFO
           livenessProbe:
             exec:
+            # We run a celery inspect command that fails for example when redis is not available
+            # This command is unfortunately "costly", so that we run it just every 40 seconds
               command:
               - /bin/sh
               - -c
@@ -81,3 +84,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+{{- end }}

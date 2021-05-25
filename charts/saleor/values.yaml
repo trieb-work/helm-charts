@@ -6,7 +6,9 @@ image:
   repository: registry.gitlab.com/trieb.work/saleor
   pullPolicy: IfNotPresent
 
-
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: 3.0-triebwork11
 
 fullnameOverride: saleor-api
 
@@ -60,10 +62,11 @@ saleor:
       cpu: 300m
       memory: 400Mi
     limits:
-      memory: 500Mi
+      memory: 600Mi
   
 
 celeryrunner:
+  enabled: true
   fullname: celery-worker
   resources:
     requests:
@@ -104,7 +107,7 @@ redis:
 productfeedJob:
   enabled: false
 
-# enable the cronnjob to create DB backups to S3. You can specify how many DB dumps should be kept.
+# enable the cronjob to create DB backups to S3. You can specify how many DB dumps should be kept.
 postgresBackup:
   enabled: false
   historyLimit: 5
