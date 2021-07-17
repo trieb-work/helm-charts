@@ -227,4 +227,15 @@ entries:
     urls:
     - https://github.com/trieb-work/Saleor-Helm-Chart/releases/download/saleor-helm-0.1.5/saleor-helm-0.1.5.tgz
     version: 0.1.5
-generated: "2021-05-25T15:48:16.588022694Z"
+  strapi:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-07-17T15:35:04.004517923Z"
+    description: A Helm chart for Strapi Headless API
+    digest: 1067502d05e33611536b89fce73cd9bc0b7d98c40945e10e2fc0052dc09f7d4c
+    name: strapi
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-07-17T15:35:04.004575724Z"
