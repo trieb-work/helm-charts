@@ -13,7 +13,7 @@ image:
 dashboardDomain: "dashboard.domain.com"
 
 # change this secret
-adminJWTSecret: 2398r0389508308f0m3409,uv93r9u9t4t
+adminJWTSecret:
 
 
 imagePullSecrets: []
