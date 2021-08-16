@@ -54,6 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "strapi.ingressAnnotations" -}}
 "nginx.ingress.kubernetes.io/cors-allow-credentials": "true"
 "nginx.ingress.kubernetes.io/cors-allow-methods": "PUT, GET, POST, OPTIONS"
+"cert-manager.io/cluster-issuer": letsencrypt-prod
 {{- if .Values.dashboardDomain }}
 "nginx.ingress.kubernetess.io/cors-allow-origin": {{ printf "%s%s" "https://" .Values.dashboardDomain }}
 "nginx.ingress.kubernetes.io/enable-cors": "true"

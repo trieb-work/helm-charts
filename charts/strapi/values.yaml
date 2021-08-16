@@ -5,15 +5,16 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-dashboardDomain: "eghteh"
+dashboardDomain: "dashboard.domain.com"
+
+# change this secret
 adminJWTSecret: 2398r0389508308f0m3409,uv93r9u9t4t
 
-serviceDomain:
 
 imagePullSecrets: []
 nameOverride: ""
@@ -48,18 +49,15 @@ service:
 ingress:
   enabled: true
   className: ""
-  annotations:
-    "cert-manager.io/cluster-issuer": letsencrypt-prod
-
   hosts:
     - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+   - secretName: strapi-tls-secret
+     hosts:
+       - chart-example.local
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -87,6 +85,6 @@ tolerations: []
 affinity: {}
 
 secrets: 
-  dashboardUrl:
+  databaseUrl:
   adminJwtSecret:
   
