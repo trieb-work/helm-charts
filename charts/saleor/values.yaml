@@ -131,6 +131,9 @@ postgresql:
  
 # global settings both for saleor and postgresql. Set the password to something save ;) 
 global:
+  # you can have the database URL for an external database if you don't want to setup one by yourself
+  DATABASE_URL: postgresql://user:password@hostname:533/saleor
+  # If postgresql.enabled = true
   postgresql:
     postgresqlDatabase: saleor
     postgresqlUsername: postgres
@@ -147,8 +150,9 @@ global:
   AWS_STORAGE_BUCKET_NAME: static
   AWS_MEDIA_BUCKET_NAME: static
   AWS_MEDIA_CUSTOM_DOMAIN: https://s3.example.com/
+  AWS_SECRET_ACCESS_KEY: 1234567689q
   # this enables querystring authentication. Very useful for private buckets.
-  AWS_QUERYSTRING_AUTH: True
+  AWS_QUERYSTRING_AUTH: "True"
   # this tells django how long the item is accessible with querystring auth. Setting this to five days
   AWS_QUERYSTRING_EXPIRE: "432000"
   SENTRY_DSN: ""
