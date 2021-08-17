@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository:
+  repository: ghrc.io/strapi/
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -47,17 +47,16 @@ service:
   port: 80
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  host: chart-example.local
+  pathType: ImplementationSpecific       
   tls:
-   - secretName: strapi-tls-secret
-     hosts:
-       - chart-example.local
+    enabled: true
+    secretName: strapi-tls-secret
+  annotations: 
+    cert-manager.io/acme-challenge-type: http01
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
