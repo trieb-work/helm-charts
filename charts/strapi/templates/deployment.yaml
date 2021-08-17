@@ -54,7 +54,7 @@ spec:
               value: {{ .Values.strapiApiUrl | quote }}  
           envFrom:
           - secretRef:
-              name: strapi-secrets
+              name: {{ include "strapi.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
