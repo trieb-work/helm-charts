@@ -264,6 +264,16 @@ entries:
   strapi:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2021-08-17T13:42:05.906736936Z"
+    description: A Helm chart for Strapi Headless API
+    digest: 52d5e2e3e6b2ddb58d711be75df2ee739ad037069acbef49a6248dd9f439f332
+    name: strapi
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.12/strapi-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2021-08-17T12:36:18.415085799Z"
     description: A Helm chart for Strapi Headless API
     digest: 45db518b3c62a9a9e8dc271129e73abe7bd8f68556e98983e5b8af816e05f3b1
@@ -372,4 +382,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2021-08-17T12:36:18.415195503Z"
+generated: "2021-08-17T13:42:05.906855338Z"
