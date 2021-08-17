@@ -46,8 +46,10 @@ service:
   type: ClusterIP
   port: 80
 
+# the full backend URL of strapi  
+strapiApiUrl: https://strapi.example.com
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   host: chart-example.local
   pathType: ImplementationSpecific       

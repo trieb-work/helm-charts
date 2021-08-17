@@ -49,6 +49,9 @@ spec:
             initialDelaySeconds: 30  
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: STRAPI_API_URL
+              value: {{ .Values.strapiApiUrl | quote }}  
           envFrom:
           - secretRef:
               name: strapi-secrets
