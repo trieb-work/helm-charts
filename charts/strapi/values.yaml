@@ -60,6 +60,13 @@ ingress:
     cert-manager.io/acme-challenge-type: http01
     cert-manager.io/cluster-issuer: letsencrypt-prod
 
+# S3 storage options. Settings need to be set, as containers are volatile    
+s3:
+  enabled: true
+  accesKeyId: ""
+  accessSecret: ""
+  endpoint: "s3.us-east-2.amazonaws.com"
+
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
