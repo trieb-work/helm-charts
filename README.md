@@ -16,6 +16,17 @@ helm install saleor trieb.work/saleor-helm
 ```
 
 ## Strapi
+Use this helm-chart to deploy your own version of strapi. It is intented to be used with your own strapi build. Just make sure, that your docker image makes ues of the following env variables: 
+```
+ADMIN_JWT_SECRET
+DATABASE_URL
+AWS_ACCESS_KEY_ID
+AWS_ACCESS_SECRET
+AWS_ENDPOINT
+AWS_BUCKET
+```
+Installation: 
+
 ```
 helm install saleor trieb.work/strapi
 ```

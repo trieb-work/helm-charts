@@ -66,6 +66,7 @@ s3:
   accesKeyId: ""
   accessSecret: ""
   endpoint: "s3.us-east-2.amazonaws.com"
+  bucket: "strapi"
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
