@@ -21,7 +21,7 @@ Use this helm-chart to deploy your own version of strapi. It is intented to be u
 ADMIN_JWT_SECRET
 DATABASE_URL
 AWS_ACCESS_KEY_ID
-AWS_ACCESS_SECRET
+AWS_SECRET_ACCESS_KEY
 AWS_ENDPOINT
 AWS_BUCKET
 ```
