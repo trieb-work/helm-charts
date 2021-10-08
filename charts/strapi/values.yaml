@@ -24,6 +24,8 @@ fullnameOverride: ""
 
 postgresql:
   enabled: false
+  postgresqlDatabase: strapi
+  postgresqlUsername: strapi
   postgresqlPassword: DhzYU4sMDaSqMnAhd33499vo49t9
   tls:
     enabled: true

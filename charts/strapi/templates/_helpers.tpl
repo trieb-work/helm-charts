@@ -31,7 +31,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{- define "strapi.internalDatabaseUrl" -}}
-{{- printf "%s%s%s%s%s" "postgresql://postgres:" .Values.postgresql.postgresqlPassword "@"  .Release.Name "-postgresql:5432/postgres" }}
+{{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.postgresqlUsername ":" .Values.postgresql.postgresqlPassword "@" .Release.Name "-postgresql:5432/" .Values.postgresql.postgresqlDatabase }}
 {{- end }}
 
 {{/*
