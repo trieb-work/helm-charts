@@ -25,6 +25,12 @@ AWS_SECRET_ACCESS_KEY
 AWS_ENDPOINT
 AWS_BUCKET
 ```
+
+If you want to install a postgres DB together with strapi, just set:
+```
+postgresql.enabled=true
+```
+
 Installation: 
 
 ```
