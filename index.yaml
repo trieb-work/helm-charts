@@ -3,6 +3,16 @@ entries:
   gtm-server-container-cluster:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2021-11-15T12:46:46.652502202Z"
+    description: A Helm chart for Kubernetes
+    digest: 1ea5f4ab54a2ea5b440d9742be875fb334f8ef5400d026e0fc37a598019e92f8
+    name: gtm-server-container-cluster
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/gtm-server-container-cluster-0.1.1/gtm-server-container-cluster-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2021-11-09T17:11:43.197411455Z"
     description: A Helm chart for Kubernetes
     digest: eccc80b7a65c8fe79b8860262c43251ce67e9bff0df8474e835b4f9e6be55d6f
@@ -478,4 +488,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2021-11-09T17:11:43.197631161Z"
+generated: "2021-11-15T12:46:46.652760101Z"
