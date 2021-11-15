@@ -1,3 +1,4 @@
+{{- $fullName := include "gtm-server-container-cluster.fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,21 @@ spec:
       name: http
   selector:
     {{- include "gtm-server-container-cluster.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/type: "tagging"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $fullName }}-preview"
+  labels:
+    {{- include "gtm-server-container-cluster.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/type: "preview"
+    

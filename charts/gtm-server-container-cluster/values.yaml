@@ -44,7 +44,6 @@ ingress:
   enabled: true
   className: ""
   taggingHost: chart-example.local
-  previewServerHost: 
   pathType: ImplementationSpecific 
   annotations: 
     cert-manager.io/acme-challenge-type: http01
@@ -57,10 +56,10 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 100m
-    memory: 128Mi
+    memory: 100Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 100Mi
 
 autoscaling:
   enabled: false

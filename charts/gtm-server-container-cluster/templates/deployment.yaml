@@ -1,3 +1,5 @@
+{{- $fullName := include "gtm-server-container-cluster.fullname" . -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +21,7 @@ spec:
       {{- end }}
       labels:
         {{- include "gtm-server-container-cluster.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/type: "tagging"
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -50,10 +53,75 @@ spec:
           env: 
             - name: CONTAINER_CONFIG
               value: {{ .Values.gtm.containerSettings }}
-            {{- if .Values.ingress.previewServerHost }}  
             - name: PREVIEW_SERVER_URL
-              value: {{ printf "%s%s" "https://" .Values.ingress.previewServerHost }} 
-            {{- end }}     
+              value: "http://{{ $fullName }}-preview"    
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ $fullName }}-preview"
+  labels:
+    {{- include "gtm-server-container-cluster.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "gtm-server-container-cluster.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+      {{- include "gtm-server-container-cluster.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/type: "preview"
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "gtm-server-container-cluster.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env: 
+            - name: CONTAINER_CONFIG
+              value: {{ .Values.gtm.containerSettings }}
+            - name: RUN_AS_PREVIEW_SERVER
+              value: "true"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
