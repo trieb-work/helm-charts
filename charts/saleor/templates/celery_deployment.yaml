@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: celery-worker
+  name: "{{ include "saleor-helm.fullname" . }}-celery"
   labels:
     {{- include "saleor-helm.labels" . | nindent 4 }}
 spec:
@@ -43,7 +43,7 @@ spec:
               value: {{ .Values.global.allowedHosts }}
           envFrom:
           - secretRef:
-              name: saleor-secrets
+            name: {{ include "saleor-helm.fullname" . }}
           args:
             - celery 
             - --app=saleor 

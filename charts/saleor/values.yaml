@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
   tag: "3.0.0"
 
-fullnameOverride: saleor-api
+# fullnameOverride: saleor-api
 
 serviceAccount:
   # Specifies whether a service account should be created
