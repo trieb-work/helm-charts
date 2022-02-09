@@ -60,8 +60,6 @@ saleor:
     requests:
       cpu: 300m
       memory: 400Mi
-    limits:
-      memory: 600Mi
   
 
 celeryrunner:
