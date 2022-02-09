@@ -43,7 +43,7 @@ spec:
               value: {{ .Values.global.allowedHosts }}
           envFrom:
           - secretRef:
-            name: {{ include "saleor-helm.fullname" . }}
+              name: {{ include "saleor-helm.fullname" . }}
           args:
             - celery 
             - --app=saleor 
