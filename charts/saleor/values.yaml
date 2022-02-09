@@ -46,7 +46,10 @@ ingress:
     - host: chart-example.local
       paths: 
         - '/graphql/'
-  tls: []
+  tls:
+    - secretName: ""
+      hosts:
+        - chart-example.local
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
@@ -66,11 +69,8 @@ celeryrunner:
   fullname: celery-worker
   resources:
     requests:
-      cpu: 80m
+      cpu: 100m
       memory: 400Mi
-    limits:
-      cpu: 280m
-      memory: 500Mi
 
 
 nodeSelector: {}
