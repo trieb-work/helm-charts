@@ -18,7 +18,8 @@ dashboardDomain: "dashboard.domain.com"
 adminJWTSecret: $XX2UnMcN6%%b@CkFof*
 
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: github
 nameOverride: ""
 fullnameOverride: ""
 

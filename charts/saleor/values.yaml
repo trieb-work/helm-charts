@@ -188,5 +188,6 @@ imageCredentials:
   username: someone
   password: sillyness
 # set to "generated" if you enable the imageCredentials creation
-imagePullSecrets: 
+imagePullSecrets:
+  - name: github
 #  - name: generated
