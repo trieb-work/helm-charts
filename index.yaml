@@ -33,6 +33,23 @@ entries:
     version: 0.1.0
   saleor-helm:
   - apiVersion: v2
+    created: "2022-02-09T12:06:21.193101415Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.8.0
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.6.13
+    description: Deploy the saleor backend stack to Kubernetes
+    digest: 0db0d279ef31ee34da03131f737ba5c03378fc4410327f1bbe058e6bf4d83b24
+    name: saleor-helm
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-helm-0.1.21/saleor-helm-0.1.21.tgz
+    version: 0.1.21
+  - apiVersion: v2
     created: "2022-02-09T11:17:23.01009202Z"
     dependencies:
     - condition: postgresql.enabled
@@ -530,4 +547,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-09T11:17:23.010282803Z"
+generated: "2022-02-09T12:06:21.193448009Z"
