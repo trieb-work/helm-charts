@@ -31,6 +31,24 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/gtm-server-container-cluster-0.1.0/gtm-server-container-cluster-0.1.0.tgz
     version: 0.1.0
+  saleor:
+  - apiVersion: v2
+    created: "2022-02-09T22:43:40.76309877Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.8.0
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.6.13
+    description: Deploy the saleor backend stack to Kubernetes
+    digest: 2216d72c108e7b7753b2cdc4d6db57f1b057456336633b22d127157bbb9b1074
+    name: saleor
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-0.1.26/saleor-0.1.26.tgz
+    version: 0.1.26
   saleor-helm:
   - apiVersion: v2
     created: "2022-02-09T22:04:18.317733053Z"
@@ -630,4 +648,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-09T22:04:18.317973757Z"
+generated: "2022-02-09T22:43:40.763312295Z"
