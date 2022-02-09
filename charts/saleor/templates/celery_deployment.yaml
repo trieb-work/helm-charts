@@ -26,7 +26,11 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             runAsUser: 999
-          image: "{{ .Values.image.repository }}:{{ .Values.appVersion }}"
+          {{- if .Values.image.imageName }}
+          image: "{{ lower .Values.image.imageName }}"
+          {{- else }}
+          image: "{{ lower .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           {{- range .Values.global.env }}
