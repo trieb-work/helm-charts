@@ -46,7 +46,7 @@ spec:
               value: "20"  
           envFrom:
           - secretRef:
-              name: saleor-secrets
+              name: {{ include "saleor-helm.fullname" . }}
           ports:
             - name: http
               containerPort: 8000
