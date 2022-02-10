@@ -129,7 +129,8 @@ postgresql:
 # global settings both for saleor and postgresql. Set the password to something save ;) 
 global:
   # you can have the database URL for an external database if you don't want to setup one by yourself
-  DATABASE_URL: postgresql://user:password@hostname:533/saleor
+  DATABASE_URL:
+  # postgresql://user:password@hostname:533/saleor
   # If postgresql.enabled = true
   postgresql:
     postgresqlDatabase: saleor
