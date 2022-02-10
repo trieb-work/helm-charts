@@ -61,7 +61,7 @@ saleor:
   resources:
     requests:
       cpu: 300m
-      memory: 400Mi
+      memory: 600Mi
   
 
 celeryrunner:
