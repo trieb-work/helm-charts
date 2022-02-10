@@ -135,7 +135,6 @@ global:
     postgresqlDatabase: saleor
     postgresqlUsername: postgres
     postgresqlPassword: privacy-disarray-mop0
-    postgresqlHost: saleor-postgresql
     postgresqlPort: "5432"
   redis:
     password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
@@ -165,16 +164,6 @@ global:
   maxCheckoutLine: "100"
   jwtTTLrefresh: "365 days"
   jwtTTLaccess: "3 days"
-  elasticApm:
-    enabled: "False"
-    serviceName: "saleor-services"
-    secretToken: ""
-    serverUrl: ""
-    environment: "dev"
-    disabledMetrics: "*.cpu.*,*.memory.*"
-    serverTimeout: "10s"
-    metricsInterval: "0s"
-    logLevel: "critical"
 
 
 
