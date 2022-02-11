@@ -3,9 +3,8 @@ apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   annotations:
-    field.cattle.io/displayName: saleor-api-autoscaler
   labels:
-  name: saleor-api-autoscaler
+  name: {{ include "saleor-helm.fullname" . }}
 spec:
   maxReplicas: {{ .Values.saleor.maxReplicas }}
   metrics:
