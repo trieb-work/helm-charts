@@ -134,7 +134,7 @@ global:
   # If postgresql.enabled = true
   postgresql:
     postgresqlDatabase: saleor
-    postgresqlUsername: postgres
+    postgresqlUsername: saleor
     postgresqlPassword: privacy-disarray-mop0
     postgresqlPort: "5432"
   redis:
