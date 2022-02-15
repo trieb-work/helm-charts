@@ -126,7 +126,7 @@ postgresql:
       cpu: 200m
       memory: 200Mi   
  
-# global settings both for saleor and postgresql. Set the password to something save ;) 
+# global settings both for saleor and postgresql. Set the password to something safe ;) 
 global:
   # you can have the database URL for an external database if you don't want to setup one by yourself
   DATABASE_URL:
@@ -165,6 +165,23 @@ global:
   maxCheckoutLine: "100"
   jwtTTLrefresh: "365 days"
   jwtTTLaccess: "3 days"
+  # set the Private Key to sign the JWTs
+  rsaPrivateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIICXQIBAAKBgQC02GmEeYpXguBCnDgxGoMocW6soFiGJP3cnYbu7YT3LWtkDz9x
+    KhzKlg/IHAXhAnzQhbWCI/W9DnsoL5qiu3eA8c4PVO43DMGPqpHC/zU5crp9tIUB
+    kTBFyAABOwocZObP5dkgQQ4mrDBbHp81o+8uDjstRu9kMMDDdj2/gkOG8QIDAQAB
+    AoGBAK5oV7rvDEBBc85JoteYXg1O+BF7wmP8oOd29H7Qin9nSj6Bhgm5N3MZLbcr
+    b3AFWiIwEVClJYVixduHrXZrnV8W8gqHWaAJONJ0bIgBUhpDDTvYOdc4ngbLZ/fM
+    BOk5L9WNBdgng7TPS3IX5UgndKjziicWpZEdGgKgSBjy23lRAkEA9pnBFaPrvQNC
+    iL0N+F1+5TQx1I8onylZwYYdVNYzry+qjTf3CfSi2ThbEuKjYHzlyNSP4RJV3b2i
+    oexjS+MfIwJBALu9CldRAQxoC7i8XuiBQ1I+zblYZ0gqV0HcExgiCKJubCSwoPBZ
+    JzRB/KFHbysC4QztD3xVE+MDxwPf2PO4zNsCQHX8QoGUGCoq8R5zNcfrE9eeDWlh
+    xVHBeww4mrgIdFoROEywxiWhQnkjmY+DmB+GInrgGKbbGvIo1TMb4rZgSHkCQDtX
+    LmyZCxbL0GCtEea17PyTI12hZsv1ri0ADf0DzOzisEYMmmI+G9k1vk+QD8BtoYr/
+    Z3SqQ6Xu7Ln5yE6JLB8CQQDisLHsh0CV6IWjrZj2hmzPg99kJJLJjodnCdALdmp8
+    jfOx3c+dMTudxkzuXQGXPYuHqYbUmHZq75Vd2zIY19kC
+    -----END RSA PRIVATE KEY-----
 
 
 
