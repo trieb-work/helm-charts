@@ -42,6 +42,9 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-next-upstream: error timeout http_502
     nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "20s"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/enable-cors: true
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
   hosts:
     - host: chart-example.local
       paths: 
