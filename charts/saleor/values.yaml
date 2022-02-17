@@ -40,11 +40,11 @@ ingress:
   annotations:
     cert-manager.io/acme-challenge-type: http01
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/proxy-next-upstream: error timeout http_502
-    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "20s"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
-    nginx.ingress.kubernetes.io/enable-cors: true
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/configuration-snippet: |-
+      add_header Access-Control-Allow-Origin $http_origin;
+      add_header Access-Control-Allow-Methods "POST, GET, OPTIONS";
+      add_header Access-Control-Allow-Credentials true;
+
   hosts:
     - host: chart-example.local
       paths: 
