@@ -1,12 +1,13 @@
 {{- if .Values.postgresBackup.enabled -}}
+{{- $fullName := include "strapi.fullname" . -}}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   annotations:
   labels:
-  name:  "{{ include "saleor-helm.fullname" . }}-postgres-backup"
+  name:  "{{ include "strapi.fullname" . }}-postgres-backup"
 spec:
-  failedJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 5
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
@@ -18,45 +19,46 @@ spec:
           containers:
           - image: registry.gitlab.com/trieb.work/postgres-backup-s3
             imagePullPolicy: Always
-            name: productfeed-creator
-            resources: {}
+            name: "{{ include "strapi.fullname" . }}-postgres-backup"
             env:
               - name: NUMBER_OF_VERSIONS
                 value: {{ .Values.postgresBackup.historyLimit | quote }}
               - name: DATABASES
-                value: {{ .Values.global.postgresql.postgresqlDatabase | quote }}     
+                value: {{ .Values.postgresql.postgresqlDatabase | quote }}     
               - name: S3_KEY
                 valueFrom:
                   secretKeyRef:
                     key: AWS_ACCESS_KEY_ID
-                    name: {{ include "saleor-helm.fullname" . }}
-                    optional: false
+                    name: {{ include "strapi.fullname" . }}
               - name: S3_ENDPOINT
                 valueFrom:
                   secretKeyRef:
-                    key: AWS_S3_ENDPOINT_URL
-                    name: {{ include "saleor-helm.fullname" . }}
+                    key: AWS_ENDPOINT
+                    name: {{ include "strapi.fullname" . }}
               - name: S3_SECRET
                 valueFrom:
                   secretKeyRef:
                     key: AWS_SECRET_ACCESS_KEY
-                    name: {{ include "saleor-helm.fullname" . }}
+                    name: {{ include "strapi.fullname" . }}
               - name: S3_BUCKET_NAME
                 value: {{ .Values.postgresBackup.bucketName | quote }}      
               - name: POSTGRES_DB_PASSWORD
                 valueFrom:
                   secretKeyRef:
-                    key: postgresql-password
-                    name: saleor-postgresql  
+                    key: POSTGRES_DB_PASSWORD
+                    name: {{ include "strapi.fullname" . }}
               - name: POSTGRES_DB_USER
-                value: {{ .Values.global.postgresql.postgresqlUsername }}   
+                valueFrom:
+                  secretKeyRef:
+                    key: POSTGRES_DB_USER
+                    name: {{ include "strapi.fullname" . }}
               - name: POSTGRES_DB_HOST
-                value: "saleor-postgresql"  
+                value: "{{ $fullName }}-postgresql"  
               - name: POSTGRES_DB_PORT
                 value: "5432"  
             envFrom:
             - secretRef:
-                name: {{ include "saleor-helm.fullname" . }}
+                name: {{ include "strapi.fullname" . }}
             securityContext:
               allowPrivilegeEscalation: false
               privileged: false
