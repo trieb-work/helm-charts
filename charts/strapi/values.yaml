@@ -23,8 +23,17 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
+# enable the cronjob to create DB backups to S3. You can specify how many DB dumps should be kept.
+postgresBackup:
+  enabled: false
+  historyLimit: 5
+  schedule: 0 */8 * * *
+  bucketName: postgres-backup
+
 postgresql:
   enabled: false
+  metrics:
+    enabled: false
   postgresqlDatabase: strapi
   postgresqlUsername: strapi
   postgresqlPassword: DhzYU4sMDaSqMnAhd33499vo49t9
@@ -105,6 +114,7 @@ tolerations: []
 
 affinity: {}
 
+# You can set a database URL here if you don't want to use the included DB
 secrets: 
   databaseUrl: "postgresql://{{ .Release.Name }}-postgresql"
   

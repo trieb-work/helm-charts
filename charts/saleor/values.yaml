@@ -113,6 +113,8 @@ postgresBackup:
 # Settings concerning the postgresql server goes here:
 postgresql:
   enabled: true
+  metrics:
+    enabled: false  
   persistence:
     enabled: true
     size: 10Gi
