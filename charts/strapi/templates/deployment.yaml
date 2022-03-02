@@ -45,12 +45,14 @@ spec:
             httpGet:
               path: "/_health"
               port: http
-            initialDelaySeconds: 30  
+            initialDelaySeconds: 30
+            periodSeconds: 10  
           readinessProbe:
             httpGet:
               path: "/_health"
               port: http
-            initialDelaySeconds: 30  
+            initialDelaySeconds: 30
+            periodSeconds: 10  
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

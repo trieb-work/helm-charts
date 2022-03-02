@@ -16,7 +16,7 @@ spec:
     type: Resource
   minReplicas: {{ .Values.saleor.minReplicas }}
   scaleTargetRef:
-    apiVersion: apps/v1beta2
+    apiVersion: apps/v1
     kind: Deployment
-    name: saleor-api
+    name: {{ include "saleor-helm.fullname" . }}
 {{- end }}    
