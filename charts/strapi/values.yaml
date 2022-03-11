@@ -114,6 +114,9 @@ tolerations: []
 
 affinity: {}
 
+# Just add here secrets, that you want to get mounted
+additionalSecretMounts: {}
+
 # You can set a database URL here if you don't want to use the included DB
 secrets: 
   databaseUrl: "postgresql://{{ .Release.Name }}-postgresql"

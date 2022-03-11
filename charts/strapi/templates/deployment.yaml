@@ -61,6 +61,10 @@ spec:
           envFrom:
           - secretRef:
               name: {{ include "strapi.fullname" . }}
+          {{- range .Values.additionalSecretMounts }}
+          - secretRef:
+              name: {{ . }}
+          {{- end }}    
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
