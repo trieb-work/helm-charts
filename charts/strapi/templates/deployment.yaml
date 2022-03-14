@@ -57,7 +57,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: STRAPI_API_URL
-              value: {{ lower .Values.strapiApiUrl | quote }}  
+              value: {{ lower .Values.strapiApiUrl | quote }}
+          {{- range $key, $val := .Values.additionalEnvVariables }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+          {{- end }}     
           envFrom:
           - secretRef:
               name: {{ include "strapi.fullname" . }}
