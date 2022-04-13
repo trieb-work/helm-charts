@@ -78,7 +78,7 @@ ingress:
   pathType: ImplementationSpecific       
   tls:
     enabled: true
-    secretName: strapi-tls-secret
+    secretName:
   annotations: 
     cert-manager.io/acme-challenge-type: http01
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -115,7 +115,15 @@ tolerations: []
 affinity: {}
 
 # Just add here secrets, that you want to get mounted
-additionalSecretMounts: {}
+additionalSecretMounts:
+  secret1: 
+  secret2:
+  secret3:
+    name: ELASTIC_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: elastic
+        name: elastic-es-elastic
 
 # Add env variables with key and value, that should be added to the strapi container
 additionalEnvVariables:
