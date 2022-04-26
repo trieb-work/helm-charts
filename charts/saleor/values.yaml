@@ -38,8 +38,8 @@ service:
 ingress:
   enabled: false
   annotations:
-    cert-manager.io/acme-challenge-type: http01
-    cert-manager.io/cluster-issuer: letsencrypt-prod  
+#    cert-manager.io/acme-challenge-type: http01
+#    cert-manager.io/cluster-issuer: letsencrypt-prod  
 
   hosts:
     - host: chart-example.local
