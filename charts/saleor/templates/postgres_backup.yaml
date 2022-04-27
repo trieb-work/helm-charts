@@ -1,4 +1,5 @@
 {{- if .Values.postgresBackup.enabled -}}
+{{- $fullName := include "saleor-helm.fullname" . -}}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -6,7 +7,7 @@ metadata:
   labels:
   name:  "{{ include "saleor-helm.fullname" . }}-postgres-backup"
 spec:
-  failedJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 5
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
@@ -51,7 +52,7 @@ spec:
               - name: POSTGRES_DB_USER
                 value: {{ .Values.global.postgresql.postgresqlUsername }}   
               - name: POSTGRES_DB_HOST
-                value: "saleor-postgresql"  
+                value: "{{ $fullName }}-postgresql"  
               - name: POSTGRES_DB_PORT
                 value: "5432"  
             envFrom:
@@ -64,5 +65,5 @@ spec:
           restartPolicy: Never
           terminationGracePeriodSeconds: 30
   schedule: {{ .Values.postgresBackup.schedule }}
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 5
 {{- end -}}
