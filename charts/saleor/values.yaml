@@ -145,7 +145,7 @@ global:
   AWS_MEDIA_CUSTOM_DOMAIN: https://s3.example.com/
   AWS_SECRET_ACCESS_KEY: 1234567689q
   # this enables querystring authentication. Very useful for private buckets.
-  AWS_QUERYSTRING_AUTH: "True"
+  AWS_QUERYSTRING_AUTH: "False"
   # this tells django how long the item is accessible with querystring auth. Setting this to five days
   AWS_QUERYSTRING_EXPIRE: "432000"
   SENTRY_DSN: ""
