@@ -45,6 +45,7 @@ ingress:
     - host: chart-example.local
       paths: 
         - '/graphql/'
+        - '/health/'
   tls:
     secretName:
 
