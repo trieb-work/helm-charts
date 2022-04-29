@@ -157,7 +157,9 @@ global:
     - name: DEFAULT_COUNTRY
       value: DE
     - name: DEBUG
-      value: "False" 
+      value: "False"
+    - name: GUNICORN_CMD_ARGS
+      value: "--access-logfile='-'"   
   allowedHosts: test-api.example.com
   # maximum number of checkout line items. Normal value is 50
   maxCheckoutLine: "100"
