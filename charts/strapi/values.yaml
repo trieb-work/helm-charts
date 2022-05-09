@@ -34,8 +34,6 @@ postgresql:
   enabled: false
   metrics:
     enabled: false
-  postgresqlDatabase: strapi
-  postgresqlUsername: strapi
   auth:
     enablePostgresUser: false
     username: strapi
