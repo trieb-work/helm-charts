@@ -47,7 +47,7 @@ postgresql:
   volumePermissions:
     enabled: true
   image:
-    tag: 13.5.0  
+    tag: 11.13.0-debian-10-r40
 
 serviceAccount:
   # Specifies whether a service account should be created
