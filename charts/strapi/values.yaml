@@ -31,7 +31,7 @@ postgresBackup:
   bucketName: postgres-backup
 
 postgresql:
-  enabled: false
+  enabled: true
   metrics:
     enabled: false
   auth:
