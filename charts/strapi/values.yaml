@@ -45,6 +45,9 @@ postgresql:
     enabled: true
   image:
     tag: "13.5.0"
+  primary:
+    persistence:
+      enabled: false  
 
 serviceAccount:
   # Specifies whether a service account should be created
