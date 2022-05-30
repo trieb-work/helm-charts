@@ -33,6 +33,23 @@ entries:
     version: 0.1.0
   saleor:
   - apiVersion: v2
+    created: "2022-05-30T16:31:48.657157572Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.8.0
+    - name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.6.13
+    description: Deploy the saleor backend stack to Kubernetes
+    digest: 427cbaf94ad6ceada761461196fdedf718d0e916544590f02695b8a3645df821
+    name: saleor
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-0.1.51/saleor-0.1.51.tgz
+    version: 0.1.51
+  - apiVersion: v2
     created: "2022-05-16T16:04:51.023066337Z"
     dependencies:
     - condition: postgresql.enabled
@@ -823,6 +840,21 @@ entries:
   strapi:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-05-30T16:31:48.774816188Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.1.28
+    description: A Helm chart for Strapi Headless API
+    digest: 054a08a73212ec46b6ac70bc0e3d78d9d306e4deca2a3ff2b2b0730eb36fc46b
+    name: strapi
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.47/strapi-0.1.47.tgz
+    version: 0.1.47
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-05-16T15:58:30.910674741Z"
     dependencies:
     - condition: postgresql.enabled
@@ -1356,4 +1388,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2022-05-16T16:04:51.023729044Z"
+generated: "2022-05-30T16:31:48.775806701Z"
