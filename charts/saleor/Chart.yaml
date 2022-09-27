@@ -18,9 +18,9 @@ version: 0.1.52
 
 dependencies:
 - name: postgresql
-  repository: "https://charts.bitnami.com/bitnami"
+  repository: "https://github.com/bitnami/charts/blob/archive-full-index/bitnami/index.yaml?raw=true"
   version: "10.8.0"
   condition: postgresql.enabled
 - name: redis
-  repository: "https://charts.bitnami.com/bitnami"
+  repository: "https://github.com/bitnami/charts/blob/archive-full-index/bitnami/index.yaml?raw=true"
   version: "10.6.13"
