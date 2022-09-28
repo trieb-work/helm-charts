@@ -14,7 +14,7 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.1.56
+version: 0.1.57
 
 # Bitnami has truncated the index file and moved it here. Therefore using it from github now.
 # repository: "https://github.com/bitnami/charts/blob/archive-full-index/bitnami/index.yaml?raw=true"
