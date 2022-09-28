@@ -150,6 +150,9 @@ global:
   AWS_QUERYSTRING_AUTH: "False"
   # this tells django how long the item is accessible with querystring auth. Setting this to five days
   AWS_QUERYSTRING_EXPIRE: "432000"
+  JAEGER_AGENT_HOST: "jaeger-agent"
+  JAEGER_AGENT_PORT: "6831"
+  JAEGER_LOGGING: "False"
   SENTRY_DSN: ""
   env: 
     - name: DEFAULT_CURRENCY
