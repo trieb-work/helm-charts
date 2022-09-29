@@ -19,7 +19,7 @@ spec:
           containers:
           - image: registry.gitlab.com/trieb.work/postgres-backup-s3
             imagePullPolicy: Always
-            name: productfeed-creator
+            name: postgres-backup
             resources: {}
             env:
               - name: NUMBER_OF_VERSIONS

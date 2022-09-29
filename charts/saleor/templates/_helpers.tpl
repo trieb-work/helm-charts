@@ -31,6 +31,19 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "saleor.internalDatabaseUrl" -}}
+{{- if eq .Values.postgresql.architecture "replication" -}}
+{{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Release.Name "-postgresql-primary:5432/" .Values.postgresql.auth.database }}
+{{- else -}}
+{{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Release.Name "-postgresql:5432/" .Values.postgresql.auth.database }}
+{{- end -}}
+{{- end -}}
+
+
+{{- define "saleor.internalDatabaseUrlRead" -}}
+{{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Release.Name "-postgresql-read:5432/" .Values.postgresql.auth.database }}
+{{- end }}
+
 {{/*
 Common labels
 */}}
