@@ -44,6 +44,10 @@ spec:
               value: {{ .Values.global.SENTRY_DSN }}
             - name: KEEP_ALIVE
               value: "20"  
+          {{- range $key, $val := .Values.additionalEnvVariables }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+          {{- end }}     
           envFrom:
           - secretRef:
               name: {{ include "saleor-helm.fullname" . }}
