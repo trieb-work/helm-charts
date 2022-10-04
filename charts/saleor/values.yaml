@@ -161,6 +161,8 @@ postgresql:
           value: localhost
         - name: PGBOUNCER_DATABASE
           value: saleor
+        - name: PGBOUNCER_POOL_MODE
+          value: transaction  
   readReplicas:
     replicaCount:	1
     limits:
