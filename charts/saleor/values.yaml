@@ -107,6 +107,7 @@ postgresBackup:
 
 
 # Settings concerning the postgresql server goes here:
+# TODO: add sidecar settings for pgbouncer
 postgresql:
   enabled: true
   metrics:
