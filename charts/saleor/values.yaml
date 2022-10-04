@@ -146,6 +146,21 @@ postgresql:
         requests:
           cpu: 50m
           memory: 128Mi
+      env:
+        - name: POSTGRESQL_USERNAME
+          value: saleor
+        - name: POSTGRESQL_DATABASE
+          value: saleor
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgresql-password
+              name: testing--saleor-postgresql
+              optional: false
+        - name: POSTGRESQL_HOST
+          value: localhost
+        - name: PGBOUNCER_DATABASE
+          value: saleor
   readReplicas:
     replicaCount:	1
     limits:
