@@ -132,6 +132,20 @@ postgresql:
     persistence:
       enabled: false
       size: 10Gi
+    sidecars:
+    - name: testing--saleor-pgbouncer
+      image: bitnami/pgbouncer
+      imagePullPolicy: Always
+      ports:
+      - name: tcp-bouncer
+        containerPort: 6432
+      resources:
+        limits:
+          cpu: 50m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
   readReplicas:
     replicaCount:	1
     limits:
