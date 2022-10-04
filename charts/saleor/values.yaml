@@ -133,7 +133,7 @@ postgresql:
       enabled: false
       size: 10Gi
     sidecars:
-    - name: testing--saleor-pgbouncer
+    - name: pgbouncer
       image: bitnami/pgbouncer
       imagePullPolicy: Always
       ports:
@@ -141,10 +141,10 @@ postgresql:
         containerPort: 6432
       resources:
         limits:
-          cpu: 50m
+          cpu: 550m
           memory: 128Mi
         requests:
-          cpu: 50m
+          cpu: 150m
           memory: 128Mi
       env:
         - name: POSTGRESQL_USERNAME
@@ -154,7 +154,7 @@ postgresql:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: postgresql-password
+              key: password
               name: testing--saleor-postgresql
               optional: false
         - name: POSTGRESQL_HOST
