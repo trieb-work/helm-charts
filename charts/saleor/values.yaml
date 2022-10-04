@@ -130,7 +130,7 @@ postgresql:
       cpu: 200m
       memory: 200Mi    
     persistence:
-      enabled: false
+      enabled: true
       size: 10Gi
     sidecars:
     - name: pgbouncer
