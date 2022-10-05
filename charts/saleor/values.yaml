@@ -114,6 +114,7 @@ postgresql:
   auth:
     username: saleor
     password: privacy-disarray-mop0
+    postgresPassword: AWhdzNADs72jiaabKNjPTHK2
     database: saleor
     replicationPassword: Undecided!Venomous!Hatchery6
   tls:
@@ -124,11 +125,14 @@ postgresql:
   image:
     tag: "13.5.0"
   primary:
-    limits:
-      memory: 300Mi 
-    requests:
-      cpu: 200m
-      memory: 200Mi    
+    extendedConfiguration: |
+      max_connections = 400
+    resources:
+      limits:
+        memory: 300Mi 
+      requests:
+        cpu: 200m
+        memory: 200Mi    
     persistence:
       enabled: true
       size: 10Gi
@@ -141,12 +145,14 @@ postgresql:
         containerPort: 6432
       resources:
         limits:
-          cpu: 550m
+          cpu: 150m
           memory: 128Mi
         requests:
           cpu: 150m
           memory: 128Mi
       env:
+        - name: PGBOUNCER_POOL_MODE
+          value: session
         - name: POSTGRESQL_USERNAME
           value: saleor
         - name: POSTGRESQL_DATABASE
@@ -161,8 +167,9 @@ postgresql:
           value: localhost
         - name: PGBOUNCER_DATABASE
           value: saleor
-        - name: PGBOUNCER_POOL_MODE
-          value: transaction  
+       # Should be your replica count * 4 -> make sure your postgres max_connections works here as well
+        - name: PGBOUNCER_DEFAULT_POOL_SIZE
+          value: "100"  
     service:
       extraPorts: 
       - name: tcp-bouncer
