@@ -53,6 +53,8 @@ saleor:
   enableHpa: true
   maxReplicas: 3
   minReplicas: 2
+  # Set a custom settings.py with an existing custom map
+  customSettingsConfigMap:
   resources:
     requests:
       cpu: 300m
