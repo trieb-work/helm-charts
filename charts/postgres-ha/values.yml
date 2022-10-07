@@ -1,0 +1,111 @@
+# global:
+#   postgresql:
+#     postgresqlDatabase: saleor
+#     postgresqlUsername: saleor
+#     postgresqlPassword: privacy-disarray-mop0
+#     username: postgres
+#     password: AWhdzNADs72jiaabKNjPTHK2
+#     repmgrUsername: repl_user
+#     repmgrPassword: Undecided!Venomous!Hatchery6
+#   pgpool:
+#     adminUsername: saleor
+#     adminPassword: privacy-disarray-mop0
+
+
+volumePermissions:
+  enabled: true
+
+# TODO: memcache volume
+# volumes:
+#   - name: pgpool-memcache-oiddir
+#     emptyDir: {
+#       medium: "Memory"
+#     }
+# volumeMounts:
+#   - mountPath: /var/log/pgpool/oiddir
+#     name: pgpool-memcache-oiddir
+
+persistence:
+  enabled: true
+  size: 10Gi
+# metrics:
+#   enabled: true
+
+postgresql:
+  resources:
+    limits:
+      cpu: 3
+      memory: 8Gi
+    requests:
+      cpu: 1
+      memory: 4Gi
+  maxConnections: 100
+  username:	saleor
+  password:	privacy-disarray-mop0
+  database:	saleor
+  postgresPassword:	AWhdzNADs72jiaabKNjPTHK2
+  repmgrPassword: Undecided!Venomous!Hatchery6
+  extendedConf: |-
+    # caclulated using https://pgtune.leopard.in.ua/
+    # DB Version: 14
+    # OS Type: linux
+    # DB Type: web
+    # Total Memory (RAM): 8 GB
+    # CPUs num: 3
+    # Connections num: 100
+    # Data Storage: san
+    max_connections = 100
+    shared_buffers = 2GB
+    effective_cache_size = 6GB
+    maintenance_work_mem = 512MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 300
+    work_mem = 10485kB
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+    max_worker_processes = 3
+    max_parallel_workers_per_gather = 2
+    max_parallel_workers = 3
+    max_parallel_maintenance_workers = 2
+pgpool:
+  adminUsername: postgres
+  adminPassword: AWhdzNADs72jiaabKNjPTHK2
+  customUsers: 
+    usernames: saleor
+    passwords: privacy-disarray-mop0
+  logPerNodeStatement: true
+  logConnections: true
+  numInitChildren: 80 # numInitChildren * maxPool <= 100 max parallel connections
+  maxPool: 1
+  reservedConnections: 0 # -> 0 for blocking? 1 for testing to make sure no requests are blocking?)
+  resources:
+    limits:
+      cpu: 3
+      memory: 7Gi
+    requests:
+      cpu: 1
+      memory: 2Gi
+  configuration: |-
+    backend_weight0 = 1
+    backend_weight1 = 3
+    backend_weight2 = 3
+    connection_cache = on
+    enable_shared_relcache = on
+    memory_cache_enabled = on
+    memqcache_auto_cache_invalidation = on
+    memqcache_oiddir = '/var/tmp/oiddir'
+    memqcache_method = shmem
+    memqcache_total_size = 536870912
+    memqcache_cache_block_size = 8192
+    relcache_expire = 0
+    relcache_size = 2048
+    relcache_query_target = load_balance_node
+    child_life_time = 1200
+  # 536.870.912 = 500Mb
+  # check_temp_table = off --> check if we use temp tables? -> then turn this off
+  # check_unlogged_table = off --> check if we use unlogged tables? -> then turn this off
+  # TODO saleor celery soll auch über pgpool damit cache invalidation richtig funktioniert
+  # statement_level_load_balance
