@@ -86,6 +86,11 @@ spec:
           volumeMounts:
           - mountPath: /cache
             name: cache-volume   
+          {{- if .Values.saleor.customSettingsConfigMap  }}    
+          - mountPath: /app/saleor/settings.py
+            name: settings-overwrite
+            subPath: settings.py  
+          {{- end -}}  
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -103,4 +108,10 @@ spec:
         emptyDir: {
           medium: "Memory"
         }
+      {{- if .Values.saleor.customSettingsConfigMap  }}  
+      - configMap:
+          defaultMode: 420
+          name: {{ .Values.saleor.customSettingsConfigMap  }} 
+        name: settings-overwrite  
+      {{- end -}}  
 
