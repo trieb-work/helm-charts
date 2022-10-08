@@ -59,7 +59,9 @@ saleor:
     requests:
       cpu: 300m
       memory: 600Mi
-  
+  pgpool:
+    enable: true
+    serviceName: pgpool
 
 celeryrunner:
   enabled: true
@@ -128,62 +130,74 @@ postgresql:
     tag: "13.5.0"
   primary:
     extendedConfiguration: |
-      max_connections = 400
+      max_connections = 200
     resources:
       limits:
         memory: 300Mi 
       requests:
-        cpu: 200m
+        cpu: 400m
         memory: 200Mi    
     persistence:
       enabled: true
       size: 10Gi
-    sidecars:
-    - name: pgbouncer
-      image: bitnami/pgbouncer
-      imagePullPolicy: Always
-      ports:
-      - name: tcp-bouncer
-        containerPort: 6432
-      resources:
-        limits:
-          cpu: 150m
-          memory: 128Mi
-        requests:
-          cpu: 150m
-          memory: 128Mi
-      env:
-        - name: PGBOUNCER_POOL_MODE
-          value: session
-        - name: POSTGRESQL_USERNAME
-          value: saleor
-        - name: POSTGRESQL_DATABASE
-          value: saleor
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: password
-              name: testing--saleor-postgresql
-              optional: false
-        - name: POSTGRESQL_HOST
-          value: localhost
-        - name: PGBOUNCER_DATABASE
-          value: saleor
-       # Should be your replica count * 4 -> make sure your postgres max_connections works here as well
-        - name: PGBOUNCER_DEFAULT_POOL_SIZE
-          value: "100"  
+    # sidecars:
+    # - name: pgbouncer
+    #   image: bitnami/pgbouncer
+    #   imagePullPolicy: IfNotPresent
+    #   ports:
+    #   - name: tcp-bouncer
+    #     containerPort: 6432
+    #   resources:
+    #     limits:
+    #       cpu: 150m
+    #       memory: 128Mi
+    #     requests:
+    #       cpu: 150m
+    #       memory: 128Mi
+    #   env:
+    #     - name: PGBOUNCER_POOL_MODE
+    #       # value: session
+    #       value: transaction
+    #     - name: PGBOUNCER_MAX_CLIENT_CONN
+    #       value: "200"  
+    #     - name: POSTGRESQL_USERNAME
+    #       value: saleor
+    #     - name: POSTGRESQL_DATABASE
+    #       value: saleor
+    #     - name: POSTGRESQL_PASSWORD
+    #       valueFrom:
+    #         secretKeyRef:
+    #           key: password
+    #           name: testing--saleor-postgresql
+    #           optional: false
+    #     - name: POSTGRESQL_HOST
+    #       value: localhost
+    #     - name: PGBOUNCER_DATABASE
+    #       value: saleor
+    #    # Should be your replica count * 4 in session mode -> make sure your postgres max_connections works here as well
+    #     - name: PGBOUNCER_DEFAULT_POOL_SIZE
+    #       value: "20"  
+    tolerations:
+      - key: "dedicated-cpu-workload"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
     service:
       extraPorts: 
       - name: tcp-bouncer
         port: 6432
         targetPort: 6432
   readReplicas:
-    replicaCount:	1
-    limits:
-      memory: 200Mi 
-    requests:
-      cpu: 200m
-      memory: 200Mi       
+    replicaCount:	3
+    extendedConfiguration: |
+      max_connections = 200    
+    resources:
+      limits:
+        cpu: 2
+        memory: 500Mi 
+      requests:
+        cpu: 200m
+        memory: 200Mi       
     persistence:
       size: 10Gi    
 

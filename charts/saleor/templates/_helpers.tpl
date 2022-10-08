@@ -44,6 +44,11 @@ Create chart name and version as used by the chart label.
 {{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Release.Name "-postgresql-read:5432/" .Values.postgresql.auth.database }}
 {{- end }}
 
+{{- define "saleor.internalPgPoolUrl" -}}
+{{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Values.saleor.pgpool.serviceName ":5432/" .Values.postgresql.auth.database }}
+{{- end }}
+
+
 {{/*
 Common labels
 */}}
