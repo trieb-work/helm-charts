@@ -40,7 +40,6 @@ ingress:
   annotations:
 #    cert-manager.io/acme-challenge-type: http01
 #    cert-manager.io/cluster-issuer: letsencrypt-prod  
-
   hosts:
     - host: chart-example.local
       paths: 
@@ -51,14 +50,17 @@ ingress:
 
 saleor:
   enableHpa: true
-  maxReplicas: 3
-  minReplicas: 2
+  maxReplicas: 40
+  minReplicas: 40
   # Set a custom settings.py with an existing custom map
   customSettingsConfigMap:
   resources:
     requests:
-      cpu: 300m
-      memory: 600Mi
+      cpu: 900m
+      memory: 1200Mi
+    limits:
+      cpi: 1000m
+      memory: 1920Mi
 
 celeryrunner:
   enabled: true
@@ -92,11 +94,11 @@ redis:
         value: "10000"
     resources:
       requests:
-        cpu: 30m
-        memory: 70Mi
+        cpu: 300m
+        memory: 500Mi
       limits:
         cpu: 800m
-        memory: 100Mi
+        memory: 2500Mi
     persistence:
       enabled: false    
 
@@ -132,35 +134,45 @@ postgresql:
   image:
     tag: "13.5.0"
   primary:
-    # tolerations: 
-    # - key: "workload-type"
-    #   operator: "Equal"
-    #   value: "db-performance"
-    #   effect: "NoSchedule"
+    tolerations: 
+    - key: "workload-type"
+      operator: "Equal"
+      value: "db-performance"
+      effect: "NoSchedule"
     extendedConfiguration: |
-      max_connections = 300
-      shared_buffers = 3584MB
-      effective_cache_size = 10752MB
-      maintenance_work_mem = 896MB
+      # DB Version: 14
+      # OS Type: linux
+      # DB Type: web
+      # Total Memory (RAM): 28 GB
+      # CPUs num: 15
+      # Connections num: 90
+      # Data Storage: san
+      max_connections = 92 # (6*15vCPU = 90) + 2 su res. conn
+      superuser_reserved_connections = 2
+      shared_buffers = 7GB
+      effective_cache_size = 9GB
+      maintenance_work_mem = 1792MB
+      autovacuum_work_mem = 8MB
       checkpoint_completion_target = 0.9
-      wal_buffers = 16MB
+      wal_buffers = 64MB
       default_statistics_target = 100
       random_page_cost = 1.1
       effective_io_concurrency = 300
-      work_mem = 3058kB
+      work_mem = 20388kB
       min_wal_size = 1GB
       max_wal_size = 4GB
-      max_worker_processes = 7
+      max_worker_processes = 15
       max_parallel_workers_per_gather = 4
-      max_parallel_workers = 7
-      max_parallel_maintenance_workers = 4 
+      max_parallel_workers = 15
+      max_parallel_maintenance_workers = 2
+      checkpoint_timeout = 10min
     resources:
       limits:
-        memory: 12000Mi 
-        cpu: 7
+        memory: 28000Mi
+        cpu: 15
       requests:
-        cpu: 6
-        memory: 2000Mi    
+        cpu: 15
+        memory: 28000Mi  
     persistence:
       enabled: true
       size: 10Gi
@@ -173,17 +185,12 @@ postgresql:
         containerPort: 6432
       resources:
         limits:
-          cpu: 150m
-          memory: 128Mi
+          cpu: 400m
+          memory: 256Mi
         requests:
           cpu: 150m
           memory: 128Mi
       env:
-        - name: PGBOUNCER_POOL_MODE
-          # value: session
-          value: transaction
-        - name: PGBOUNCER_MAX_CLIENT_CONN
-          value: "200"  
         - name: POSTGRESQL_USERNAME
           value: saleor
         - name: POSTGRESQL_DATABASE
@@ -198,9 +205,22 @@ postgresql:
           value: localhost
         - name: PGBOUNCER_DATABASE
           value: saleor
-       # Should be your replica count * 4 in session mode -> make sure your postgres max_connections works here as well
         - name: PGBOUNCER_DEFAULT_POOL_SIZE
-          value: "20"  
+          value: "90"
+        - name: PGBOUNCER_POOL_MODE
+          value: "transaction"
+        - name: PGBOUNCER_QUERY_WAIT_TIMEOUT
+          value: "90"
+        - name: PGBOUNCER_MAX_CLIENT_CONN
+          value: "500"
+        - name: PGBOUNCER_DEFAULT_POOL_SIZE
+          value: "28"
+        - name: PGBOUNCER_MIN_POOL_SIZE
+          value: "28"
+        - name: PGBOUNCER_RESERVE_POOL_SIZE
+          value: "0"
+        - name: PGBOUNCER_SERVER_IDLE_TIMEOUT
+          value: "600"
     service:
       extraPorts: 
       - name: tcp-bouncer
@@ -209,29 +229,36 @@ postgresql:
   readReplicas:
     replicaCount:	1
     extendedConfiguration: |
-      max_connections = 300
-      shared_buffers = 3584MB
-      effective_cache_size = 10752MB
-      maintenance_work_mem = 896MB
+      # DB Version: 14
+      # OS Type: linux
+      # DB Type: web
+      # Total Memory (RAM): 1 GB
+      # CPUs num: 2
+      # Connections num: 92
+      # Data Storage: san
+      max_connections = 92
+      shared_buffers = 256MB
+      effective_cache_size = 768MB
+      maintenance_work_mem = 64MB
       checkpoint_completion_target = 0.9
-      wal_buffers = 16MB
+      wal_buffers = 7864kB
       default_statistics_target = 100
       random_page_cost = 1.1
       effective_io_concurrency = 300
-      work_mem = 3058kB
+      work_mem = 2849kB
       min_wal_size = 1GB
       max_wal_size = 4GB
-      max_worker_processes = 7
-      max_parallel_workers_per_gather = 4
-      max_parallel_workers = 7
-      max_parallel_maintenance_workers = 4    
+      max_worker_processes = 2
+      max_parallel_workers_per_gather = 1
+      max_parallel_workers = 2
+      max_parallel_maintenance_workers = 1
     resources:
       limits:
-        cpu: 1
-        memory: 500Mi 
+        cpu: 2
+        memory: 1000Mi 
       requests:
-        cpu: 200m
-        memory: 200Mi       
+        cpu: 500m
+        memory: 1000Mi       
     persistence:
       size: 10Gi    
 
