@@ -23,4 +23,4 @@ dependencies:
   condition: postgresql.enabled
 - name: redis
   repository: "https://charts.bitnami.com/bitnami"
-  version: "17.2.0"
+  version: "17.3.4"

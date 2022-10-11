@@ -59,9 +59,6 @@ saleor:
     requests:
       cpu: 300m
       memory: 600Mi
-  pgpool:
-    enable: true
-    serviceName: pgpool
 
 celeryrunner:
   enabled: true
@@ -87,13 +84,19 @@ affinity:
 redis:
   architecture: standalone
   master:
+    podSecurityContext:
+      enabled: true
+      # This works only if the Kubelet has allow- insecure sysctl things enabled
+      sysctls:
+      - name: net.core.somaxconn
+        value: "10000"
     resources:
       requests:
         cpu: 30m
         memory: 70Mi
       limits:
-        cpu: 80m
-        memory: 80Mi
+        cpu: 800m
+        memory: 100Mi
     persistence:
       enabled: false    
 
@@ -111,7 +114,7 @@ postgresBackup:
 # TODO: add sidecar settings for pgbouncer
 postgresql:
   # The architecture can be standalone or replication
-  architecture: "standalone"
+  architecture: "replication"
   enabled: true
   metrics:
     enabled: false
@@ -129,71 +132,102 @@ postgresql:
   image:
     tag: "13.5.0"
   primary:
+    # tolerations: 
+    # - key: "workload-type"
+    #   operator: "Equal"
+    #   value: "db-performance"
+    #   effect: "NoSchedule"
     extendedConfiguration: |
-      max_connections = 200
+      max_connections = 300
+      shared_buffers = 3584MB
+      effective_cache_size = 10752MB
+      maintenance_work_mem = 896MB
+      checkpoint_completion_target = 0.9
+      wal_buffers = 16MB
+      default_statistics_target = 100
+      random_page_cost = 1.1
+      effective_io_concurrency = 300
+      work_mem = 3058kB
+      min_wal_size = 1GB
+      max_wal_size = 4GB
+      max_worker_processes = 7
+      max_parallel_workers_per_gather = 4
+      max_parallel_workers = 7
+      max_parallel_maintenance_workers = 4 
     resources:
       limits:
-        memory: 300Mi 
+        memory: 12000Mi 
+        cpu: 7
       requests:
-        cpu: 400m
-        memory: 200Mi    
+        cpu: 6
+        memory: 2000Mi    
     persistence:
       enabled: true
       size: 10Gi
-    # sidecars:
-    # - name: pgbouncer
-    #   image: bitnami/pgbouncer
-    #   imagePullPolicy: IfNotPresent
-    #   ports:
-    #   - name: tcp-bouncer
-    #     containerPort: 6432
-    #   resources:
-    #     limits:
-    #       cpu: 150m
-    #       memory: 128Mi
-    #     requests:
-    #       cpu: 150m
-    #       memory: 128Mi
-    #   env:
-    #     - name: PGBOUNCER_POOL_MODE
-    #       # value: session
-    #       value: transaction
-    #     - name: PGBOUNCER_MAX_CLIENT_CONN
-    #       value: "200"  
-    #     - name: POSTGRESQL_USERNAME
-    #       value: saleor
-    #     - name: POSTGRESQL_DATABASE
-    #       value: saleor
-    #     - name: POSTGRESQL_PASSWORD
-    #       valueFrom:
-    #         secretKeyRef:
-    #           key: password
-    #           name: testing--saleor-postgresql
-    #           optional: false
-    #     - name: POSTGRESQL_HOST
-    #       value: localhost
-    #     - name: PGBOUNCER_DATABASE
-    #       value: saleor
-    #    # Should be your replica count * 4 in session mode -> make sure your postgres max_connections works here as well
-    #     - name: PGBOUNCER_DEFAULT_POOL_SIZE
-    #       value: "20"  
-    tolerations:
-      - key: "dedicated-cpu-workload"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
+    sidecars:
+    - name: pgbouncer
+      image: bitnami/pgbouncer
+      imagePullPolicy: IfNotPresent
+      ports:
+      - name: tcp-bouncer
+        containerPort: 6432
+      resources:
+        limits:
+          cpu: 150m
+          memory: 128Mi
+        requests:
+          cpu: 150m
+          memory: 128Mi
+      env:
+        - name: PGBOUNCER_POOL_MODE
+          # value: session
+          value: transaction
+        - name: PGBOUNCER_MAX_CLIENT_CONN
+          value: "200"  
+        - name: POSTGRESQL_USERNAME
+          value: saleor
+        - name: POSTGRESQL_DATABASE
+          value: saleor
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: testing--saleor-postgresql
+              optional: false
+        - name: POSTGRESQL_HOST
+          value: localhost
+        - name: PGBOUNCER_DATABASE
+          value: saleor
+       # Should be your replica count * 4 in session mode -> make sure your postgres max_connections works here as well
+        - name: PGBOUNCER_DEFAULT_POOL_SIZE
+          value: "20"  
     service:
       extraPorts: 
       - name: tcp-bouncer
         port: 6432
         targetPort: 6432
   readReplicas:
-    replicaCount:	3
+    replicaCount:	1
     extendedConfiguration: |
-      max_connections = 200    
+      max_connections = 300
+      shared_buffers = 3584MB
+      effective_cache_size = 10752MB
+      maintenance_work_mem = 896MB
+      checkpoint_completion_target = 0.9
+      wal_buffers = 16MB
+      default_statistics_target = 100
+      random_page_cost = 1.1
+      effective_io_concurrency = 300
+      work_mem = 3058kB
+      min_wal_size = 1GB
+      max_wal_size = 4GB
+      max_worker_processes = 7
+      max_parallel_workers_per_gather = 4
+      max_parallel_workers = 7
+      max_parallel_maintenance_workers = 4    
     resources:
       limits:
-        cpu: 2
+        cpu: 1
         memory: 500Mi 
       requests:
         cpu: 200m
@@ -214,6 +248,7 @@ global:
 #    postgresqlPort: "5432"
   redis:
     password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
+
   emailUrl: ""
   #emailUrl: smtp://test@triebwork.com:XXXXXXXX@smtp.mailgun.org:465/?ssl=True
   secretKey: sefb68-2133r-24577v-tgnqetb-qe5zb
