@@ -7,7 +7,8 @@ image:
   imageName: ""
   repository: ghcr.io/saleor/saleor
   pullPolicy: IfNotPresent
-  tag: "3.4.21"
+  tag: "3.0.0"
+  #tag: "3.4.21"
 
 # fullnameOverride: saleor-api
 
@@ -50,17 +51,17 @@ ingress:
 
 saleor:
   enableHpa: true
-  maxReplicas: 40
-  minReplicas: 40
+  maxReplicas: 1 #30
+  minReplicas: 4 #30
   # Set a custom settings.py with an existing custom map
-  customSettingsConfigMap:
+  customSettingsConfigMap: testing--saleor-settings.py
   resources:
     requests:
       cpu: 900m
       memory: 1200Mi
     limits:
-      cpi: 1000m
-      memory: 1920Mi
+      cpu: 1500m
+      memory: 2500Mi
 
 celeryrunner:
   enabled: true
@@ -135,99 +136,103 @@ postgresql:
     tag: "13.5.0"
   primary:
     tolerations: 
-    - key: "workload-type"
-      operator: "Equal"
-      value: "db-performance"
-      effect: "NoSchedule"
-    extendedConfiguration: |
-      # DB Version: 14
-      # OS Type: linux
-      # DB Type: web
-      # Total Memory (RAM): 28 GB
-      # CPUs num: 15
-      # Connections num: 90
-      # Data Storage: san
-      max_connections = 92 # (6*15vCPU = 90) + 2 su res. conn
-      superuser_reserved_connections = 2
-      shared_buffers = 7GB
-      effective_cache_size = 9GB
-      maintenance_work_mem = 1792MB
-      autovacuum_work_mem = 8MB
-      checkpoint_completion_target = 0.9
-      wal_buffers = 64MB
-      default_statistics_target = 100
-      random_page_cost = 1.1
-      effective_io_concurrency = 300
-      work_mem = 20388kB
-      min_wal_size = 1GB
-      max_wal_size = 4GB
-      max_worker_processes = 15
-      max_parallel_workers_per_gather = 4
-      max_parallel_workers = 15
-      max_parallel_maintenance_workers = 2
-      checkpoint_timeout = 10min
+    # - key: "workload-type"
+    #   operator: "Equal"
+    #   value: "db-performance"
+    #   effect: "NoSchedule"
+    # extendedConfiguration: |
+    #   # DB Version: 14
+    #   # OS Type: linux
+    #   # DB Type: web
+    #   # Total Memory (RAM): 28 GB
+    #   # CPUs num: 15
+    #   # Connections num: 90
+    #   # Data Storage: san
+    #   max_connections = 92 # (6*15vCPU = 90) + 2 su res. conn
+    #   superuser_reserved_connections = 2
+    #   shared_buffers = 7GB
+    #   effective_cache_size = 9GB
+    #   maintenance_work_mem = 1792MB
+    #   autovacuum_work_mem = 8MB
+    #   checkpoint_completion_target = 0.9
+    #   wal_buffers = 64MB
+    #   default_statistics_target = 100
+    #   random_page_cost = 1.1
+    #   effective_io_concurrency = 300
+    #   work_mem = 20388kB
+    #   min_wal_size = 1GB
+    #   max_wal_size = 4GB
+    #   max_worker_processes = 15
+    #   max_parallel_workers_per_gather = 4
+    #   max_parallel_workers = 15
+    #   max_parallel_maintenance_workers = 2
+    #   checkpoint_timeout = 10min
     resources:
       limits:
-        memory: 28000Mi
-        cpu: 15
+        cpu: 1
+        memory: 2000Mi
       requests:
-        cpu: 15
-        memory: 28000Mi  
+        cpu: 1
+        memory: 2000Mi  
+      # limits:
+      #   memory: 28000Mi
+      #   cpu: 15
+      # requests:
+      #   cpu: 15
+      #   memory: 28000Mi  
     persistence:
       enabled: true
       size: 10Gi
-    sidecars:
-    - name: pgbouncer
-      image: bitnami/pgbouncer
-      imagePullPolicy: IfNotPresent
-      ports:
-      - name: tcp-bouncer
-        containerPort: 6432
-      resources:
-        limits:
-          cpu: 400m
-          memory: 256Mi
-        requests:
-          cpu: 150m
-          memory: 128Mi
-      env:
-        - name: POSTGRESQL_USERNAME
-          value: saleor
-        - name: POSTGRESQL_DATABASE
-          value: saleor
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: password
-              name: testing--saleor-postgresql
-              optional: false
-        - name: POSTGRESQL_HOST
-          value: localhost
-        - name: PGBOUNCER_DATABASE
-          value: saleor
-        - name: PGBOUNCER_DEFAULT_POOL_SIZE
-          value: "90"
-        - name: PGBOUNCER_POOL_MODE
-          value: "transaction"
-        - name: PGBOUNCER_QUERY_WAIT_TIMEOUT
-          value: "90"
-        - name: PGBOUNCER_MAX_CLIENT_CONN
-          value: "500"
-        - name: PGBOUNCER_DEFAULT_POOL_SIZE
-          value: "28"
-        - name: PGBOUNCER_MIN_POOL_SIZE
-          value: "28"
-        - name: PGBOUNCER_RESERVE_POOL_SIZE
-          value: "0"
-        - name: PGBOUNCER_SERVER_IDLE_TIMEOUT
-          value: "600"
-    service:
-      extraPorts: 
-      - name: tcp-bouncer
-        port: 6432
-        targetPort: 6432
+    # sidecars:
+    # - name: pgbouncer
+    #   image: bitnami/pgbouncer
+    #   imagePullPolicy: IfNotPresent
+    #   ports:
+    #   - name: tcp-bouncer
+    #     containerPort: 6432
+    #   resources:
+    #     limits:
+    #       cpu: 400m
+    #       memory: 256Mi
+    #     requests:
+    #       cpu: 150m
+    #       memory: 128Mi
+    #   env:
+    #     - name: POSTGRESQL_USERNAME
+    #       value: saleor
+    #     - name: POSTGRESQL_DATABASE
+    #       value: saleor
+    #     - name: POSTGRESQL_PASSWORD
+    #       valueFrom:
+    #         secretKeyRef:
+    #           key: password
+    #           name: testing--saleor-postgresql
+    #           optional: false
+    #     - name: POSTGRESQL_HOST
+    #       value: localhost
+    #     - name: PGBOUNCER_DATABASE
+    #       value: saleor
+    #     - name: PGBOUNCER_POOL_MODE
+    #       value: "transaction"
+    #     - name: PGBOUNCER_QUERY_WAIT_TIMEOUT
+    #       value: "90"
+    #     - name: PGBOUNCER_MAX_CLIENT_CONN
+    #       value: "500"
+    #     - name: PGBOUNCER_DEFAULT_POOL_SIZE
+    #       value: "60"
+    #     - name: PGBOUNCER_MIN_POOL_SIZE
+    #       value: "60"
+    #     - name: PGBOUNCER_RESERVE_POOL_SIZE
+    #       value: "0"
+    #     - name: PGBOUNCER_SERVER_IDLE_TIMEOUT
+    #       value: "600"
+    # service:
+    #   extraPorts: 
+    #   - name: tcp-bouncer
+    #     port: 6432
+    #     targetPort: 6432
   readReplicas:
-    replicaCount:	1
+    replicaCount:	0
     extendedConfiguration: |
       # DB Version: 14
       # OS Type: linux
