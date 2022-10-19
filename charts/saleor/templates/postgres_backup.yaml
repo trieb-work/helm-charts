@@ -50,7 +50,7 @@ spec:
                     key: postgresql-password
                     name: saleor-postgresql  
               - name: POSTGRES_DB_USER
-                value: {{ .Values.global.postgresql.postgresqlUsername }}   
+                value: {{ .Values.postgresql.auth.username }}   
               - name: POSTGRES_DB_HOST
                 value: "{{ $fullName }}-postgresql"  
               - name: POSTGRES_DB_PORT
