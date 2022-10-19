@@ -60,8 +60,8 @@ saleor:
       cpu: 900m
       memory: 1200Mi
     limits:
-      cpu: 1500m
-      memory: 2500Mi
+      cpu: 1
+      memory: 1500Mi
 
 celeryrunner:
   enabled: true

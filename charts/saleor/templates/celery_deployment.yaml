@@ -1,3 +1,4 @@
+{{- $fullName := include "saleor-helm.fullname" . -}}
 {{- if .Values.celeryrunner.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -23,7 +24,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: "{{ $fullName }}-celery"
           securityContext:
             runAsUser: 999
           {{- if .Values.image.imageName }}
