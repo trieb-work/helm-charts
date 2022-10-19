@@ -51,8 +51,8 @@ ingress:
 
 saleor:
   enableHpa: true
-  maxReplicas: 1 #30
-  minReplicas: 4 #30
+  maxReplicas: 2 #30
+  minReplicas: 1 #30
   # Set a custom settings.py with an existing custom map
   # customSettingsConfigMap: testing--saleor-settings.py
   resources:
