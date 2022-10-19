@@ -25,7 +25,7 @@ spec:
               - name: NUMBER_OF_VERSIONS
                 value: {{ .Values.postgresBackup.historyLimit | quote }}
               - name: DATABASES
-                value: {{ .Values.global.postgresql.postgresqlDatabase | quote }}     
+                value: {{ .Values.postgresql.auth.database | quote }}     
               - name: S3_KEY
                 valueFrom:
                   secretKeyRef:
