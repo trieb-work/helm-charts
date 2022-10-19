@@ -95,11 +95,11 @@ redis:
         value: "10000"
     resources:
       requests:
-        cpu: 300m
-        memory: 500Mi
-      limits:
         cpu: 200m
         memory: 100Mi
+      limits:
+        cpu: 200m
+        memory: 300Mi
     persistence:
       enabled: false    
 
