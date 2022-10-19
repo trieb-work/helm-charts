@@ -7,7 +7,8 @@ image:
   imageName: ""
   repository: ghcr.io/saleor/saleor
   pullPolicy: IfNotPresent
-  tag: "3.4.21"
+  tag: "3.0.0"
+  #tag: "3.4.21"
 
 # fullnameOverride: saleor-api
 
@@ -40,7 +41,6 @@ ingress:
   annotations:
 #    cert-manager.io/acme-challenge-type: http01
 #    cert-manager.io/cluster-issuer: letsencrypt-prod  
-
   hosts:
     - host: chart-example.local
       paths: 
@@ -51,14 +51,17 @@ ingress:
 
 saleor:
   enableHpa: true
-  maxReplicas: 3
-  minReplicas: 2
+  maxReplicas: 1 #30
+  minReplicas: 4 #30
   # Set a custom settings.py with an existing custom map
-  customSettingsConfigMap:
+  # customSettingsConfigMap: testing--saleor-settings.py
   resources:
     requests:
-      cpu: 300m
-      memory: 600Mi
+      cpu: 900m
+      memory: 1200Mi
+    limits:
+      cpu: 1500m
+      memory: 2500Mi
 
 celeryrunner:
   enabled: true
@@ -92,8 +95,8 @@ redis:
         value: "10000"
     resources:
       requests:
-        cpu: 30m
-        memory: 70Mi
+        cpu: 300m
+        memory: 500Mi
       limits:
         cpu: 200m
         memory: 100Mi
@@ -132,28 +135,38 @@ postgresql:
   image:
     tag: "13.5.0"
   primary:
-    # tolerations: 
+    tolerations: 
     # - key: "workload-type"
     #   operator: "Equal"
     #   value: "db-performance"
     #   effect: "NoSchedule"
-    extendedConfiguration: |
-      max_connections = 300
-      shared_buffers = 3584MB
-      effective_cache_size = 10752MB
-      maintenance_work_mem = 896MB
-      checkpoint_completion_target = 0.9
-      wal_buffers = 16MB
-      default_statistics_target = 100
-      random_page_cost = 1.1
-      effective_io_concurrency = 300
-      work_mem = 3058kB
-      min_wal_size = 1GB
-      max_wal_size = 4GB
-      max_worker_processes = 7
-      max_parallel_workers_per_gather = 4
-      max_parallel_workers = 7
-      max_parallel_maintenance_workers = 4 
+    # extendedConfiguration: |
+    #   # DB Version: 14
+    #   # OS Type: linux
+    #   # DB Type: web
+    #   # Total Memory (RAM): 28 GB
+    #   # CPUs num: 15
+    #   # Connections num: 90
+    #   # Data Storage: san
+    #   max_connections = 92 # (6*15vCPU = 90) + 2 su res. conn
+    #   superuser_reserved_connections = 2
+    #   shared_buffers = 7GB
+    #   effective_cache_size = 9GB
+    #   maintenance_work_mem = 1792MB
+    #   autovacuum_work_mem = 8MB
+    #   checkpoint_completion_target = 0.9
+    #   wal_buffers = 64MB
+    #   default_statistics_target = 100
+    #   random_page_cost = 1.1
+    #   effective_io_concurrency = 300
+    #   work_mem = 20388kB
+    #   min_wal_size = 1GB
+    #   max_wal_size = 4GB
+    #   max_worker_processes = 15
+    #   max_parallel_workers_per_gather = 4
+    #   max_parallel_workers = 15
+    #   max_parallel_maintenance_workers = 2
+    #   checkpoint_timeout = 10min
     resources:
       limits:
         memory: 400Mi 
@@ -207,31 +220,38 @@ postgresql:
     #     port: 6432
     #     targetPort: 6432
   readReplicas:
-    replicaCount:	1
-    extendedConfiguration: |
-      max_connections = 300
-      shared_buffers = 3584MB
-      effective_cache_size = 10752MB
-      maintenance_work_mem = 896MB
-      checkpoint_completion_target = 0.9
-      wal_buffers = 16MB
-      default_statistics_target = 100
-      random_page_cost = 1.1
-      effective_io_concurrency = 300
-      work_mem = 3058kB
-      min_wal_size = 1GB
-      max_wal_size = 4GB
-      max_worker_processes = 7
-      max_parallel_workers_per_gather = 4
-      max_parallel_workers = 7
-      max_parallel_maintenance_workers = 4    
+    replicaCount:	0
+    # extendedConfiguration: |
+    #   # DB Version: 14
+    #   # OS Type: linux
+    #   # DB Type: web
+    #   # Total Memory (RAM): 1 GB
+    #   # CPUs num: 2
+    #   # Connections num: 92
+    #   # Data Storage: san
+    #   max_connections = 92
+    #   shared_buffers = 256MB
+    #   effective_cache_size = 768MB
+    #   maintenance_work_mem = 64MB
+    #   checkpoint_completion_target = 0.9
+    #   wal_buffers = 7864kB
+    #   default_statistics_target = 100
+    #   random_page_cost = 1.1
+    #   effective_io_concurrency = 300
+    #   work_mem = 2849kB
+    #   min_wal_size = 1GB
+    #   max_wal_size = 4GB
+    #   max_worker_processes = 2
+    #   max_parallel_workers_per_gather = 1
+    #   max_parallel_workers = 2
+    #   max_parallel_maintenance_workers = 1
     resources:
       limits:
-        cpu: 1
-        memory: 500Mi 
+        cpu: 2
+        memory: 1000Mi 
       requests:
-        cpu: 200m
-        memory: 200Mi       
+        cpu: 500m
+        memory: 1000Mi       
     persistence:
       size: 10Gi    
 
@@ -239,8 +259,7 @@ postgresql:
 # global settings both for saleor and postgresql. Set the password to something safe ;) 
 global:
   # you can have the database URL for an external database if you don't want to setup one by yourself
-  DATABASE_URL:
-  # postgresql://user:password@hostname:533/saleor
+  DATABASE_URL: postgresql://saleor:privacy-disarray-mop0@testing--saleor-postgresql-primary:5432/saleor
   # If postgresql.enabled = true
 #    postgresqlDatabase: saleor
 #    postgresqlUsername: saleor
