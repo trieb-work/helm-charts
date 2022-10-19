@@ -54,7 +54,7 @@ saleor:
   maxReplicas: 1 #30
   minReplicas: 4 #30
   # Set a custom settings.py with an existing custom map
-  customSettingsConfigMap: testing--saleor-settings.py
+  # customSettingsConfigMap: testing--saleor-settings.py
   resources:
     requests:
       cpu: 900m
