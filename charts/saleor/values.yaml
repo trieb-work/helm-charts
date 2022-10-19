@@ -292,6 +292,8 @@ global:
       value: "False"
     - name: GUNICORN_CMD_ARGS
       value: "--access-logfile='-'"   
+  
+  # allowed hosts and allowed client hosts
   allowedHosts: test-api.example.com,*
   # maximum number of checkout line items. Normal value is 50
   maxCheckoutLine: "100"
