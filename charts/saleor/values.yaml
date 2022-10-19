@@ -233,30 +233,30 @@ postgresql:
     #     targetPort: 6432
   readReplicas:
     replicaCount:	0
-    extendedConfiguration: |
-      # DB Version: 14
-      # OS Type: linux
-      # DB Type: web
-      # Total Memory (RAM): 1 GB
-      # CPUs num: 2
-      # Connections num: 92
-      # Data Storage: san
-      max_connections = 92
-      shared_buffers = 256MB
-      effective_cache_size = 768MB
-      maintenance_work_mem = 64MB
-      checkpoint_completion_target = 0.9
-      wal_buffers = 7864kB
-      default_statistics_target = 100
-      random_page_cost = 1.1
-      effective_io_concurrency = 300
-      work_mem = 2849kB
-      min_wal_size = 1GB
-      max_wal_size = 4GB
-      max_worker_processes = 2
-      max_parallel_workers_per_gather = 1
-      max_parallel_workers = 2
-      max_parallel_maintenance_workers = 1
+    # extendedConfiguration: |
+    #   # DB Version: 14
+    #   # OS Type: linux
+    #   # DB Type: web
+    #   # Total Memory (RAM): 1 GB
+    #   # CPUs num: 2
+    #   # Connections num: 92
+    #   # Data Storage: san
+    #   max_connections = 92
+    #   shared_buffers = 256MB
+    #   effective_cache_size = 768MB
+    #   maintenance_work_mem = 64MB
+    #   checkpoint_completion_target = 0.9
+    #   wal_buffers = 7864kB
+    #   default_statistics_target = 100
+    #   random_page_cost = 1.1
+    #   effective_io_concurrency = 300
+    #   work_mem = 2849kB
+    #   min_wal_size = 1GB
+    #   max_wal_size = 4GB
+    #   max_worker_processes = 2
+    #   max_parallel_workers_per_gather = 1
+    #   max_parallel_workers = 2
+    #   max_parallel_maintenance_workers = 1
     resources:
       limits:
         cpu: 2
@@ -271,8 +271,7 @@ postgresql:
 # global settings both for saleor and postgresql. Set the password to something safe ;) 
 global:
   # you can have the database URL for an external database if you don't want to setup one by yourself
-  DATABASE_URL:
-  # postgresql://user:password@hostname:533/saleor
+  DATABASE_URL: postgresql://saleor:privacy-disarray-mop0@testing--saleor-postgresql-primary:5432/saleor
   # If postgresql.enabled = true
 #    postgresqlDatabase: saleor
 #    postgresqlUsername: saleor
