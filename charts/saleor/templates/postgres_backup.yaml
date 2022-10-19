@@ -47,8 +47,8 @@ spec:
               - name: POSTGRES_DB_PASSWORD
                 valueFrom:
                   secretKeyRef:
-                    key: postgresql-password
-                    name: saleor-postgresql  
+                    key: password
+                    name: "{{ $fullName }}-postgresql"
               - name: POSTGRES_DB_USER
                 value: {{ .Values.postgresql.auth.username }}   
               - name: POSTGRES_DB_HOST
