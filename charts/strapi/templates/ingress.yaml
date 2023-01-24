@@ -20,7 +20,6 @@ metadata:
     {{- include "strapi.labels" . | nindent 4 }}
   annotations:
     {{- include "strapi.ingressAnnotations" . | nindent 4 }}
-    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
