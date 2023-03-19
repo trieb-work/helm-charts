@@ -36,3 +36,8 @@ Installation:
 ```
 helm install saleor trieb.work/strapi
 ```
+
+## Google Tag Manager Server
+```
+helm install gtm trieb.work/google-tag-manager-server
+```
