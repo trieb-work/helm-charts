@@ -25,8 +25,6 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: "{{ $fullName }}-celery"
-          # securityContext:
-          #   runAsUser: 999
           {{- if .Values.image.imageName }}
           image: "{{ lower .Values.image.imageName }}"
           {{- else }}
