@@ -90,7 +90,6 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-body-size: "800m"
 
-
 # S3 storage options. Settings need to be set, as containers are volatile    
 s3:
   enabled: true
