@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   # image name overrides repository and tag.
   imageName: ""
-  repository: ghrc.io/strapi/
+  repository: ghcr.io/strapi/
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
