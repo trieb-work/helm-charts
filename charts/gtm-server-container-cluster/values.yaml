@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/cloud-tagging-10302018/gtm-cloud-image
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: stable
 
