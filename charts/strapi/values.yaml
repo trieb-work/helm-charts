@@ -92,7 +92,7 @@ ingress:
 
 # S3 storage options. Settings need to be set, as containers are volatile    
 s3:
-  enabled: true
+  enabled: false
   accesKeyId: ""
   accessSecret: ""
   endpoint: "s3.us-east-2.amazonaws.com"
@@ -100,7 +100,7 @@ s3:
 
 # If you are using the cloudflare R2 plugin
 r2:
-  enabled: true
+  enabled: false
   accesKeyId: ""
   accessSecret: ""
   endpoint: ""
