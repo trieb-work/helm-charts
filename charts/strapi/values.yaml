@@ -35,8 +35,10 @@ postgresql:
   metrics:
     enabled: false
   auth:
+    # set the master PW here
+    postgresPassword: 
     username: strapi
-    password: DhzYU4sMDaSqMnAhd33499vo49t9
+    password: 
     database: strapi
   tls:
     enabled: true
@@ -139,5 +141,5 @@ additionalEnvVariables:
 
 # You can set a database URL here if you don't want to use the included DB
 secrets: 
-  databaseUrl: "postgresql://{{ .Release.Name }}-postgresql"
+  databaseUrl:
   
