@@ -1360,6 +1360,21 @@ entries:
   strapi:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-11-15T10:47:46.622124208Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.2.6
+    description: A Helm chart for Strapi Headless API
+    digest: 9af234d62f97cf1a1213a27944deabd9067504efb837e5b5bb62ce61b23ec9ce
+    name: strapi
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.56/strapi-0.1.56.tgz
+    version: 0.1.56
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-09-28T16:17:00.517635905Z"
     dependencies:
     - condition: postgresql.enabled
@@ -1998,4 +2013,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2023-09-28T16:17:00.518239418Z"
+generated: "2023-11-15T10:47:46.622606714Z"
