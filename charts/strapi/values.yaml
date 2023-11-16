@@ -38,6 +38,7 @@ postgresql:
     # set the master PW here
     postgresPassword: 
     username: strapi
+    # set a password here!
     password: 
     database: strapi
   tls:
@@ -49,7 +50,8 @@ postgresql:
     tag: "13.5.0"
   primary:
     persistence:
-      enabled: false  
+      enabled: false
+      size:
 
 serviceAccount:
   # Specifies whether a service account should be created

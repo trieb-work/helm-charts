@@ -26,6 +26,24 @@ spec:
                 value: {{ .Values.postgresBackup.historyLimit | quote }}
               - name: DATABASES
                 value: {{ .Values.postgresql.auth.database | quote }}     
+
+            {{- if .Values.r2.enabled }}
+              - name: S3_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: AWS_ACCESS_KEY_ID
+                    name: {{ include "strapi.fullname" . }}
+              - name: S3_ENDPOINT
+                valueFrom:
+                  secretKeyRef:
+                    key: CF_ENDPOINT
+                    name: {{ include "strapi.fullname" . }}
+              - name: AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    key: CF_SECRET_ACCESS_KEY
+                    name: {{ include "strapi.fullname" . }}
+              {{- else }}
               - name: S3_KEY
                 valueFrom:
                   secretKeyRef:
@@ -41,6 +59,7 @@ spec:
                   secretKeyRef:
                     key: AWS_SECRET_ACCESS_KEY
                     name: {{ include "strapi.fullname" . }}
+              {{- end }}
               - name: S3_BUCKET_NAME
                 value: {{ .Values.postgresBackup.bucketName | quote }}      
               - name: POSTGRES_DB_PASSWORD
@@ -64,8 +83,7 @@ spec:
               allowPrivilegeEscalation: false
               privileged: false
               readOnlyRootFilesystem: false
-          restartPolicy: Never
-          terminationGracePeriodSeconds: 30
-  schedule: {{ .Values.postgresBackup.schedule }}
-
-{{- end -}}
+            restartPolicy: Never
+            terminationGracePeriodSeconds: 30
+            schedule: {{ .Values.postgresBackup.schedule }}
+            {{- end -}}
