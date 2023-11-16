@@ -10,6 +10,7 @@ spec:
   failedJobsHistoryLimit: 5
   successfulJobsHistoryLimit: 3
   concurrencyPolicy: Forbid
+  schedule: {{ .Values.postgresBackup.schedule }}
   jobTemplate:
     metadata:
     spec:
@@ -85,5 +86,4 @@ spec:
               readOnlyRootFilesystem: false
             restartPolicy: Never
             terminationGracePeriodSeconds: 30
-            schedule: {{ .Values.postgresBackup.schedule }}
-            {{- end -}}
+{{- end -}}
