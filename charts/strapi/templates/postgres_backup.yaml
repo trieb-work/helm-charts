@@ -39,7 +39,7 @@ spec:
                   secretKeyRef:
                     key: CF_ENDPOINT
                     name: {{ include "strapi.fullname" . }}
-              - name: AWS_SECRET_ACCESS_KEY
+              - name: S3_SECRET
                 valueFrom:
                   secretKeyRef:
                     key: CF_SECRET_ACCESS_KEY
