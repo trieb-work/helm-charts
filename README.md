@@ -26,9 +26,9 @@ AWS_ENDPOINT
 AWS_BUCKET
 ```
 
-If you want to install a postgres DB together with strapi, just set:
+If you want to install a postgres DB together with strapi, just add:
 ```
-postgresql.enabled=true
+--set postgresql.enabled=true
 ```
 
 Installation: 
