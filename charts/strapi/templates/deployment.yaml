@@ -42,17 +42,9 @@ spec:
               containerPort: 1337
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: "/_health"
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 10  
+            {{- toYaml .Values.livenessProbe | nindent 12 }}  
           readinessProbe:
-            httpGet:
-              path: "/_health"
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 10  
+            {{- toYaml .Values.readinessProbe | nindent 12 }} 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

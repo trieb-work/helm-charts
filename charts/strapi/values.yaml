@@ -17,7 +17,6 @@ dashboardDomain: "dashboard.domain.com"
 # change this secret
 adminJWTSecret: $XX2UnMcN6%%b@CkFof*
 
-
 imagePullSecrets:
   - name: github
 nameOverride: ""
@@ -36,10 +35,10 @@ postgresql:
     enabled: false
   auth:
     # set the master PW here
-    postgresPassword: 
+    postgresPassword:
     username: strapi
     # set a password here!
-    password: 
+    password:
     database: strapi
   tls:
     enabled: true
@@ -64,10 +63,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -79,22 +80,22 @@ service:
   type: ClusterIP
   port: 80
 
-# the full backend URL of strapi  
+# the full backend URL of strapi
 strapiApiUrl: https://strapi.example.com
 ingress:
   enabled: true
   className: ""
   host: chart-example.local
-  pathType: ImplementationSpecific       
+  pathType: ImplementationSpecific
   tls:
     enabled: true
     secretName:
-  annotations: 
+  annotations:
     cert-manager.io/acme-challenge-type: http01
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-body-size: "800m"
 
-# S3 storage options. Settings need to be set, as containers are volatile    
+# S3 storage options. Settings need to be set, as containers are volatile
 s3:
   enabled: false
   accesKeyId: ""
@@ -108,7 +109,7 @@ r2:
   accesKeyId: ""
   accessSecret: ""
   endpoint: ""
-  bucket: "strapi"  
+  bucket: "strapi"
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -127,6 +128,19 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+livenessProbe:
+  httpGet:
+    path: "/_health"
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    path: "/_health"
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
 nodeSelector: {}
 
 tolerations: []
@@ -136,12 +150,10 @@ affinity: {}
 # Just add here secrets, that you want to get mounted
 additionalSecretMounts:
 
-
 # Add env variables with key and value, that should be added to the strapi container
 additionalEnvVariables:
 #  TESTKEY: value
 
 # You can set a database URL here if you don't want to use the included DB
-secrets: 
+secrets:
   databaseUrl:
-  
