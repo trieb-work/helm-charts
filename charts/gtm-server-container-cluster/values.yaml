@@ -43,11 +43,15 @@ service:
 ingress:
   enabled: true
   className: ""
-  taggingHost: chart-example.local
-  pathType: ImplementationSpecific 
   annotations: 
-    cert-manager.io/acme-challenge-type: http01
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/acme-challenge-type: "http01"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  rules:
+    - taggingHost: "chart-example1.local"
+      pathType: "ImplementationSpecific"
+    - taggingHost: "chart-example2.local"
+      pathType: "ImplementationSpecific"
+
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

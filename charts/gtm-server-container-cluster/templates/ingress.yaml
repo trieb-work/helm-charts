@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "gtm-server-container-cluster.fullname" . -}}
-{{- $taggingHost := .Values.ingress.taggingHost -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -19,48 +18,36 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "gtm-server-container-cluster.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   tls:
     - hosts:
-        - {{ lower .Values.ingress.taggingHost | quote }}
+      {{- range .Values.ingress.rules }}
+      - {{ lower .taggingHost | quote }}
+      {{- end }}
       secretName: "{{ $fullName }}-tls-secret"
   rules:
-    - host: {{ .Values.ingress.taggingHost }}
+  {{- range .Values.ingress.rules }}
+    - host: {{ .taggingHost }}
       http:
         paths:
           - path: /
-            {{- if and .Values.ingress.pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .Values.ingress.pathType }}
-            {{- end }}
+            pathType: {{ .pathType }}
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-              {{- end }}
           - path: /preview
-            {{- if and .Values.ingress.pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .Values.ingress.pathType }}
-            {{- end }}
+            pathType: {{ .pathType }}
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: "{{ $fullName }}-preview"
                 port:
                   number: {{ $svcPort }}
-              {{- else }}
-              serviceName: "{{ $fullName }}-preview"
-              servicePort: {{ $svcPort }}
-              {{- end }}              
+  {{- end }}
 {{- end }}
