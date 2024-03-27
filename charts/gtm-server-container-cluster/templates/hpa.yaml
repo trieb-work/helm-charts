@@ -1,5 +1,13 @@
 {{- if .Values.autoscaling.enabled }}
+{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: autoscaling/v2
+{{- else if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: autoscaling/v2beta2
+{{- else if semverCompare ">=1.12-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: autoscaling/v2beta1
+{{- else }}
+apiVersion: autoscaling/v1
+{{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "gtm-server-container-cluster.fullname" . }}
@@ -12,17 +20,33 @@ spec:
     name: {{ include "gtm-server-container-cluster.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  {{- if or (semverCompare ">=1.12-0" .Capabilities.KubeVersion.GitVersion) (not (semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion)) }}
   metrics:
     {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+        target:
+          type: Utilization
+          {{- if or (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) (semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion) }}
+          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+          {{- else }}
+          targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+          {{- end }}
     {{- end }}
     {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+        target:
+          type: Utilization
+          {{- if or (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) (semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion) }}
+          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+          {{- else }}
+          targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+          {{- end }}
     {{- end }}
+  {{- else }}
+  targetCPUUtilizationPercentage: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
 {{- end }}
