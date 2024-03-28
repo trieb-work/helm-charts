@@ -11,6 +11,8 @@ spec:
   selector:
     matchLabels:
       {{- include "strapi.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       {{- with .Values.podAnnotations }}
