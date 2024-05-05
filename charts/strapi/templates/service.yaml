@@ -4,6 +4,7 @@ metadata:
   name: {{ include "strapi.fullname" . }}
   labels:
     {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/role: primary
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -13,3 +14,22 @@ spec:
       name: http
   selector:
     {{- include "strapi.selectorLabels" . | nindent 4 }}
+{{- if .Values.readReplica.enabled }}
+# If we have Values.readReplica.enabled set to true, we will create a read replica service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "strapi.fullname" . }}-all
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "strapi.selectorLabels" . | nindent 4 }}
+{{- end }}

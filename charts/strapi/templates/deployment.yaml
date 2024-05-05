@@ -4,6 +4,7 @@ metadata:
   name: {{ include "strapi.fullname" . }}
   labels:
     {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/role: primary
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -77,3 +78,85 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+---
+# If we have Values.readReplica.enabled set to true, we will create a read replica deployment
+{{- if .Values.readReplica.enabled }}
+apiVersion: apps/v1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "strapi.fullname" . }}-read-replica
+  labels:
+    {{- include "strapi.labels" . | nindent 4 }}
+    app.kubernetes.io/role: read-replica
+spec:
+  replicas: {{ .Values.readReplica.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "strapi.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "strapi.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "strapi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-read-replica
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ lower .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 1337
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}  
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }} 
+          startupProbe:
+            {{- toYaml .Values.startupProbe | nindent 12 }}  
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: STRAPI_API_URL
+              value: {{ lower .Values.strapiApiUrl | quote }}
+            - name: DATABASE_RUN_MIGRATIONS
+              value: "false"  
+          {{- range $key, $val := .Values.additionalEnvVariables }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+          {{- end }}     
+          envFrom:
+          - secretRef:
+              name: {{ include "strapi.fullname" . }}
+          {{- range .Values.additionalSecretMounts }}
+          - secretRef:
+              name: {{ . }}
+          {{- end }}    
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+

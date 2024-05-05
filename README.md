@@ -24,6 +24,7 @@ AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 AWS_ENDPOINT
 AWS_BUCKET
+DATABASE_RUN_MIGRATIONS
 ```
 
 If you want to install a postgres DB together with strapi, just add:
@@ -34,8 +35,12 @@ If you want to install a postgres DB together with strapi, just add:
 Installation: 
 
 ```
-helm install saleor trieb.work/strapi
+helm install strapi trieb.work/strapi
 ```
+### Read Replica
+You can automatically add read-replicas. It will give you one read-only API endpoint, that is connected to all strapi instances. Just make sure, that
+you have the env variable DATABASE_RUN_MIGRATIONS set in the strapi database config for the runMigrations setting, so that this chart can automatically disable the migrations on the read-replica instances.
+
 
 ## Google Tag Manager Server
 ```

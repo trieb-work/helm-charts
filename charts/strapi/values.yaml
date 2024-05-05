@@ -4,6 +4,11 @@
 
 replicaCount: 1
 
+# You can use read-only replicas of strapi. Only works, if you use the included DB and enable the replica there
+readReplica:
+  enabled: false
+  replicaCount: 0
+
 image:
   # image name overrides repository and tag.
   imageName: ""
@@ -95,6 +100,18 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-body-size: "800m"
 
+readReplicaIngress:
+  enabled: false
+  className: ""
+  host: chart-example.local
+  pathType: ImplementationSpecific
+  tls:
+    enabled: true
+    secretName:
+  annotations:
+    cert-manager.io/acme-challenge-type: http01
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
 # S3 storage options. Settings need to be set, as containers are volatile
 s3:
   enabled: false
@@ -121,6 +138,8 @@ resources:
     cpu: 150m
     memory: 100Mi
 
+# autoscaling works just for the primary strapi pods. We wouldn't recommend it, as the startup is always expensive and
+# in general the whole strapi setup is not really meant to be autoscaled.
 autoscaling:
   enabled: true
   minReplicas: 1

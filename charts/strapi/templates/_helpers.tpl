@@ -38,6 +38,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 {{- end }}
 
+
 {{/*
 Common labels
 */}}
@@ -71,6 +72,17 @@ nginx.ingress.kubernetes.io/enable-cors: "true"
 {{- end }}
 {{- end }}
 
+{{- define "strapi.readReplicaIngressAnnotations" -}}
+nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+nginx.ingress.kubernetes.io/cors-allow-methods: "GET, OPTIONS"
+{{- if .Values.readReplicaIngress.annotations }}
+{{ toYaml .Values.readReplicaIngress.annotations }}
+{{- end }}
+{{- end }}
+
+
+
+
 {{/*
 Create the name of the service account to use
 */}}
@@ -79,5 +91,14 @@ Create the name of the service account to use
 {{- default (include "strapi.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+When readReplica.enabled, but not postgresql.architecture=replication, throw an error
+*/}}
+{{- define "strapi.validateReadReplica" -}}
+{{- if and .Values.readReplica.enabled (ne .Values.postgresql.architecture "replication") }}
+{{- fail "readReplica.enabled requires postgresql.architecture=replication" }}
 {{- end }}
 {{- end }}
