@@ -12,6 +12,7 @@ spec:
   selector:
     matchLabels:
       {{- include "strapi.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/role: primary
   strategy:
     type: Recreate
   template:
