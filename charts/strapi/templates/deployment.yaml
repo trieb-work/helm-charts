@@ -22,6 +22,7 @@ spec:
       {{- end }}
       labels:
         {{- include "strapi.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/role: primary
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -94,6 +95,8 @@ spec:
   selector:
     matchLabels:
       {{- include "strapi.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/role: read-replica
+
   strategy:
     type: Recreate
   template:
@@ -104,6 +107,7 @@ spec:
       {{- end }}
       labels:
         {{- include "strapi.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/role: read-replica
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -116,7 +120,11 @@ spec:
         - name: {{ .Chart.Name }}-read-replica
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.image.imageName }}
+          image: "{{ lower .Values.image.imageName }}"
+          {{- else }}
           image: "{{ lower .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
