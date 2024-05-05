@@ -140,6 +140,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: DATABASE_URL
+              value: {{ include "strapi.internalDatabaseUrlReplica" . | quote }}
             - name: STRAPI_API_URL
               value: {{ lower .Values.strapiApiUrl | quote }}
             - name: DATABASE_RUN_MIGRATIONS
