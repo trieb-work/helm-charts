@@ -38,7 +38,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 {{- end }}
 
-{{- define "strapi.internalDatabaseUrlReplica"-}}
+{{- define "strapi.internalDatabaseUrlReplica" -}}
 {{- if eq .Values.postgresql.architecture "replication" }}
 {{- printf "%s%s%s%s%s%s%s%s" "postgresql://" .Values.postgresql.auth.username ":" .Values.postgresql.auth.password "@" .Release.Name "-postgresql-read:5432/" .Values.postgresql.auth.database }}
 {{- end }}
