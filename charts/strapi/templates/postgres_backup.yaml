@@ -74,7 +74,7 @@ spec:
                     key: POSTGRES_DB_USER
                     name: {{ include "strapi.fullname" . }}
               - name: POSTGRES_DB_HOST
-                value: "{{ $fullName }}-postgresql"  
+                value: {{ include "strapi.internalDatabaseBackupHost" .}}  
               - name: POSTGRES_DB_PORT
                 value: "5432"  
             envFrom:
