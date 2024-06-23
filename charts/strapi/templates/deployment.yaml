@@ -75,6 +75,15 @@ spec:
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - {{ include "strapi.name" . }}
+              topologyKey: kubernetes.io/hostname
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
