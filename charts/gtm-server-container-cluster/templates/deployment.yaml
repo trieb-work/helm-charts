@@ -56,7 +56,9 @@ spec:
             - name: CONTAINER_CONFIG
               value: {{ .Values.gtm.containerSettings }}
             - name: PREVIEW_SERVER_URL
-              value: "https://{{ $taggingHost }}/preview"    
+            # we take the first entry from the ingress.rules.taggingHost
+              value: "https://{{ (index .Values.ingress.rules 0).taggingHost }}/preview"
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
