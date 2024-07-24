@@ -44,5 +44,5 @@ you have the env variable DATABASE_RUN_MIGRATIONS set in the strapi database con
 
 ## Google Tag Manager Server
 ```
-helm install gtm trieb.work/google-tag-manager-server
+helm install gtm trieb.work/gtm-server-container-cluster
 ```
