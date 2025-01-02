@@ -1,0 +1,98 @@
+api:
+  enabled: true
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8000
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.19"
+    pullPolicy: IfNotPresent
+
+dashboard:
+  enabled: true
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 80
+  image:
+    repository: ghcr.io/saleor/saleor-dashboard
+    tag: "3.19"
+    pullPolicy: IfNotPresent
+
+worker:
+  enabled: true
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+postgresql:
+  enabled: true
+  architecture: replication
+  auth:
+    database: saleor
+    username: saleor
+  primary:
+    persistence:
+      size: 8Gi
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      size: 8Gi
+
+redis:
+  enabled: true
+  architecture: replication
+  auth:
+    enabled: true
+  master:
+    persistence:
+      size: 8Gi
+  replica:
+    replicaCount: 2
+    persistence:
+      size: 8Gi
+
+serviceMesh:
+  enabled: true
+  istio:
+    enabled: true
+    api:
+      connectionPool:
+        enabled: true
+        http:
+          http1MaxPendingRequests: 1
+          maxRequestsPerConnection: 1
+        tcp:
+          maxConnections: 100
+      loadBalancer:
+        enabled: true
+        simple: ROUND_ROBIN
+      outlierDetection:
+        enabled: true
+        baseEjectionTime: 30s
+        consecutiveErrors: 5
+        interval: 10s
+        maxEjectionPercent: 100
+    dashboard:
+      connectionPool:
+        enabled: true
+        http:
+          http1MaxPendingRequests: 1
+          maxRequestsPerConnection: 1
+        tcp:
+          maxConnections: 100
+      loadBalancer:
+        enabled: true
+        simple: ROUND_ROBIN
+      outlierDetection:
+        enabled: true
+        baseEjectionTime: 30s
+        consecutiveErrors: 5
+        interval: 10s
+        maxEjectionPercent: 100

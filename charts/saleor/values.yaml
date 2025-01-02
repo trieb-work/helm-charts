@@ -1,326 +1,262 @@
-# Default values for saleor-helm.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+global:
+  # -- Global image pull secrets
+  imagePullSecrets: []
+  # -- Storage class to use for persistent volumes
+  storageClass: ""
+  # -- External Database URL (if not using internal PostgreSQL)
+  databaseUrl: ""
+  # -- External Redis URL (if not using internal Redis)
+  redisUrl: ""
+  # Database configuration
+  database:
+    # -- External primary database URL
+    primaryUrl: ""
+    # -- External read replica URLs
+    replicaUrls: []
+    # -- Maximum number of database connections
+    maxConnections: 150
+    # -- Connection timeout in seconds
+    connectionTimeout: 5
 
-image:
-  # image name overrides repository and tag.
-  imageName: ""
-  repository: ghcr.io/saleor/saleor
-  pullPolicy: IfNotPresent
-  tag: "3.0.0"
-  #tag: "3.4.21"
-
-# fullnameOverride: saleor-api
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 8000
-
-ingress:
+# -- Service Mesh Configuration
+serviceMesh:
   enabled: false
-  annotations: 
-    cert-manager.io/acme-challenge-type: http01
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  hosts:
-    - host: chart-example.local
-      paths: 
-        - '/graphql/'
-        - '/health/'
-        - '/thumbnail/'
-  tls:
-    secretName:
+  # -- Istio specific configuration
+  istio:
+    enabled: false
+    api:
+      # -- Circuit breaking settings
+      circuitBreaker:
+        enabled: false
+        maxConnections: 100
+      # -- Request timeout settings
+      timeout:
+        enabled: false
+        http: 10s
 
-saleor:
-  enableHpa: true
-  maxReplicas: 2 #30
-  minReplicas: 1 #30
-  # Set a custom settings.py with an existing custom map
-  # customSettingsConfigMap: testing--saleor-settings.py
+# -- Common labels for all resources
+commonLabels: {}
+
+# -- Common annotations for all resources
+commonAnnotations: {}
+
+api:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.19.12"
+    pullPolicy: IfNotPresent
+
+  extraEnv:
+    # -- List of allowed hosts for Django. Must be exact hostnames, wildcards (*) are not supported.
+    # For development, you can use ["*"] to allow all hosts (not recommended for production).
+    - name: ALLOWED_HOSTS
+      value: "*"
+    # -- List of allowed client hosts for CORS. Must match the exact domain used to access the dashboard.
+    - name: ALLOWED_CLIENT_HOSTS
+      value: "*"
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-credentials  # Will be templated in deployment
+          key: database-url
+
+  service:
+    type: ClusterIP
+    port: 8000
+
   resources:
     requests:
-      cpu: 900m
-      memory: 1200Mi
+      cpu: 250m
+      memory: 512Mi
     limits:
       cpu: 1
-      memory: 1500Mi
+      memory: 1Gi
 
-celeryrunner:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+dashboard:
   enabled: true
-  fullname: celery-worker
+  replicaCount: 1
+  
+  image:
+    repository: ghcr.io/saleor/saleor-dashboard
+    tag: "3.19.12"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 80
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+worker:
+  enabled: true
+  replicaCount: 1
+  
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.19.12"
+    pullPolicy: IfNotPresent
+  
+  extraEnv:
+
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+  
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+migrations:
+  # -- Enable automatic database migrations after install/upgrade
+  enabled: false
+  # -- Additional environment variables specific to migrations
+  extraEnv: []
+  # -- Resource requirements for the migration job
   resources:
     requests:
       cpu: 100m
-      memory: 400Mi
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  # -- Node selector for the migration job
+  nodeSelector: {}
+  # -- Affinity settings for the migration job
+  affinity: {}
+  # -- Tolerations for the migration job
+  tolerations: []
 
+postgresql:
+  enabled: true
+  architecture: standalone
+  auth:
+    database: postgres
+    postgresPassword:
+    replicationPassword:
+    existingSecret: postgresql-credentials  # Will be templated in deployment
+    secretKeys:
+      adminPasswordKey: postgresql-password
+      userPasswordKey: user-password
+      replicationPasswordKey: replication-password
+
+  primary:
+    persistence:
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+  readReplicas:
+    replicaCount: 1
+    persistence:
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+  master:
+    persistence:
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+ingress:
+  enabled: true
+  className: ""
+  # -- Common annotations for both API and Dashboard ingress
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  
+  api:
+    enabled: true
+    # -- Additional annotations for API ingress
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /graphql/
+            pathType: Prefix
+    tls:
+      - secretName: saleor-api-tls
+        hosts:
+          - chart-example.local
+  
+  dashboard:
+    enabled: true
+    # -- Additional annotations for Dashboard ingress
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /dashboard(/|$)(.*)
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: saleor-dashboard-tls
+        hosts:
+          - chart-example.local
+
+# Optional image pull secrets
+imageCredentials:
+  enabled: false
+  registry: ""
+  username: ""
+  password: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podSecurityContext: {}
+
+securityContext: {}
 
 nodeSelector: {}
 
 tolerations: []
 
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        topologyKey: kubernetes.io/hostname
-
-# Settings concerning the redis server goes here:
-redis:
-  architecture: standalone
-  master:
-    podSecurityContext:
-      enabled: true
-      # This works only if the Kubelet has allow- insecure sysctl things enabled
-      sysctls:
-      - name: net.core.somaxconn
-        value: "10000"
-    resources:
-      requests:
-        cpu: 200m
-        memory: 100Mi
-      limits:
-        cpu: 200m
-        memory: 300Mi
-    persistence:
-      enabled: false    
-
-
-# enable the cronjob to create DB backups to S3. You can specify how many DB dumps should be kept.
-# It tries to use the same S3 credentials that you specify in the global values
-postgresBackup:
-  enabled: false
-  historyLimit: 10
-  schedule: 0 */8 * * *
-  bucketName: postgres-backup
-
-
-# Settings concerning the postgresql server goes here:
-# TODO: add sidecar settings for pgbouncer
-postgresql:
-  # The architecture can be standalone or replication
-  architecture: "standalone"
-  enabled: true
-  metrics:
-    enabled: false
-  auth:
-    username: saleor
-    password: privacy-disarray-mop0
-    postgresPassword: AWhdzNADs72jiaabKNjPTHK2
-    database: saleor
-    replicationPassword: Undecided!Venomous!Hatchery6
-  tls:
-    enabled: true
-    autoGenerated: true
-  volumePermissions:
-    enabled: true
-  image:
-    tag: "13.5.0"
-  primary:
-    tolerations: 
-    # - key: "workload-type"
-    #   operator: "Equal"
-    #   value: "db-performance"
-    #   effect: "NoSchedule"
-    # extendedConfiguration: |
-    #   # DB Version: 14
-    #   # OS Type: linux
-    #   # DB Type: web
-    #   # Total Memory (RAM): 28 GB
-    #   # CPUs num: 15
-    #   # Connections num: 90
-    #   # Data Storage: san
-    #   max_connections = 92 # (6*15vCPU = 90) + 2 su res. conn
-    #   superuser_reserved_connections = 2
-    #   shared_buffers = 7GB
-    #   effective_cache_size = 9GB
-    #   maintenance_work_mem = 1792MB
-    #   autovacuum_work_mem = 8MB
-    #   checkpoint_completion_target = 0.9
-    #   wal_buffers = 64MB
-    #   default_statistics_target = 100
-    #   random_page_cost = 1.1
-    #   effective_io_concurrency = 300
-    #   work_mem = 20388kB
-    #   min_wal_size = 1GB
-    #   max_wal_size = 4GB
-    #   max_worker_processes = 15
-    #   max_parallel_workers_per_gather = 4
-    #   max_parallel_workers = 15
-    #   max_parallel_maintenance_workers = 2
-    #   checkpoint_timeout = 10min
-    resources:
-      limits:
-        memory: 400Mi 
-        cpu: 400m
-      requests:
-        cpu: 200m
-        memory: 400Mi    
-    persistence:
-      enabled: true
-      size: 10Gi
-    sidecars:
-    # - name: pgbouncer
-    #   image: bitnami/pgbouncer
-    #   imagePullPolicy: IfNotPresent
-    #   ports:
-    #   - name: tcp-bouncer
-    #     containerPort: 6432
-    #   resources:
-    #     limits:
-    #       cpu: 150m
-    #       memory: 128Mi
-    #     requests:
-    #       cpu: 150m
-    #       memory: 128Mi
-    #   env:
-    #     - name: PGBOUNCER_POOL_MODE
-    #       # value: session
-    #       value: transaction
-    #     - name: PGBOUNCER_MAX_CLIENT_CONN
-    #       value: "200"  
-    #     - name: POSTGRESQL_USERNAME
-    #       value: saleor
-    #     - name: POSTGRESQL_DATABASE
-    #       value: saleor
-    #     - name: POSTGRESQL_PASSWORD
-    #       valueFrom:
-    #         secretKeyRef:
-    #           key: password
-    #           name: testing--saleor-postgresql
-    #           optional: false
-    #     - name: POSTGRESQL_HOST
-    #       value: localhost
-    #     - name: PGBOUNCER_DATABASE
-    #       value: saleor
-    #    # Should be your replica count * 4 in session mode -> make sure your postgres max_connections works here as well
-    #     - name: PGBOUNCER_DEFAULT_POOL_SIZE
-    #       value: "20"  
-    # service:
-    #   extraPorts: 
-    #   - name: tcp-bouncer
-    #     port: 6432
-    #     targetPort: 6432
-  readReplicas:
-    replicaCount:	0
-    # extendedConfiguration: |
-    #   # DB Version: 14
-    #   # OS Type: linux
-    #   # DB Type: web
-    #   # Total Memory (RAM): 1 GB
-    #   # CPUs num: 2
-    #   # Connections num: 92
-    #   # Data Storage: san
-    #   max_connections = 92
-    #   shared_buffers = 256MB
-    #   effective_cache_size = 768MB
-    #   maintenance_work_mem = 64MB
-    #   checkpoint_completion_target = 0.9
-    #   wal_buffers = 7864kB
-    #   default_statistics_target = 100
-    #   random_page_cost = 1.1
-    #   effective_io_concurrency = 300
-    #   work_mem = 2849kB
-    #   min_wal_size = 1GB
-    #   max_wal_size = 4GB
-    #   max_worker_processes = 2
-    #   max_parallel_workers_per_gather = 1
-    #   max_parallel_workers = 2
-    #   max_parallel_maintenance_workers = 1
-    resources:
-      limits:
-        cpu: 2
-        memory: 1000Mi 
-      requests:
-        cpu: 500m
-        memory: 1000Mi       
-    persistence:
-      size: 10Gi    
-
-
-# global settings both for saleor and postgresql. Set the password to something safe ;) 
-global:
-  # you can have the database URL for an external database if you don't want to setup one by yourself
-  DATABASE_URL:
-
-  redis:
-    password: w6736iu-1346726hz12-578-2h228u3576jh24658-456h
-
-  secretKey: sefb68-2133r-24577v-tgnqetb-qe5zb
-  AWS_S3_ENDPOINT_URL: https://s3.example.com/
-  AWS_S3_CUSTOM_DOMAIN: https://s3.example.com/
-  AWS_ACCESS_KEY_ID: 123456fetrg
-  AWS_STORAGE_BUCKET_NAME: static
-  AWS_MEDIA_BUCKET_NAME: static
-  AWS_MEDIA_CUSTOM_DOMAIN: https://s3.example.com/
-  AWS_SECRET_ACCESS_KEY: 1234567689q
-  # this enables querystring authentication. Very useful for private buckets.
-  AWS_QUERYSTRING_AUTH: "False"
-  # this tells django how long the item is accessible with querystring auth. Setting this to five days
-  AWS_QUERYSTRING_EXPIRE: "432000"
-  SENTRY_DSN: ""
-  env: 
-    - name: DEFAULT_CURRENCY
-      value: EUR
-    - name: DEFAULT_COUNTRY
-      value: DE
-    - name: DEBUG
-      value: "False"
-    - name: GUNICORN_CMD_ARGS
-      value: "--access-logfile='-'"   
-  
-  # allowed hosts and allowed client hosts
-  allowedHosts: test-api.example.com,*
-  # maximum number of checkout line items. Normal value is 50
-  maxCheckoutLine: "100"
-  jwtTTLrefresh: "365 days"
-  jwtTTLaccess: "3 days"
-  # set the Private Key to sign the JWTs
-  rsaPrivateKey: |
-    -----BEGIN RSA PRIVATE KEY-----
-    MIICXQIBAAKBgQC02GmEeYpXguBCnDgxGoMocW6soFiGJP3cnYbu7YT3LWtkDz9x
-    KhzKlg/IHAXhAnzQhbWCI/W9DnsoL5qiu3eA8c4PVO43DMGPqpHC/zU5crp9tIUB
-    kTBFyAABOwocZObP5dkgQQ4mrDBbHp81o+8uDjstRu9kMMDDdj2/gkOG8QIDAQAB
-    AoGBAK5oV7rvDEBBc85JoteYXg1O+BF7wmP8oOd29H7Qin9nSj6Bhgm5N3MZLbcr
-    b3AFWiIwEVClJYVixduHrXZrnV8W8gqHWaAJONJ0bIgBUhpDDTvYOdc4ngbLZ/fM
-    BOk5L9WNBdgng7TPS3IX5UgndKjziicWpZEdGgKgSBjy23lRAkEA9pnBFaPrvQNC
-    iL0N+F1+5TQx1I8onylZwYYdVNYzry+qjTf3CfSi2ThbEuKjYHzlyNSP4RJV3b2i
-    oexjS+MfIwJBALu9CldRAQxoC7i8XuiBQ1I+zblYZ0gqV0HcExgiCKJubCSwoPBZ
-    JzRB/KFHbysC4QztD3xVE+MDxwPf2PO4zNsCQHX8QoGUGCoq8R5zNcfrE9eeDWlh
-    xVHBeww4mrgIdFoROEywxiWhQnkjmY+DmB+GInrgGKbbGvIo1TMb4rZgSHkCQDtX
-    LmyZCxbL0GCtEea17PyTI12hZsv1ri0ADf0DzOzisEYMmmI+G9k1vk+QD8BtoYr/
-    Z3SqQ6Xu7Ln5yE6JLB8CQQDisLHsh0CV6IWjrZj2hmzPg99kJJLJjodnCdALdmp8
-    jfOx3c+dMTudxkzuXQGXPYuHqYbUmHZq75Vd2zIY19kC
-    -----END RSA PRIVATE KEY-----
-
-
-
-# settings for the image pull secret if needed
-imageCredentials:
-  enabled: false
-  registry: registry.gitlab.com
-  username: someone
-  password: sillyness
-# set to "generated" if you enable the imageCredentials creation
-imagePullSecrets:
-  - name: github
-#  - name: generated
+affinity: {}

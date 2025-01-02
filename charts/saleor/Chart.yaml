@@ -1,6 +1,6 @@
 apiVersion: v2
 name: saleor
-description: Deploy the saleor backend stack to Kubernetes
+description: A Helm chart for deploying Saleor e-commerce platform with Dashboard
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -14,13 +14,25 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.2.25
+version: 1.0.0
+appVersion: "3.19.0"
+
+maintainers:
+  - name: Saleor Maintainers
+    email: dev@saleor.io
+
+keywords:
+  - saleor
+  - ecommerce
+  - graphql
+  - dashboard
 
 dependencies:
 - name: postgresql
-  repository: "https://charts.bitnami.com/bitnami"
-  version: "11.9.7"
+  repository: https://charts.bitnami.com/bitnami
+  version: "12.12.5"
   condition: postgresql.enabled
 - name: redis
-  repository: "https://charts.bitnami.com/bitnami"
-  version: "17.3.4"
+  repository: https://charts.bitnami.com/bitnami
+  version: "18.1.0"
+  condition: redis.enabled

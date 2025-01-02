@@ -1,0 +1,28 @@
+{{- if and .Values.serviceMesh.enabled .Values.serviceMesh.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ include "saleor.fullname" . }}-api
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+spec:
+  host: {{ include "saleor.fullname" . }}-api
+  trafficPolicy:
+    {{- if .Values.serviceMesh.istio.api.connectionPool.enabled }}
+    connectionPool:
+      http:
+        http1MaxPendingRequests: {{ .Values.serviceMesh.istio.api.connectionPool.http1MaxPendingRequests }}
+        maxRequestsPerConnection: {{ .Values.serviceMesh.istio.api.connectionPool.maxRequestsPerConnection }}
+    {{- end }}
+    {{- if .Values.serviceMesh.istio.api.outlierDetection.enabled }}
+    outlierDetection:
+      consecutive5xxErrors: {{ .Values.serviceMesh.istio.api.outlierDetection.consecutiveErrors }}
+      interval: {{ .Values.serviceMesh.istio.api.outlierDetection.interval }}
+      baseEjectionTime: {{ .Values.serviceMesh.istio.api.outlierDetection.baseEjectionTime }}
+      maxEjectionPercent: {{ .Values.serviceMesh.istio.api.outlierDetection.maxEjectionPercent }}
+    {{- end }}
+    {{- if .Values.serviceMesh.istio.api.loadBalancer.enabled }}
+    loadBalancer:
+      simple: LEAST_REQUEST
+    {{- end }}
+{{- end }}

@@ -1,0 +1,177 @@
+global:
+  jwtRsaPrivateKey: |
+    -----BEGIN PRIVATE KEY-----
+    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
+    6tKQ0JqxhYiaET1SuIz5IPB7LOLV
+    -----END PRIVATE KEY-----
+
+api:
+  enabled: true
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8000
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.19"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 2Gi
+  extraEnv:
+    - name: ALLOWED_HOSTS
+      value: "test-saleor.eu.fsn1.trwrk.xyz"
+    - name: ALLOWED_CLIENT_HOSTS
+      value: "test-saleor.eu.fsn1.trwrk.xyz"
+    - name: DEBUG
+      value: "False"
+    - name: DEFAULT_FROM_EMAIL
+      value: "noreply@test-saleor.eu.fsn1.trwrk.xyz"
+    - name: EMAIL_URL
+      value: "smtp://localhost:25"
+
+dashboard:
+  enabled: true
+  replicaCount: 2
+    
+
+worker:
+  enabled: true
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+    
+
+redis:
+  enabled: true
+  auth:
+    enabled: false
+
+ingress:
+  enabled: true
+  className: "nginx"
+  api:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    hosts:
+      - host: test-saleor.eu.fsn1.trwrk.xyz
+        paths:
+          - path: /graphql/
+            pathType: Prefix
+    tls:
+      - secretName: test-saleor-api-tls
+        hosts:
+          - test-saleor.eu.fsn1.trwrk.xyz
+  dashboard:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+    hosts:
+      - host: test-saleor.eu.fsn1.trwrk.xyz
+        paths:
+          - path: /dashboard(/|$)(.*)
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: test-saleor-dashboard-tls
+        hosts:
+          - test-saleor.eu.fsn1.trwrk.xyz
+
+postgresql:
+  enabled: true
+  architecture: replication
+  auth:
+    existingSecret: postgresql-credentials
+    secretKeys:
+      userPasswordKey: password
+      adminPasswordKey: postgresql-password
+      replicationPasswordKey: replication-password
+  primary:
+    persistence:
+      size: 10Gi
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+  readReplicas:
+    replicaCount: 1
+    persistence:
+      size: 10Gi
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

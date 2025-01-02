@@ -1,0 +1,22 @@
+{{- if and .Values.serviceMesh.enabled .Values.serviceMesh.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "saleor.fullname" . }}-api
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ include "saleor.fullname" . }}-api
+  http:
+    - route:
+        - destination:
+            host: {{ include "saleor.fullname" . }}-api
+      {{- if .Values.serviceMesh.istio.api.timeout.enabled }}
+      timeout: {{ .Values.serviceMesh.istio.api.timeout.http }}
+      {{- end }}
+      retries:
+        attempts: {{ .Values.serviceMesh.istio.api.circuitBreaker.maxRetries }}
+        perTryTimeout: "2s"
+        retryOn: "connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes"
+{{- end }}

@@ -1,28 +1,28 @@
-{{- if .Values.api.enabled -}}
+{{- if .Values.worker.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "saleor.fullname" . }}-api
+  name: {{ include "saleor.fullname" . }}-worker
   labels:
     {{- include "saleor.labels" . | nindent 4 }}
-    app.kubernetes.io/component: api
+    app.kubernetes.io/component: worker
 spec:
-  {{- if not .Values.api.autoscaling.enabled }}
-  replicas: {{ .Values.api.replicaCount }}
+  {{- if not .Values.worker.autoscaling.enabled }}
+  replicas: {{ .Values.worker.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "saleor.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: api
+      app.kubernetes.io/component: worker
   template:
     metadata:
-      {{- with .Values.api.podAnnotations }}
+      {{- with .Values.worker.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "saleor.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: api
+        app.kubernetes.io/component: worker
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -31,7 +31,7 @@ spec:
       serviceAccountName: {{ include "saleor.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if gt (int .Values.api.replicaCount) 1 }}
+      {{- if gt (int .Values.worker.replicaCount) 1 }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -42,50 +42,42 @@ spec:
                 - key: app.kubernetes.io/component
                   operator: In
                   values:
-                  - api
+                  - worker
               topologyKey: kubernetes.io/hostname
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}-api
+        - name: {{ .Chart.Name }}-worker
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.api.service.port }}
-              protocol: TCP
-          startupProbe:
-            httpGet:
-              path: /health/
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 5
-            failureThreshold: 30
+          command: ["celery"]
+          args: ["-A", "saleor.celeryconf", "worker", "--loglevel=info"]
           livenessProbe:
-            httpGet:
-              path: /health/
-              port: http
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - celery -A saleor.celeryconf inspect ping -d celery@$HOSTNAME
             initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
             successThreshold: 1
             failureThreshold: 3
           readinessProbe:
-            httpGet:
-              path: /health/
-              port: http
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - celery -A saleor.celeryconf inspect ping -d celery@$HOSTNAME
             initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
             successThreshold: 1
             failureThreshold: 3
           resources:
-            {{- toYaml .Values.api.resources | nindent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}
           env:
-            - name: PORT
-              value: {{ .Values.api.service.port | quote }}
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
@@ -113,13 +105,31 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: redis-url
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: redis-url
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: secret-key
-            {{- if .Values.api.extraEnv }}
-            {{- toYaml .Values.api.extraEnv | nindent 12 }}
+            {{- if .Values.worker.extraEnv }}
+            {{- range .Values.worker.extraEnv }}
+            - name: {{ .name }}
+              {{- if .value }}
+              value: {{ .value }}
+              {{- end }}
+              {{- if .valueFrom }}
+              valueFrom:
+                {{- if .valueFrom.secretKeyRef }}
+                secretKeyRef:
+                  name: "{{ include "saleor.fullname" $ }}-{{ .valueFrom.secretKeyRef.name }}"
+                  key: {{ .valueFrom.secretKeyRef.key }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
             {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

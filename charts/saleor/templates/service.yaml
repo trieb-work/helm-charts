@@ -1,15 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "saleor-helm.fullname" . }}
+  name: {{ include "saleor.fullname" . }}-api
   labels:
-    {{- include "saleor-helm.labels" . | nindent 4 }}
+    {{- include "saleor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.api.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.api.service.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
-    {{- include "saleor-helm.selectorLabels" . | nindent 4 }}
+    {{- include "saleor.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: api
