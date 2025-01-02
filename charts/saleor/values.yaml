@@ -161,9 +161,7 @@ postgresql:
   enabled: true
   architecture: standalone
   auth:
-    username: saleor
-    database: saleor
-    password:
+    database: postgres
     postgresPassword:
     replicationPassword:
     existingSecret: postgresql-credentials  # Will be templated in deployment

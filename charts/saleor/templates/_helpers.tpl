@@ -70,19 +70,19 @@ Create the name of the service account to use
 Get PostgreSQL password - either from values, existing secret, or generate new one
 */}}
 {{- define "saleor.postgresqlPassword" -}}
-{{- if .Values.postgresql.auth.password -}}
-{{- .Values.postgresql.auth.password -}}
+{{- if .Values.postgresql.auth.postgresPassword -}}
+{{- .Values.postgresql.auth.postgresPassword -}}
 {{- else -}}
 {{- $secret := (lookup "v1" "Secret" .Release.Namespace "postgresql-credentials") -}}
 {{- if $secret -}}
-{{- $secret.data.password | b64dec -}}
+{{- index $secret.data "postgresql-password" | b64dec -}}
 {{- else -}}
-{{- $generatedPassword := default (randAlphaNum 32) .Release.Name -}}
-{{- $_ := set .Values.postgresql.auth "generatedPassword" $generatedPassword -}}
+{{- $generatedPassword := randAlphaNum 32 -}}
+{{- $_ := set .Values.postgresql.auth "postgresPassword" $generatedPassword -}}
 {{- $generatedPassword -}}
 {{- end -}}
 {{- end -}}
-{{- end -}}
+{{- end -}} 
 
 {{/*
 Get the database URL with password from postgresql-credentials secret
@@ -92,7 +92,7 @@ Get the database URL with password from postgresql-credentials secret
 {{- .Values.global.database.primaryUrl -}}
 {{- else if .Values.postgresql.enabled -}}
 {{- $postgresqlPassword := include "saleor.postgresqlPassword" . -}}
-{{- printf "postgresql://%s:%s@%s-postgresql-primary:5432/%s" .Values.postgresql.auth.username $postgresqlPassword (include "saleor.fullname" .) .Values.postgresql.auth.database -}}
+{{- printf "postgresql://%s:%s@%s-postgresql-primary:5432/%s" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
 {{- end -}}
 {{- end -}}
 
@@ -104,6 +104,6 @@ Get the database read URLs with password from postgresql-credentials secret
 {{- .Values.global.database.replicaUrls | toJson -}}
 {{- else if and .Values.postgresql.enabled (eq .Values.postgresql.architecture "replication") -}}
 {{- $postgresqlPassword := include "saleor.postgresqlPassword" . -}}
-{{- printf "[\"postgresql://%s:%s@%s-postgresql-read:5432/%s\"]" .Values.postgresql.auth.username $postgresqlPassword (include "saleor.fullname" .) .Values.postgresql.auth.database -}}
+{{- printf "[\"postgresql://%s:%s@%s-postgresql-read:5432/%s\"]" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
 {{- end -}}
 {{- end -}}
