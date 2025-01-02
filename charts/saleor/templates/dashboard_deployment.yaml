@@ -81,7 +81,7 @@ spec:
             {{- toYaml .Values.dashboard.resources | nindent 12 }}
           env:
             - name: API_URL
-              value: http://{{ (index .Values.ingress.api.hosts 0).host }}/graphql/
+              value: {{ if .Values.ingress.api.tls }}https{{ else }}http{{ end }}://{{ (index .Values.ingress.api.hosts 0).host }}/graphql/
             {{- if .Values.dashboard.extraEnv }}
             {{- toYaml .Values.dashboard.extraEnv | nindent 12 }}
             {{- end }}

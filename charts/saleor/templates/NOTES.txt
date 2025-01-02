@@ -7,6 +7,66 @@ To learn more about the release, try:
   $ helm status {{ .Release.Name }}
   $ helm get all {{ .Release.Name }}
 
+{{- if .Values.ingress.enabled }}
+
+You can access the application at:
+{{- range .Values.ingress.api.hosts }}
+  API: {{ if $.Values.ingress.api.tls }}https{{ else }}http{{ end }}://{{ .host }}/graphql/
+{{- end }}
+{{- range .Values.ingress.dashboard.hosts }}
+  Dashboard: {{ if $.Values.ingress.dashboard.tls }}https{{ else }}http{{ end }}://{{ .host }}/dashboard/
+{{- end }}
+
+{{- else }}
+To access the application, you need to:
+
+1. Get the application URL by running these commands:
+{{- if contains "NodePort" .Values.api.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "saleor.fullname" . }}-api)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.api.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "saleor.fullname" . }}-api'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "saleor.fullname" . }}-api --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.api.service.port }}
+{{- else if contains "ClusterIP" .Values.api.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "saleor.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=api" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+{{- end }}
+{{- end }}
+
+IMPORTANT: Create a superuser (admin) account to access the dashboard:
+
+  # Get the API pod name
+  POD=$(kubectl get pod -l app.kubernetes.io/component=api -o jsonpath="{.items[0].metadata.name}")
+
+  # Create a superuser account
+  kubectl exec -it $POD -- python manage.py createsuperuser
+
+Follow the prompts to create your admin account with:
+- Email address
+- Password (minimum 8 characters)
+
+Use these credentials to log into the Saleor Dashboard.
+
+{{- if .Values.migrations.enabled }}
+Database migrations will be run automatically.
+To check the migration status:
+
+  kubectl get job {{ include "saleor.fullname" . }}-migrations-{{ .Release.Revision }}
+
+To view migration logs:
+
+  kubectl logs job/{{ include "saleor.fullname" . }}-migrations-{{ .Release.Revision }}
+{{- else }}
+NOTICE: Automatic migrations are disabled. Run them manually with:
+
+  kubectl exec -it $POD -- python manage.py migrate
+{{- end }}
+
 {{- if .Values.api.enabled }}
 {{- if contains "NodePort" .Values.api.service.type }}
 Get the application URL by running these commands:

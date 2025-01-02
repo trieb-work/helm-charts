@@ -272,6 +272,153 @@ serviceMesh:
         http: 10s
 ```
 
+### Database Migrations
+
+Django requires database migrations to be run after version upgrades. This chart provides two ways to handle migrations:
+
+#### 1. Automatic Migrations (Recommended)
+
+By default, the chart will automatically run migrations after installation and upgrades using a Kubernetes Job:
+
+```yaml
+migrations:
+  enabled: true  # Enable automatic migrations
+  # Additional environment variables specific to migrations
+  extraEnv: []   # Add migration-specific env vars if needed
+  resources:     # Configure resources for the migration job
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+```
+
+The migration job:
+- Runs after install/upgrade using Helm hooks
+- Uses the same image and environment variables as the API
+- Inherits all environment variables from the API configuration
+- Has access to all necessary secrets (database, Redis, JWT, etc.)
+- Will be automatically cleaned up after successful completion
+- Can be monitored using standard kubectl commands shown in the post-install notes
+
+#### 2. Manual Migrations
+
+If you prefer to run migrations manually (e.g., in highly controlled environments), disable automatic migrations:
+
+```yaml
+migrations:
+  enabled: false
+```
+
+Then run migrations manually when needed:
+
+```bash
+# Get the API pod name
+POD=$(kubectl get pod -l app.kubernetes.io/component=api -o jsonpath="{.items[0].metadata.name}")
+
+# Run migrations
+kubectl exec -it $POD -- python manage.py migrate
+```
+
+#### Migration Safety
+
+The migration job is designed with safety in mind:
+- It runs with `--no-input` to prevent hanging on user input
+- It uses the same image and environment as the API to ensure consistency
+- It has access to all necessary configuration and secrets
+- It's executed after the database is ready but before the new API version starts
+- The job history is preserved for debugging purposes
+
+## Getting Started
+
+### Initial Setup
+
+After deploying Saleor for the first time, you'll need to create a superuser (admin) account to access the dashboard:
+
+```bash
+# Get the name of the API pod
+POD=$(kubectl get pod -l app.kubernetes.io/component=api -o jsonpath="{.items[0].metadata.name}")
+
+# Create a superuser
+kubectl exec -it $POD -- python manage.py createsuperuser
+```
+
+Follow the prompts to create your admin account. You'll need to provide:
+- Email address
+- Password (minimum 8 characters)
+
+Once created, you can use these credentials to log into the Saleor Dashboard.
+
+### Configuration
+
+### Security Configuration
+
+#### ALLOWED_HOSTS and CORS
+
+Django requires specific configuration for allowed hosts and CORS. Configure these in your values file:
+
+```yaml
+api:
+  extraEnv:
+    # For production, specify exact hostnames:
+    - name: ALLOWED_HOSTS
+      value: "your-domain.com,api.your-domain.com"
+    - name: ALLOWED_CLIENT_HOSTS
+      value: "dashboard.your-domain.com"
+    
+    # For development only (not recommended for production):
+    - name: ALLOWED_HOSTS
+      value: "*"
+    - name: ALLOWED_CLIENT_HOSTS
+      value: "*"
+```
+
+**Important Notes:**
+- Django's `ALLOWED_HOSTS` does not support wildcards like `*.domain.com`
+- You must specify exact hostnames that will be used to access your Saleor instance
+- For production, always specify exact domains rather than using `"*"`
+- The `ALLOWED_CLIENT_HOSTS` should match the domains from which your dashboard will access the API
+
+### TLS Configuration
+
+The chart supports automatic TLS certificate management using cert-manager. By default, it's configured to use Let's Encrypt production certificates:
+
+```yaml
+ingress:
+  api:
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    tls:
+      - secretName: saleor-api-tls
+        hosts:
+          - your-api-domain.com
+  
+  dashboard:
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    tls:
+      - secretName: saleor-dashboard-tls
+        hosts:
+          - your-dashboard-domain.com
+```
+
+**Important Notes:**
+- When TLS is enabled (by configuring `ingress.api.tls`), the dashboard will automatically use HTTPS to connect to the API
+- The dashboard's `API_URL` environment variable will be set to `https://` or `http://` based on TLS configuration
+- Both API and Dashboard should use TLS in production for security
+
+Prerequisites:
+1. cert-manager must be installed in your cluster
+2. A cluster issuer named "letsencrypt-prod" must be configured
+
+To use a different certificate issuer:
+1. Change the `cert-manager.io/cluster-issuer` annotation value
+2. Or remove it to use the cluster default
+3. Or add `cert-manager.io/issuer` instead to use a namespace issuer
+
+The TLS certificates will be stored in the specified secrets (`saleor-api-tls` and `saleor-dashboard-tls` by default).
+
 ## Production Best Practices
 
 ### Resource Management

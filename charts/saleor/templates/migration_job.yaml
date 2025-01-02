@@ -1,0 +1,91 @@
+{{- if .Values.migrations.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "saleor.fullname" . }}-migrations-{{ .Release.Revision }}
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "saleor.labels" . | nindent 8 }}
+        app.kubernetes.io/component: migrations
+    spec:
+      restartPolicy: Never
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: migrations
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          command: ["python", "manage.py", "migrate", "--no-input"]
+          env:
+            # Core database configuration
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: database-url
+            {{- if .Values.global.database.replicaUrls }}
+            - name: DATABASE_READ_URLS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: database-read-urls
+            {{- end }}
+            
+            # Redis configuration
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: redis-url
+            
+            # Secret key for Django
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: secret-key
+            
+            # JWT configuration
+            {{- if .Values.global.jwtRsaPrivateKey }}
+            - name: RSA_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: jwt-private-key
+            {{- end }}
+            
+            # Add all extra environment variables from the API configuration
+            {{- if .Values.api.extraEnv }}
+            {{- toYaml .Values.api.extraEnv | nindent 12 }}
+            {{- end }}
+            
+            # Add any migration-specific environment variables
+            {{- if .Values.migrations.extraEnv }}
+            {{- toYaml .Values.migrations.extraEnv | nindent 12 }}
+            {{- end }}
+            
+          resources:
+            {{- toYaml .Values.migrations.resources | nindent 12 }}
+      {{- with .Values.migrations.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.migrations.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.migrations.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

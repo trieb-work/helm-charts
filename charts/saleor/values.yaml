@@ -50,7 +50,12 @@ api:
     pullPolicy: IfNotPresent
 
   extraEnv:
+    # -- List of allowed hosts for Django. Must be exact hostnames, wildcards (*) are not supported.
+    # For development, you can use ["*"] to allow all hosts (not recommended for production).
     - name: ALLOWED_HOSTS
+      value: "*"
+    # -- List of allowed client hosts for CORS. Must match the exact domain used to access the dashboard.
+    - name: ALLOWED_CLIENT_HOSTS
       value: "*"
     - name: DATABASE_URL
       valueFrom:
@@ -132,6 +137,26 @@ worker:
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
 
+migrations:
+  # -- Enable automatic database migrations after install/upgrade
+  enabled: false
+  # -- Additional environment variables specific to migrations
+  extraEnv: []
+  # -- Resource requirements for the migration job
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  # -- Node selector for the migration job
+  nodeSelector: {}
+  # -- Affinity settings for the migration job
+  affinity: {}
+  # -- Tolerations for the migration job
+  tolerations: []
+
 postgresql:
   enabled: true
   architecture: standalone
@@ -178,26 +203,43 @@ redis:
         memory: 128Mi
 
 ingress:
-  enabled: false
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  enabled: true
+  className: ""
+  # -- Common annotations for both API and Dashboard ingress
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  
   api:
     enabled: true
-    tls: []
+    # -- Additional annotations for API ingress
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
       - host: chart-example.local
         paths:
-          - path: /graphql(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /graphql/
+            pathType: Prefix
+    tls:
+      - secretName: saleor-api-tls
+        hosts:
+          - chart-example.local
+  
   dashboard:
     enabled: true
-    tls: []
+    # -- Additional annotations for Dashboard ingress
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
     hosts:
       - host: chart-example.local
         paths:
           - path: /dashboard(/|$)(.*)
             pathType: ImplementationSpecific
+    tls:
+      - secretName: saleor-dashboard-tls
+        hosts:
+          - chart-example.local
 
 # Optional image pull secrets
 imageCredentials:

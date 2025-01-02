@@ -72,9 +72,9 @@ api:
       memory: 2Gi
   extraEnv:
     - name: ALLOWED_HOSTS
-      value: "*.eu.fsn1.trwrk.xyz"
+      value: "test-saleor.eu.fsn1.trwrk.xyz"
     - name: ALLOWED_CLIENT_HOSTS
-      value: "*.eu.fsn1.trwrk.xyz"
+      value: "test-saleor.eu.fsn1.trwrk.xyz"
     - name: DEBUG
       value: "False"
     - name: DEFAULT_FROM_EMAIL
@@ -105,18 +105,34 @@ redis:
 
 ingress:
   enabled: true
+  className: "nginx"
   api:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
       - host: test-saleor.eu.fsn1.trwrk.xyz
         paths:
-          - path: /graphql(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /graphql/
+            pathType: Prefix
+    tls:
+      - secretName: test-saleor-api-tls
+        hosts:
+          - test-saleor.eu.fsn1.trwrk.xyz
   dashboard:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
     hosts:
       - host: test-saleor.eu.fsn1.trwrk.xyz
         paths:
           - path: /dashboard(/|$)(.*)
             pathType: ImplementationSpecific
+    tls:
+      - secretName: test-saleor-dashboard-tls
+        hosts:
+          - test-saleor.eu.fsn1.trwrk.xyz
 
 postgresql:
   enabled: true
