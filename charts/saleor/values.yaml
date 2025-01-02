@@ -46,7 +46,7 @@ api:
 
   image:
     repository: ghcr.io/saleor/saleor
-    tag: "3.19.12"
+    tag: "3.20.65"
     pullPolicy: IfNotPresent
 
   extraEnv:
@@ -87,7 +87,7 @@ dashboard:
   
   image:
     repository: ghcr.io/saleor/saleor-dashboard
-    tag: "3.19.12"
+    tag: "3.20.23"
     pullPolicy: IfNotPresent
   
   service:
@@ -118,7 +118,7 @@ worker:
   
   image:
     repository: ghcr.io/saleor/saleor
-    tag: "3.19.12"
+    tag: "3.20.65"
     pullPolicy: IfNotPresent
   
   extraEnv:
@@ -233,6 +233,8 @@ ingress:
       - host: chart-example.local
         paths:
           - path: /dashboard(/|$)(.*)
+            pathType: ImplementationSpecific
+          - path: /dashboard/(.*)
             pathType: ImplementationSpecific
     tls:
       - secretName: saleor-dashboard-tls

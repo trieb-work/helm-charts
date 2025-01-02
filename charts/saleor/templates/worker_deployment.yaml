@@ -49,8 +49,8 @@ spec:
         - name: {{ .Chart.Name }}-worker
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           command: ["celery"]
           args: ["-A", "saleor.celeryconf", "worker", "--loglevel=info"]
           livenessProbe:
