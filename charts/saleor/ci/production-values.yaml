@@ -1,0 +1,196 @@
+api:
+  enabled: true
+  replicaCount: 3
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+  resources:
+    requests:
+      cpu: 1
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+  service:
+    type: ClusterIP
+    port: 8000
+  extraEnv:
+    - name: ALLOWED_HOSTS
+      value: "*"
+    - name: DEBUG
+      value: "False"
+    - name: DEFAULT_FROM_EMAIL
+      value: "noreply@saleor.io"
+    - name: EMAIL_URL
+      valueFrom:
+        secretKeyRef:
+          name: saleor-email
+          key: url
+          optional: true
+
+dashboard:
+  enabled: true
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  service:
+    type: ClusterIP
+    port: 80
+
+worker:
+  enabled: true
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+postgresql:
+  enabled: true
+  architecture: replication
+  auth:
+    username: saleor
+    database: saleor
+  primary:
+    persistence:
+      size: 50Gi
+    resources:
+      requests:
+        cpu: 2
+        memory: 4Gi
+    extendedConfiguration: |
+      work_mem = 64MB
+      maintenance_work_mem = 256MB
+      shared_buffers = 3000MB
+      max_connections = 150
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      size: 50Gi
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
+
+redis:
+  enabled: true
+  architecture: replication
+  auth:
+    enabled: true
+  master:
+    persistence:
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1
+        memory: 2Gi
+  replica:
+    replicaCount: 2
+    persistence:
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+serviceMesh:
+  enabled: true
+  istio:
+    enabled: true
+    api:
+      connectionPool:
+        enabled: true
+        http:
+          http1MaxPendingRequests: 1
+          maxRequestsPerConnection: 1
+        tcp:
+          maxConnections: 100
+      loadBalancer:
+        enabled: true
+        simple: ROUND_ROBIN
+      outlierDetection:
+        enabled: true
+        baseEjectionTime: 30s
+        consecutiveErrors: 5
+        interval: 10s
+        maxEjectionPercent: 100
+    dashboard:
+      connectionPool:
+        enabled: true
+        http:
+          http1MaxPendingRequests: 1
+          maxRequestsPerConnection: 1
+        tcp:
+          maxConnections: 100
+      loadBalancer:
+        enabled: true
+        simple: ROUND_ROBIN
+      outlierDetection:
+        enabled: true
+        baseEjectionTime: 30s
+        consecutiveErrors: 5
+        interval: 10s
+        maxEjectionPercent: 100
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  api:
+    enabled: true
+    hosts:
+      - host: api.saleor.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - api.saleor.example.com
+        secretName: saleor-api-tls
+  dashboard:
+    enabled: true
+    hosts:
+      - host: dashboard.saleor.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - dashboard.saleor.example.com
+        secretName: saleor-dashboard-tls
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

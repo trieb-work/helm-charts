@@ -1,0 +1,102 @@
+api:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: NodePort
+    port: 8000
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.19"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  extraEnv:
+    - name: DEBUG
+      value: "True"
+    - name: ALLOWED_HOSTS
+      value: "*"
+
+dashboard:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: NodePort
+    port: 80
+  image:
+    repository: ghcr.io/saleor/saleor-dashboard
+    tag: "3.19"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+worker:
+  enabled: true
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+postgresql:
+  enabled: true
+  architecture: standalone
+  auth:
+    database: saleor
+    username: saleor
+  primary:
+    persistence:
+      size: 4Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+  master:
+    persistence:
+      size: 2Gi
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  api:
+    enabled: true
+    hosts:
+      - host: api.saleor.local
+        paths:
+          - path: /
+            pathType: Prefix
+  dashboard:
+    enabled: true
+    hosts:
+      - host: dashboard.saleor.local
+        paths:
+          - path: /
+            pathType: Prefix

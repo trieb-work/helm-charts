@@ -1,0 +1,17 @@
+api:
+  enabled: true
+  replicaCount: 1
+
+dashboard:
+  enabled: false
+
+worker:
+  enabled: false
+
+postgresql:
+  enabled: true
+  architecture: standalone
+
+redis:
+  enabled: true
+  architecture: standalone

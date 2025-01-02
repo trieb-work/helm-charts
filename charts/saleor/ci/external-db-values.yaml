@@ -1,0 +1,27 @@
+api:
+  enabled: true
+  replicaCount: 2
+
+dashboard:
+  enabled: true
+  replicaCount: 1
+
+worker:
+  enabled: true
+  replicaCount: 1
+
+postgresql:
+  enabled: false
+
+global:
+  database:
+    primaryUrl: "postgresql://user:pass@primary-db:5432/saleor"
+    replicaUrls: 
+      - "postgresql://user:pass@replica1-db:5432/saleor"
+      - "postgresql://user:pass@replica2-db:5432/saleor"
+    maxConnections: 150
+    connectionTimeout: 5
+
+redis:
+  enabled: true
+  architecture: standalone
