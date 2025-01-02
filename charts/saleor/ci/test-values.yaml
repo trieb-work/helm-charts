@@ -56,13 +56,6 @@ global:
 api:
   enabled: true
   replicaCount: 2
-  service:
-    type: ClusterIP
-    port: 8000
-  image:
-    repository: ghcr.io/saleor/saleor
-    tag: "3.19"
-    pullPolicy: IfNotPresent
   resources:
     requests:
       cpu: 500m
@@ -123,12 +116,11 @@ ingress:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      nginx.ingress.kubernetes.io/rewrite-target: /$2
     hosts:
       - host: test-saleor.eu.fsn1.trwrk.xyz
         paths:
-          - path: /dashboard(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /dashboard/
+            pathType: Prefix
     tls:
       - secretName: test-saleor-dashboard-tls
         hosts:
