@@ -61,7 +61,7 @@ spec:
                 - celery -A saleor.celeryconf inspect ping -d celery@$HOSTNAME
             initialDelaySeconds: 30
             periodSeconds: 30
-            timeoutSeconds: 10
+            timeoutSeconds: 15
             successThreshold: 1
             failureThreshold: 3
           readinessProbe:
@@ -72,7 +72,7 @@ spec:
                 - celery -A saleor.celeryconf inspect ping -d celery@$HOSTNAME
             initialDelaySeconds: 30
             periodSeconds: 30
-            timeoutSeconds: 10
+            timeoutSeconds: 15
             successThreshold: 1
             failureThreshold: 3
           resources:
