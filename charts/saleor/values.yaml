@@ -228,14 +228,11 @@ ingress:
     # -- Additional annotations for Dashboard ingress
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      nginx.ingress.kubernetes.io/rewrite-target: /$2
     hosts:
       - host: chart-example.local
         paths:
-          - path: /dashboard(/|$)(.*)
-            pathType: ImplementationSpecific
-          - path: /dashboard/(.*)
-            pathType: ImplementationSpecific
+          - path: /dashboard/
+            pathType: Prefix
     tls:
       - secretName: saleor-dashboard-tls
         hosts:
