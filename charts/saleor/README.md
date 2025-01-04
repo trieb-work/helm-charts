@@ -272,6 +272,61 @@ serviceMesh:
         http: 10s
 ```
 
+### Storage Configuration
+
+The chart supports both S3-compatible storage and Google Cloud Storage (GCS) for storing media and static files.
+
+#### Amazon S3 Configuration
+
+Enable S3 storage by configuring the following in your values file:
+
+```yaml
+storage:
+  s3:
+    enabled: true
+    credentials:
+      accessKeyId: "your-access-key"
+      secretAccessKey: "your-secret-key"
+    config:
+      region: "us-east-1"
+      bucketName: "your-bucket-name"
+      # Optional configurations
+      staticBucketName: "your-static-bucket"    # Separate bucket for static files
+      mediaBucketName: "your-media-bucket"      # Separate bucket for media files
+      mediaPrivateBucketName: "private-bucket"  # Separate bucket for private media
+      customDomain: "cdn.yourdomain.com"        # Custom domain for serving files
+      defaultAcl: "public-read"
+      queryStringAuth: false
+```
+
+For more details on S3 configuration, see the [official Saleor documentation](https://docs.saleor.io/setup/media-s3).
+
+#### Google Cloud Storage Configuration
+
+To use Google Cloud Storage, configure the following:
+
+```yaml
+storage:
+  gcs:
+    enabled: true
+    # When running on GKE with Workload Identity (recommended)
+    serviceAccount:
+      create: true
+      annotations:
+        iam.gke.io/gcp-service-account: saleor-gcs@YOUR_PROJECT_ID.iam.gserviceaccount.com
+    
+    config:
+      bucketName: "your-bucket-name"
+      # Optional configurations
+      staticBucketName: "your-static-bucket"
+      mediaBucketName: "your-media-bucket"
+      mediaPrivateBucketName: "private-bucket"
+      customDomain: "cdn.yourdomain.com"
+      defaultAcl: "publicRead"
+```
+
+For more details on GCS configuration, see the [official Saleor documentation](https://docs.saleor.io/setup/media-gcs).
+
 ### Database Migrations
 
 Django requires database migrations to be run after version upgrades. This chart provides two ways to handle migrations:
@@ -473,7 +528,7 @@ postgresql:
 serviceAccount:
   create: true
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-saleor-role
+    iam.gke.io/gcp-service-account: saleor-gcs@YOUR_PROJECT_ID.iam.gserviceaccount.com
 ```
 
 2. Configure security context:
