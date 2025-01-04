@@ -167,3 +167,16 @@ securityContext:
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
+
+
+storage:
+  s3: 
+    enabled: true
+    config:
+      customDomain: test-saleor-publ.fsn1.your-objectstorage.com
+      mediaCustomDomain: test-saleor-publ.fsn1.your-objectstorage.com
+      staticBucketName: test-saleor-publ
+      mediaBucketName: test-saleor-publ
+      mediaPrivateBucketName: test-saleor-private
+      queryStringAuth: true
+      queryStringExpire: 3600

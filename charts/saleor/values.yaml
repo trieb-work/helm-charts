@@ -122,7 +122,11 @@ worker:
     pullPolicy: IfNotPresent
   
   extraEnv:
-
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-credentials
+          key: database-url
   
   resources:
     requests:
@@ -156,6 +160,36 @@ migrations:
   affinity: {}
   # -- Tolerations for the migration job
   tolerations: []
+
+# Storage configuration for media and static files
+storage:
+  # S3-compatible storage configuration (AWS S3, MinIO, etc.)
+  s3:
+    enabled: false
+    # S3 credentials - these will be stored in a secret
+    credentials:
+      accessKeyId: ""      # Example: "AKIAIOSFODNN7EXAMPLE"
+      secretAccessKey: ""  # Example: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    
+    # S3 bucket and domain configuration
+    config:
+      region: "us-east-1"  # S3 region, e.g., "us-east-1", "eu-central-1"
+      
+      # Static files configuration (CSS, JS, email templates)
+      staticBucketName: ""    # Example: "my-saleor-static"
+      customDomain: ""        # Example: "static.saleor.example.com" or "d1234.cloudfront.net"
+      
+      # Media files configuration (product images, category images)
+      mediaBucketName: ""     # Example: "my-saleor-media"
+      mediaCustomDomain: ""   # Example: "media.saleor.example.com" or "d5678.cloudfront.net"
+      
+      # Private files configuration (webhook payloads, private data)
+      mediaPrivateBucketName: "" # Example: "my-saleor-private"
+      
+      # Access control and URL settings
+      defaultAcl: ""  # Options: "private", "public-read"
+      queryStringAuth: false     # Enable signed URLs for media access
+      queryStringExpire: 3600    # Signed URLs expiration in seconds (1 hour)
 
 postgresql:
   enabled: true
@@ -212,7 +246,8 @@ ingress:
     enabled: true
     # -- Additional annotations for API ingress
     annotations:
-      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Optional: enable standard Let's Encrypt setup
+    #  cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
       - host: chart-example.local
         paths:
@@ -227,7 +262,7 @@ ingress:
     enabled: true
     # -- Additional annotations for Dashboard ingress
     annotations:
-      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    #  cert-manager.io/cluster-issuer: "letsencrypt-prod"
     hosts:
       - host: chart-example.local
         paths:
