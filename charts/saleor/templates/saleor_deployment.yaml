@@ -118,9 +118,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: secret-key
-            {{- if .Values.api.extraEnv }}
-            {{- toYaml .Values.api.extraEnv | nindent 12 }}
+            {{- with .Values.api.extraEnv }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
+            {{- include "saleor.s3Env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

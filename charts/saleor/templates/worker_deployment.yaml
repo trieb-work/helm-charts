@@ -115,22 +115,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: secret-key
-            {{- if .Values.worker.extraEnv }}
-            {{- range .Values.worker.extraEnv }}
-            - name: {{ .name }}
-              {{- if .value }}
-              value: {{ .value }}
-              {{- end }}
-              {{- if .valueFrom }}
-              valueFrom:
-                {{- if .valueFrom.secretKeyRef }}
-                secretKeyRef:
-                  name: "{{ include "saleor.fullname" $ }}-{{ .valueFrom.secretKeyRef.name }}"
-                  key: {{ .valueFrom.secretKeyRef.key }}
-                {{- end }}
-              {{- end }}
+            {{- with .Values.worker.extraEnv }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- end }}
+            {{- include "saleor.s3Env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

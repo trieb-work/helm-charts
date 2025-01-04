@@ -272,6 +272,124 @@ serviceMesh:
         http: 10s
 ```
 
+### Storage Configuration
+
+The chart supports both S3-compatible storage and Google Cloud Storage (GCS) for storing media and static files.
+
+#### Amazon S3 Configuration
+
+Enable S3 storage by configuring the following in your values file:
+
+```yaml
+storage:
+  s3:
+    enabled: true
+    credentials:
+      accessKeyId: "your-access-key"
+      secretAccessKey: "your-secret-key"
+    config:
+      region: "us-east-1"
+      bucketName: "your-bucket-name"
+      # Optional configurations
+      staticBucketName: "your-static-bucket"    # Separate bucket for static files
+      mediaBucketName: "your-media-bucket"      # Separate bucket for media files
+      mediaPrivateBucketName: "private-bucket"  # Separate bucket for private media
+      customDomain: "cdn.yourdomain.com"        # Custom domain for serving files
+      defaultAcl: "public-read"
+      queryStringAuth: false
+```
+
+For more details on S3 configuration, see the [official Saleor documentation](https://docs.saleor.io/setup/media-s3).
+
+#### Google Cloud Storage Configuration
+
+To use Google Cloud Storage, configure the following:
+
+```yaml
+storage:
+  gcs:
+    enabled: true
+    # When running on GKE with Workload Identity (recommended)
+    serviceAccount:
+      create: true
+      annotations:
+        iam.gke.io/gcp-service-account: saleor-gcs@YOUR_PROJECT_ID.iam.gserviceaccount.com
+    
+    config:
+      bucketName: "your-bucket-name"
+      # Optional configurations
+      staticBucketName: "your-static-bucket"
+      mediaBucketName: "your-media-bucket"
+      mediaPrivateBucketName: "private-bucket"
+      customDomain: "cdn.yourdomain.com"
+      defaultAcl: "publicRead"
+```
+
+For more details on GCS configuration, see the [official Saleor documentation](https://docs.saleor.io/setup/media-gcs).
+
+### Complete S3 Configuration Example
+
+Here's a complete example of S3 configuration using CloudFront for content delivery:
+
+```yaml
+storage:
+  s3:
+    enabled: true
+    credentials:
+      accessKeyId: "AKIAIOSFODNN7EXAMPLE"
+      secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    
+    config:
+      region: "us-east-1"
+      
+      # Using separate buckets for different types of content
+      staticBucketName: "my-shop-static"     # Public bucket for static files
+      mediaBucketName: "my-shop-media"       # Public bucket for uploaded media
+      mediaPrivateBucketName: "my-shop-priv" # Private bucket for sensitive data
+      
+      # Using CloudFront distributions for content delivery
+      customDomain: "static.myshop.com"      # CloudFront domain for static files
+      mediaCustomDomain: "media.myshop.com"  # CloudFront domain for media files
+      
+      # Access control
+      defaultAcl: "public-read"              # Make files publicly readable
+      queryStringAuth: false                 # Disable signed URLs
+      queryStringExpire: 3600                # 1 hour expiration for signed URLs (if enabled)
+```
+
+Here's an example using MinIO or other S3-compatible storage:
+
+```yaml
+storage:
+  s3:
+    enabled: true
+    credentials:
+      accessKeyId: "minio-access-key"
+      secretAccessKey: "minio-secret-key"
+    
+    config:
+      region: "us-east-1"                    # Required but might not be used
+      
+      # Using a single bucket with different prefixes
+      staticBucketName: "saleor"
+      mediaBucketName: "saleor"
+      mediaPrivateBucketName: "saleor-private"
+      
+      # Using custom domains
+      customDomain: "storage.example.com"    # Domain for static files
+      mediaCustomDomain: "storage.example.com" # Domain for media files
+      
+      # Access control
+      defaultAcl: "public-read"
+      queryStringAuth: false
+      queryStringExpire: 3600
+```
+
+Note: When using CloudFront or another CDN:
+1. Configure CORS appropriately for your domains
+2. Set up proper cache behaviors for static vs media content
+3. For private media, ensure the bucket is not publicly accessible
+
 ### Database Migrations
 
 Django requires database migrations to be run after version upgrades. This chart provides two ways to handle migrations:
@@ -473,7 +591,7 @@ postgresql:
 serviceAccount:
   create: true
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-saleor-role
+    iam.gke.io/gcp-service-account: saleor-gcs@YOUR_PROJECT_ID.iam.gserviceaccount.com
 ```
 
 2. Configure security context:
