@@ -1,15 +1,15 @@
 # Saleor Apps Helm Chart
 
-This Helm chart deploys Saleor Apps to a Kubernetes cluster. It supports multiple apps that can be enabled or disabled as needed, with a shared Redis instance for persistence.
+This Helm chart deploys the official Saleor Apps to a Kubernetes cluster. It supports multiple apps that can be enabled or disabled as needed, with a shared Redis instance for persistence (APL).
 
 ## Available Apps
 
 - **CRM Klaviyo**: Integration with Klaviyo CRM
-- **Emails and Messages**: Handles email and messaging functionality
-- **Invoices**: Manages invoice generation and processing
+- **SMTP**: Email sending functionality
+- **Products Feed**: Product feed generation and management
 - **Search**: Provides search functionality
-- **Taxes**: Handles tax calculations and management
-- **Webhook**: Manages webhook integrations
+- **Avatax**: Tax calculations via Avatax
+- **CMS v2**: Content Management System
 
 ## Prerequisites
 

@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: {{ $appName }}
-          image: "{{ $.Values.common.image.registry }}/{{ $.Values.common.image.repository }}/{{ $appName }}:{{ $.Values.common.image.tag }}"
+          image: "{{ $.Values.common.image.registry }}/{{ $.Values.common.image.repository }}/{{ $appName }}:{{ $appConfig.image.tag | default $.Values.common.image.tag }}"
           imagePullPolicy: {{ $.Values.common.image.pullPolicy }}
           env:
             - name: SECRET_KEY
@@ -33,7 +33,7 @@ spec:
             - name: PORT
               value: {{ $appConfig.port | quote }}
             - name: HOSTNAME
-              value: {{ $appConfig.hostname | quote }}
+              value: "0.0.0.0"
             - name: REDIS_URL
               value: redis://{{ include "saleor-apps.fullname" $ }}-redis-master:6379
             - name: REDIS_PASSWORD

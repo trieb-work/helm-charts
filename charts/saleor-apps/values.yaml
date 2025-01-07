@@ -17,8 +17,7 @@ redis:
 common:
   image:
     registry: ghcr.io
-    repository: trieb-work/saleor-apps-docker
-    tag: latest
+    repository: trieb-work/saleor-apps
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -30,65 +29,86 @@ common:
 
 # Individual app configurations
 apps:
-  crm-klaviyo:
-    enabled: false
-    hostname: crm-klaviyo.apps.example.com
-    port: 3000
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-
   smtp:
     enabled: false
     hostname: smtp.apps.example.com
     port: 3000
+    image:
+      tag: "1.2.19"
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx
-
-  products-feed:
-    enabled: false
-    hostname: products-feed.apps.example.com
-    port: 3000
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""  # Leave empty to use default name: <release>-smtp-tls
 
   search:
     enabled: false
     hostname: search.apps.example.com
     port: 3000
+    image:
+      tag: "1.22.18"
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+
+  products-feed:
+    enabled: false
+    hostname: products-feed.apps.example.com
+    port: 3000
+    image:
+      tag: "1.19.16"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
 
   app-avatax:
     enabled: false
     hostname: app-avatax.apps.example.com
     port: 3000
+    image:
+      tag: "1.12.3"
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
 
   cms-v2:
     enabled: false
     hostname: cms-v2.apps.example.com
     port: 3000
+    image:
+      tag: "2.9.16"
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
 
   klaviyo:
     enabled: false
     hostname: klaviyo.apps.example.com
     port: 3000
+    image:
+      tag: "1.12.17"
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx            
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
