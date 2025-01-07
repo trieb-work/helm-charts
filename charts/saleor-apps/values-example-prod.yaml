@@ -1,0 +1,64 @@
+global:
+  domain: "test-saleor.eu.fsn1.trwrk.xyz"
+  secretKey: "your-secret-key-here"  # Replace with actual secret key in production
+
+redis:
+  auth:
+    enabled: true
+    password: "your-redis-password-here"  # Replace with actual password in production
+
+# Enable all apps for testing
+apps:  
+  smtp:
+    enabled: true
+    hostname: smtp-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  products-feed:
+    enabled: true
+    hostname: products-feed-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  search:
+    enabled: true
+    hostname: search-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  app-avatax:
+    enabled: true
+    hostname: app-avatax-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  cms-v2:
+    enabled: true
+    hostname: cms-v2-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  klaviyo:
+    enabled: true
+    hostname: klaviyo-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true

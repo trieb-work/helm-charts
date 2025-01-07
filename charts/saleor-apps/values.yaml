@@ -1,0 +1,114 @@
+# Global settings
+global:
+  # Domain where the apps will be exposed
+  domain: "apps.example.com"
+  # Secret key used by all apps
+  secretKey: ""
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: ""
+
+# Common settings for all apps
+common:
+  image:
+    registry: ghcr.io
+    repository: trieb-work/saleor-apps
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Individual app configurations
+apps:
+  smtp:
+    enabled: false
+    hostname: smtp.apps.example.com
+    port: 3000
+    image:
+      tag: "1.2.19"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""  # Leave empty to use default name: <release>-smtp-tls
+
+  search:
+    enabled: false
+    hostname: search.apps.example.com
+    port: 3000
+    image:
+      tag: "1.22.18"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+
+  products-feed:
+    enabled: false
+    hostname: products-feed.apps.example.com
+    port: 3000
+    image:
+      tag: "1.19.16"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+
+  app-avatax:
+    enabled: false
+    hostname: app-avatax.apps.example.com
+    port: 3000
+    image:
+      tag: "1.12.3"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+
+  cms-v2:
+    enabled: false
+    hostname: cms-v2.apps.example.com
+    port: 3000
+    image:
+      tag: "2.9.16"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+
+  klaviyo:
+    enabled: false
+    hostname: klaviyo.apps.example.com
+    port: 3000
+    image:
+      tag: "1.12.17"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""

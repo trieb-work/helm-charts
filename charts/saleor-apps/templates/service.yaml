@@ -1,0 +1,22 @@
+{{- range $appName, $appConfig := .Values.apps }}
+{{- if $appConfig.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-%s" (include "saleor-apps.fullname" $) $appName }}
+  labels:
+    {{- include "saleor-apps.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $appName }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ $appConfig.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "saleor-apps.selectorLabels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $appName }}
+{{- end }}
+{{- end }}

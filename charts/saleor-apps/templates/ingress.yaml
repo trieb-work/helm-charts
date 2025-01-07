@@ -1,0 +1,35 @@
+{{- range $appName, $appConfig := .Values.apps }}
+{{- if and $appConfig.enabled $appConfig.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-%s" (include "saleor-apps.fullname" $) $appName }}
+  labels:
+    {{- include "saleor-apps.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $appName }}
+  {{- with $appConfig.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: nginx
+  {{- if $appConfig.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ $appConfig.hostname | quote }}
+      secretName: {{ $appConfig.ingress.tls.secretName | default (printf "%s-%s-tls" (include "saleor-apps.fullname" $) $appName) }}
+  {{- end }}
+  rules:
+    - host: {{ $appConfig.hostname | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ printf "%s-%s" (include "saleor-apps.fullname" $) $appName }}
+                port:
+                  number: {{ $appConfig.port }}
+{{- end }}
+{{- end }}
