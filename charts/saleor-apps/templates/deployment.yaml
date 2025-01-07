@@ -1,0 +1,51 @@
+{{- range $appName, $appConfig := .Values.apps }}
+{{- if $appConfig.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" (include "saleor-apps.fullname" $) $appName }}
+  labels:
+    {{- include "saleor-apps.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $appName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "saleor-apps.selectorLabels" $ | nindent 6 }}
+      app.kubernetes.io/component: {{ $appName }}
+  template:
+    metadata:
+      labels:
+        {{- include "saleor-apps.selectorLabels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ $appName }}
+    spec:
+      containers:
+        - name: {{ $appName }}
+          image: "{{ $.Values.common.image.registry }}/{{ $.Values.common.image.repository }}/{{ $appName }}:{{ $.Values.common.image.tag }}"
+          imagePullPolicy: {{ $.Values.common.image.pullPolicy }}
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor-apps.fullname" $ }}
+                  key: secret-key
+            - name: PORT
+              value: {{ $appConfig.port | quote }}
+            - name: HOSTNAME
+              value: {{ $appConfig.hostname | quote }}
+            - name: REDIS_URL
+              value: redis://{{ include "saleor-apps.fullname" $ }}-redis-master:6379
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor-apps.fullname" $ }}-redis
+                  key: redis-password
+          ports:
+            - name: http
+              containerPort: {{ $appConfig.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml $.Values.common.resources | nindent 12 }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,94 @@
+# Global settings
+global:
+  # Domain where the apps will be exposed
+  domain: "apps.example.com"
+  # Secret key used by all apps
+  secretKey: ""
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: ""
+
+# Common settings for all apps
+common:
+  image:
+    registry: ghcr.io
+    repository: trieb-work/saleor-apps-docker
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Individual app configurations
+apps:
+  crm-klaviyo:
+    enabled: false
+    hostname: crm-klaviyo.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+  smtp:
+    enabled: false
+    hostname: smtp.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+  products-feed:
+    enabled: false
+    hostname: products-feed.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+  search:
+    enabled: false
+    hostname: search.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+  app-avatax:
+    enabled: false
+    hostname: app-avatax.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+  cms-v2:
+    enabled: false
+    hostname: cms-v2.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+
+  klaviyo:
+    enabled: false
+    hostname: klaviyo.apps.example.com
+    port: 3000
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx            
