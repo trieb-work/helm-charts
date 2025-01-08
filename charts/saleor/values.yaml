@@ -5,18 +5,22 @@ global:
   storageClass: ""
   # -- External Database URL (if not using internal PostgreSQL)
   databaseUrl: ""
+  # -- Secret key for Django (required)
+  secretKey: ""
   # -- External Redis URL (if not using internal Redis)
   redisUrl: ""
   # Database configuration
   database:
     # -- External primary database URL
     primaryUrl: ""
-    # -- External read replica URLs
-    replicaUrls: []
+    # -- External read replica URL
+    replicaUrl: ""
     # -- Maximum number of database connections
     maxConnections: 150
     # -- Connection timeout in seconds
     connectionTimeout: 5
+    # -- Database connection max age in seconds (0 to disable connection persistence)
+    connMaxAge: 0
 
 # -- Service Mesh Configuration
 serviceMesh:
@@ -204,7 +208,7 @@ postgresql:
     database: postgres
     postgresPassword:
     replicationPassword:
-    existingSecret: postgresql-credentials  # Will be templated in deployment
+    existingSecret: postgresql-credentials
     secretKeys:
       adminPasswordKey: postgresql-password
       userPasswordKey: user-password

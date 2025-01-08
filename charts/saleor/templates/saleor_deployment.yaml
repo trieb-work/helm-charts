@@ -91,6 +91,13 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: database-url
+            - name: DATABASE_URL_REPLICA
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: database-url-replica
+            - name: DB_CONN_MAX_AGE
+              value: {{ .Values.global.database.connMaxAge | quote }}
             {{- if .Values.global.jwtRsaPrivateKey }}
             - name: RSA_PRIVATE_KEY
               valueFrom:
