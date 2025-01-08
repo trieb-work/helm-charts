@@ -82,6 +82,10 @@ spec:
           env:
             - name: API_URL
               value: {{ if .Values.ingress.api.tls }}https{{ else }}http{{ end }}://{{ (index .Values.ingress.api.hosts 0).host }}/graphql/
+            - name: APPS_MARKETPLACE_API_URL
+              value: {{ .Values.dashboard.appsMarketplaceApiUrl | quote }}
+            - name: IS_CLOUD_INSTANCE
+              value: {{ .Values.dashboard.isCloudInstance | quote }}
             {{- if .Values.dashboard.extraEnv }}
             {{- toYaml .Values.dashboard.extraEnv | nindent 12 }}
             {{- end }}
