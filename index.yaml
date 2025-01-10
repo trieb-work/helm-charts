@@ -1270,6 +1270,23 @@ entries:
   saleor-apps:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-01-10T23:38:46.293786901Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.x.x
+    description: A Helm chart for deploying Saleor Apps with shared Redis
+    digest: e1731a612be178c63dcc5f616d952192e05a7b5a4511a0d98be487e4657ce91d
+    maintainers:
+    - name: trieb.work
+    name: saleor-apps
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-apps-0.2.1/saleor-apps-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-01-10T23:30:46.472130771Z"
     dependencies:
     - condition: redis.enabled
@@ -2608,4 +2625,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2025-01-10T23:30:46.472497646Z"
+generated: "2025-01-10T23:38:46.294049616Z"
