@@ -56,13 +56,10 @@ global:
 api:
   enabled: true
   replicaCount: 2
-  resources:
-    requests:
-      cpu: 1
-      memory: 2Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
+  autoscaling:
+    enabled: true
+
+
   extraEnv:
     - name: ALLOWED_HOSTS
       value: "test-saleor.eu.fsn1.trwrk.xyz"

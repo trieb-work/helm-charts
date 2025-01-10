@@ -84,6 +84,7 @@ api:
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   securityContext:  
 
@@ -118,16 +119,17 @@ dashboard:
       cpu: 500m
       memory: 256Mi
   
-  securityContext:
-    runAsUser: 0
-    runAsGroup: 0
-  
   autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  
 worker:
   enabled: true
   replicaCount: 1
@@ -151,6 +153,7 @@ worker:
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
 migrations:
   # -- Enable automatic database migrations after install/upgrade
