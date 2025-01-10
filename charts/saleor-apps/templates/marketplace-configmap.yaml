@@ -9,43 +9,40 @@ data:
   marketplace.json: |
     [
       {{- $first := true }}
-      {{- if hasKey .Values.apps "adyen" }}
-      {{- if .Values.apps.adyen.enabled }}
+      {{- if (index .Values.apps "products-feed").enabled }}
       {{- if not $first }},{{ end }}
       {
         "logo": {
-          "source": "https://apps.saleor.io/apps/v2/saleor-apps/adyen.svg",
-          "color": "#0abf53"
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/app-products-feed.svg",
+          "color": "#7A96B0"
         },
         "name": {
-          "en": "Adyen"
+          "en": "Product Feed"
         },
         "description": {
-          "en": "Simplify your payment process and offer a seamless online shopping experience with Adyen's payment integration for Saleor."
+          "en": "Generate feeds consumed by Merchant Platforms"
         },
         "integrations": [
           {
-            "name": "Adyen",
+            "name": "Google Merchant Center",
             "logo": {
               "light": {
-                "source": "https://apps.saleor.io/apps/v2/adyen.svg"
+                "source": "https://apps.saleor.io/apps/v2/google.svg"
               },
               "dark": {
-                "source": "https://apps.saleor.io/apps/v2/adyen.svg"
+                "source": "https://apps.saleor.io/apps/v2/google.svg"
               }
             }
           }
         ],
-        "repositoryUrl": "https://github.com/saleor/saleor",
-        "manifestUrl": "https://{{ .Values.apps.adyen.hostname }}/api/manifest",
+        "repositoryUrl": "https://github.com/saleor/apps",
+        "manifestUrl": "https://{{ (index .Values.apps "products-feed").hostname }}/api/manifest",
         "privacyUrl": "https://saleor.io/legal/privacy/",
         "supportUrl": "https://saleor.io"
       }
       {{- $first = false }}
       {{- end }}
-      {{- end }}
-      {{- if hasKey .Values.apps "avatax" }}
-      {{- if .Values.apps.avatax.enabled }}
+      {{- if (index .Values.apps "app-avatax").enabled }}
       {{- if not $first }},{{ end }}
       {
         "logo": {
@@ -72,15 +69,13 @@ data:
           }
         ],
         "repositoryUrl": "https://github.com/saleor/apps",
-        "manifestUrl": "https://{{ .Values.apps.avatax.hostname }}/api/manifest",
+        "manifestUrl": "https://{{ (index .Values.apps "app-avatax").hostname }}/api/manifest",
         "privacyUrl": "https://saleor.io/legal/privacy/",
         "supportUrl": "https://saleor.io"
       }
       {{- $first = false }}
       {{- end }}
-      {{- end }}
-      {{- if hasKey .Values.apps "cms" }}
-      {{- if .Values.apps.cms.enabled }}
+      {{- if (index .Values.apps "cms-v2").enabled }}
       {{- if not $first }},{{ end }}
       {
         "logo": {
@@ -107,14 +102,12 @@ data:
           }
         ],
         "repositoryUrl": "https://github.com/saleor/apps",
-        "manifestUrl": "https://{{ .Values.apps.cms.hostname }}/api/manifest",
+        "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
         "privacyUrl": "https://saleor.io/legal/privacy/",
         "supportUrl": "https://saleor.io"
       }
       {{- $first = false }}
       {{- end }}
-      {{- end }}
-      {{- if hasKey .Values.apps "search" }}
       {{- if .Values.apps.search.enabled }}
       {{- if not $first }},{{ end }}
       {
@@ -148,8 +141,6 @@ data:
       }
       {{- $first = false }}
       {{- end }}
-      {{- end }}
-      {{- if hasKey .Values.apps "smtp" }}
       {{- if .Values.apps.smtp.enabled }}
       {{- if not $first }},{{ end }}
       {
@@ -183,6 +174,38 @@ data:
       }
       {{- $first = false }}
       {{- end }}
+      {{- if .Values.apps.klaviyo.enabled }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/placeholder.svg",
+          "color": "#3a56c7"
+        },
+        "name": {
+          "en": "Klaviyo"
+        },
+        "description": {
+          "en": "Klaviyo integration allows to send Saleor events to Klaviyo, where notifications can be sent to customers."
+        },
+        "integrations": [
+          {
+            "name": "Klaviyo",
+            "logo": {
+              "light": {
+                "source": "https://apps.saleor.io/apps/v2/saleor-apps/app-klaviyo.svg"
+              },
+              "dark": {
+                "source": "https://apps.saleor.io/apps/v2/saleor-apps/app-klaviyo.svg"
+              }
+            }
+          }
+        ],
+        "repositoryUrl": "https://github.com/saleor/apps",
+        "manifestUrl": "https://{{ .Values.apps.klaviyo.hostname }}/api/manifest",
+        "privacyUrl": "https://saleor.io/legal/privacy/",
+        "supportUrl": "https://saleor.io"
+      }
+      {{- $first = false }}
       {{- end }}
     ]
 
