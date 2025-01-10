@@ -220,8 +220,16 @@ postgresql:
       size: 8Gi
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 500m
+        memory: 2Gi
+    # shared_buffers: 25% of memory
+    # maintenance_work_mem: It’s recommended to set this value higher than work_mem; this can improve performance for vacuuming
+    extendedConfiguration: |
+        work_mem = 64MB
+        maintenance_work_mem = 256MB
+        shared_buffers = 500MB
+        temp_buffers = 16MB
+        max_connections = 150    
 
   readReplicas:
     replicaCount: 1
@@ -229,8 +237,16 @@ postgresql:
       size: 8Gi
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 500m
+        memory: 1Gi
+    # shared_buffers: 25% of memory
+    # maintenance_work_mem: It’s recommended to set this value higher than work_mem; this can improve performance for vacuuming
+    extendedConfiguration: |
+        work_mem = 64MB
+        maintenance_work_mem = 256MB
+        shared_buffers = 250MB
+        temp_buffers = 16MB
+        max_connections = 150        
 
 redis:
   # -- Enable internal Redis deployment. Disable, if you want to use a external Redis

@@ -106,7 +106,7 @@ DATABASES = {\
         conn_max_age=DB_CONN_MAX_AGE,\
     ),\
     "replica": dj_database_url.config(\
-        default=os.environ.get("DATABASE_URL_REPLICA"),\
+        env="DATABASE_URL_REPLICA",\
         conn_max_age=DB_CONN_MAX_AGE,\
         test_options={"MIRROR": "default"},\
     ),\
