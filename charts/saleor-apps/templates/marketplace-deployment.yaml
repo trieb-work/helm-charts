@@ -1,0 +1,68 @@
+{{- if .Values.marketplace.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-marketplace
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+    app.kubernetes.io/component: marketplace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "saleor-apps.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: marketplace
+  template:
+    metadata:
+      labels:
+        {{- include "saleor-apps.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: marketplace
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: marketplace-config
+              mountPath: /usr/share/nginx/html
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      volumes:
+        - name: marketplace-config
+          configMap:
+            name: {{ .Release.Name }}-marketplace
+            items:
+              - key: marketplace.json
+                path: marketplace.json
+        - name: nginx-config
+          configMap:
+            name: {{ .Release.Name }}-marketplace-nginx
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-marketplace-nginx
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name _;
+
+        location / {
+            root /usr/share/nginx/html;
+            add_header Content-Type application/json;
+            add_header Access-Control-Allow-Origin "*";
+        }
+    }
+{{- end }}

@@ -93,6 +93,52 @@ Each app supports the following configuration parameters:
 | `apps.<app-name>.ingress.enabled` | Enable ingress | `true` |
 | `apps.<app-name>.ingress.annotations` | Ingress annotations | `{}` |
 
+## Marketplace Service
+
+The chart includes a marketplace service that provides a custom marketplace JSON endpoint for your Saleor apps. This allows you to have a self-hosted marketplace that lists all your enabled Saleor apps with their correct manifest URLs.
+
+### Configuration
+
+Enable and configure the marketplace in your values.yaml:
+
+```yaml
+marketplace:
+  # Enable or disable the marketplace service
+  enabled: true
+  # Your marketplace hostname
+  hostname: marketplace.apps.example.com
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod  # Optional: for automatic SSL
+    tls:
+      enabled: true
+      secretName: ""  # Leave empty to use default name: <release>-marketplace-tls
+```
+
+### Usage with Saleor Dashboard
+
+To use your custom marketplace with Saleor Dashboard, set the `APPS_MARKETPLACE_API_URL` environment variable in your dashboard deployment:
+
+```yaml
+env:
+  - name: APPS_MARKETPLACE_API_URL
+    value: "https://marketplace.apps.example.com/marketplace.json"
+```
+
+This will allow you to install your apps directly from the Saleor Dashboard with one click. The marketplace JSON will only include apps that are enabled in your saleor-apps deployment.
+
+### Marketplace JSON Format
+
+The marketplace service generates a JSON file that follows the official Saleor marketplace format. For each enabled app, it includes:
+- App name and description
+- Logo and branding information
+- Integration details
+- Manifest URL pointing to your deployed app instance
+- Standard privacy and support URLs
+
+The manifest URLs are automatically set to match your app hostnames as configured in the chart.
+
 ## Usage
 
 1. After installation, each enabled app will be available at its configured hostname.

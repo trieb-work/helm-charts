@@ -7,6 +7,15 @@ redis:
     enabled: true
     password: "your-redis-password-here"  # Replace with actual password in production
 
+marketplace:
+  hostname: marketplace-test-saleor.eu.fsn1.trwrk.xyz
+  ingress:
+    enabled: true
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      enabled: true
+
 # Enable all apps for testing
 apps:  
   smtp:
