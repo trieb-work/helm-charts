@@ -62,8 +62,52 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{/*
+Get Redis password - either from values, existing secret, or generate new one
+*/}}
+{{- define "saleor.redisPassword" -}}
+{{- if .Values.redis.auth.password -}}
+{{- .Values.redis.auth.password -}}
+{{- else -}}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-redis" .Release.Name)) -}}
+{{- if $secret -}}
+{{- index $secret.data "redis-password" | b64dec -}}
+{{- else -}}
+{{- $generatedPassword := randAlphaNum 32 -}}
+{{- $_ := set .Values.redis.auth "password" $generatedPassword -}}
+{{- $generatedPassword -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "saleor.internalRedisUrl" -}}
-{{- printf "%s%s%s%s%s%s" "redis://:" .Values.redis.auth.password "@" .Release.Name "-redis-master:6379/" -}}
+{{- $redisPassword := include "saleor.redisPassword" . -}}
+{{- printf "redis://:%s@%s-redis-master:6379/0" $redisPassword .Release.Name -}}
+{{- end -}}
+
+{{/*
+Get Redis URL - either from global value, external config, or internal Redis
+*/}}
+{{- define "saleor.redisUrl" -}}
+{{- if .Values.global.redisUrl -}}
+{{- .Values.global.redisUrl -}}
+{{- else if not .Values.redis.enabled -}}
+{{- $host := required "External Redis host is required when redis.enabled=false" .Values.redis.external.host -}}
+{{- $port := .Values.redis.external.port | default "6379" -}}
+{{- $db := .Values.redis.external.database | default "0" -}}
+{{- $username := .Values.redis.external.username -}}
+{{- $password := .Values.redis.external.password -}}
+{{- $protocol := ternary "rediss" "redis" .Values.redis.external.tls.enabled -}}
+{{- if and $username $password -}}
+{{- printf "%s://%s:%s@%s:%s/%s" $protocol $username $password $host $port $db -}}
+{{- else if $password -}}
+{{- printf "%s://:%s@%s:%s/%s" $protocol $password $host $port $db -}}
+{{- else -}}
+{{- printf "%s://%s:%s/%s" $protocol $host $port $db -}}
+{{- end -}}
+{{- else -}}
+{{- include "saleor.internalRedisUrl" . -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

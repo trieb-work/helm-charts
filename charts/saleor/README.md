@@ -132,6 +132,75 @@ global:
       - "postgresql://user:pass@replica1-db:5432/saleor"
 ```
 
+### Redis Configuration
+
+The chart offers several options for configuring Redis:
+
+#### 1. Using the Built-in Redis
+
+By default, the chart will deploy a Redis instance using the Bitnami Redis chart:
+
+```yaml
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    # Optional: Provide a specific password
+    password: "your-password"  # If not set, a random password will be generated
+  master:
+    persistence:
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+```
+
+The Redis password is stored in a Kubernetes secret and will be preserved across Helm upgrades.
+
+#### 2. Using an External Redis
+
+To use an external Redis instance, disable the built-in Redis and configure the external connection:
+
+```yaml
+redis:
+  enabled: false
+  external:
+    host: "my-redis.example.com"
+    port: 6379
+    database: 0
+    username: "redis-user"  # Optional, for Redis ACLs
+    password: "redis-password"
+    tls:
+      enabled: false  # Set to true for TLS/SSL connections
+```
+
+#### 3. Using a Global Redis URL
+
+For complete control over the Redis URL, you can provide it directly:
+
+```yaml
+global:
+  redisUrl: "redis://user:password@redis.example.com:6379/0"
+  # Or with TLS:
+  # redisUrl: "rediss://user:password@redis.example.com:6379/0"
+```
+
+### Important Notes About Redis Configuration
+
+- If using built-in Redis without a specified password, a random one will be generated during first installation
+- The generated password will be preserved across Helm upgrades
+- Redis URL format: `redis[s]://[username][:password]@host:port/database`
+  - Use `redis://` for standard connections
+  - Use `rediss://` for TLS/SSL connections
+  - Username is optional and only needed for Redis ACLs
+  - Database number is optional (defaults to 0)
+- When using external Redis with TLS:
+  - Set `redis.external.tls.enabled: true`
+  - The connection will use the `rediss://` protocol
+  - You can optionally skip TLS verification with `redis.external.tls.insecureSkipVerify: true`
+
 ### Database Configuration
 
 The chart offers several options for configuring the database:

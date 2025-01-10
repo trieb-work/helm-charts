@@ -232,17 +232,51 @@ postgresql:
         memory: 256Mi
 
 redis:
+  # -- Enable internal Redis deployment. Disable, if you want to use a external Redis
   enabled: true
+  # -- Redis architecture (standalone or replication)
   architecture: standalone
   auth:
+    # -- Enable Redis password authentication
     enabled: true
+    # -- Redis password (will be auto-generated if not provided)
+    password: ""
+    # -- Use existing secret containing Redis password
+    existingSecret: ""
+    # -- Key in existing secret that contains Redis password
+    existingSecretPasswordKey: ""
   master:
     persistence:
+      # -- Size of Redis master persistent volume
       size: 8Gi
     resources:
       requests:
         cpu: 100m
         memory: 128Mi
+  
+  # -- External Redis configuration (used when redis.enabled=false)
+  external:
+    # -- External Redis host (e.g., my-redis.example.com)
+    host: ""
+    # -- External Redis port
+    port: 6379
+    # -- External Redis database number
+    database: 0
+    # -- External Redis username (if using Redis ACLs)
+    username: ""
+    # -- External Redis password
+    password: ""
+    # -- Use existing secret for external Redis credentials
+    existingSecret: ""
+    # -- Key in existing secret that contains Redis password
+    existingSecretPasswordKey: ""
+    # -- Enable TLS for Redis connection
+    tls:
+      enabled: false
+      # -- Skip TLS verification
+      insecureSkipVerify: false
+      # -- Secret containing TLS certificates
+      certificatesSecret: ""
 
 ingress:
   enabled: true
