@@ -115,12 +115,6 @@ spec:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: jwt-private-key
             {{- end }}
-            - name: DATABASE_READ_URLS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "saleor.fullname" . }}-secrets
-                  key: database-read-urls
-                  optional: true
             - name: DATABASE_CONNECTION_TIMEOUT
               value: {{ .Values.global.database.connectionTimeout | default "5" | quote }}
             - name: DATABASE_MAX_CONNECTIONS

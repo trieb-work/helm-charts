@@ -33,13 +33,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: database-url
-            {{- if .Values.global.database.replicaUrls }}
-            - name: DATABASE_READ_URLS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "saleor.fullname" . }}-secrets
-                  key: database-read-urls
-            {{- end }}
             
             # Redis configuration
             - name: REDIS_URL
