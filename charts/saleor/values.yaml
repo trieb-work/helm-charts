@@ -138,11 +138,6 @@ worker:
     pullPolicy: IfNotPresent
   
   extraEnv:
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: postgresql-credentials
-          key: database-url
   
   resources:
     requests:

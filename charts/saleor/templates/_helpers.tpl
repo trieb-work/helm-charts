@@ -81,8 +81,12 @@ Get Redis password - either from values, existing secret, or generate new one
 {{- end -}}
 
 {{- define "saleor.internalRedisUrl" -}}
+{{- if .Values.redis.auth.enabled -}}
 {{- $redisPassword := include "saleor.redisPassword" . -}}
 {{- printf "redis://:%s@%s-redis-master:6379/0" $redisPassword .Release.Name -}}
+{{- else -}}
+{{- printf "redis://%s-redis-master:6379/0" .Release.Name -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
