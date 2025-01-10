@@ -178,3 +178,16 @@ Determine if read replica is enabled
 {{- true -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Determine if this is a cloud instance based on the apps marketplace URL
+Returns "true" if a custom marketplace URL is set and doesn't contain apps.saleor.io/
+Returns "false" otherwise
+s you to directly install your own apps from the dashboard*/}}
+{{- define "saleor.isCloudInstance" -}}
+{{- if and .Values.dashboard.appsMarketplaceApiUrl (not (contains "apps.saleor.io/" .Values.dashboard.appsMarketplaceApiUrl)) -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}

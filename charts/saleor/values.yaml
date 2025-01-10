@@ -79,11 +79,13 @@ api:
       memory: 1Gi
 
   autoscaling:
-    enabled: false
+    enabled: true
     minReplicas: 2
     maxReplicas: 4
+    # Target CPU utilization percentage for scaling (optional)
     targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+    # Target memory utilization percentage for scaling (optional)
+    # targetMemoryUtilizationPercentage: 80
 
   securityContext:  
 

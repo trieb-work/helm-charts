@@ -75,6 +75,8 @@ api:
 dashboard:
   enabled: true
   replicaCount: 2
+  appsMarketplaceApiUrl: "https://marketplace-test-saleor.eu.fsn1.trwrk.xyz/marketplace.json"
+
     
 
 worker:

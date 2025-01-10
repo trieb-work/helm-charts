@@ -92,6 +92,14 @@ spec:
           env:
             - name: PORT
               value: {{ .Values.api.service.port | quote }}
+            {{- if and .Values.ingress.api.enabled .Values.ingress.api.hosts }}
+            {{- with index .Values.ingress.api.hosts 0 }}
+            {{- if .host }}
+            - name: PUBLIC_URL
+              value: {{ printf "https://%s" .host | quote }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
