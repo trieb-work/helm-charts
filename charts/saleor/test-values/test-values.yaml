@@ -56,13 +56,10 @@ global:
 api:
   enabled: true
   replicaCount: 2
-  resources:
-    requests:
-      cpu: 500m
-      memory: 1Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
+  autoscaling:
+    enabled: true
+
+
   extraEnv:
     - name: ALLOWED_HOSTS
       value: "test-saleor.eu.fsn1.trwrk.xyz"
@@ -83,12 +80,6 @@ dashboard:
 worker:
   enabled: true
   replicaCount: 2
-  resources:
-    requests:
-      cpu: 250m
-      memory: 512Mi
-    limits:
-      cpu: 500m
     
 
 redis:
@@ -138,18 +129,10 @@ postgresql:
   primary:
     persistence:
       size: 10Gi
-    resources:
-      requests:
-        cpu: 500m
-        memory: 1Gi
   readReplicas:
     replicaCount: 1
     persistence:
       size: 10Gi
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
 
 podSecurityContext:
   fsGroup: 1000

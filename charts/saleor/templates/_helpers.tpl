@@ -81,8 +81,12 @@ Get Redis password - either from values, existing secret, or generate new one
 {{- end -}}
 
 {{- define "saleor.internalRedisUrl" -}}
+{{- if .Values.redis.auth.enabled -}}
 {{- $redisPassword := include "saleor.redisPassword" . -}}
 {{- printf "redis://:%s@%s-redis-master:6379/0" $redisPassword .Release.Name -}}
+{{- else -}}
+{{- printf "redis://%s-redis-master:6379/0" .Release.Name -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -163,5 +167,14 @@ Get the database read replica URL
 {{- printf "postgresql://%s:%s@%s-postgresql-read:5432/%s" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
 {{- else -}}
 {{- include "saleor.databaseUrl" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determine if read replica is enabled
+*/}}
+{{- define "saleor.readReplicaEnabled" -}}
+{{- if or (and (not .Values.postgresql.enabled) .Values.global.database.replicaUrl) (and .Values.postgresql.enabled (eq .Values.postgresql.architecture "replication")) -}}
+{{- true -}}
 {{- end -}}
 {{- end -}}
