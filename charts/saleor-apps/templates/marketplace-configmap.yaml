@@ -1,0 +1,186 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-marketplace
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+data:
+  marketplace.json: |
+    [
+      {{- $first := true }}
+      {{- if hasKey .Values.apps "adyen" }}
+      {{- if .Values.apps.adyen.enabled }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/adyen.svg",
+          "color": "#0abf53"
+        },
+        "name": {
+          "en": "Adyen"
+        },
+        "description": {
+          "en": "Simplify your payment process and offer a seamless online shopping experience with Adyen's payment integration for Saleor."
+        },
+        "integrations": [
+          {
+            "name": "Adyen",
+            "logo": {
+              "light": {
+                "source": "https://apps.saleor.io/apps/v2/adyen.svg"
+              },
+              "dark": {
+                "source": "https://apps.saleor.io/apps/v2/adyen.svg"
+              }
+            }
+          }
+        ],
+        "repositoryUrl": "https://github.com/saleor/saleor",
+        "manifestUrl": "https://{{ .Values.apps.adyen.hostname }}/api/manifest",
+        "privacyUrl": "https://saleor.io/legal/privacy/",
+        "supportUrl": "https://saleor.io"
+      }
+      {{- $first = false }}
+      {{- end }}
+      {{- end }}
+      {{- if hasKey .Values.apps "avatax" }}
+      {{- if .Values.apps.avatax.enabled }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/avatax.svg",
+          "color": "#0000"
+        },
+        "name": {
+          "en": "AvaTax"
+        },
+        "description": {
+          "en": "AvaTax App allows dynamic tax calculations for orders and checkouts."
+        },
+        "integrations": [
+          {
+            "name": "AvaTax",
+            "logo": {
+              "light": {
+                "source": "https://apps.saleor.io/apps/v2/avatax.svg"
+              },
+              "dark": {
+                "source": "https://apps.saleor.io/apps/v2/avatax.svg"
+              }
+            }
+          }
+        ],
+        "repositoryUrl": "https://github.com/saleor/apps",
+        "manifestUrl": "https://{{ .Values.apps.avatax.hostname }}/api/manifest",
+        "privacyUrl": "https://saleor.io/legal/privacy/",
+        "supportUrl": "https://saleor.io"
+      }
+      {{- $first = false }}
+      {{- end }}
+      {{- end }}
+      {{- if hasKey .Values.apps "cms" }}
+      {{- if .Values.apps.cms.enabled }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/cms-hub.svg",
+          "color": "#27b476"
+        },
+        "name": {
+          "en": "CMS"
+        },
+        "description": {
+          "en": "CMS App is a multi-integration app that connects Saleor with popular Content Management Systems."
+        },
+        "integrations": [
+          {
+            "name": "Contentful CMS",
+            "logo": {
+              "light": {
+                "source": "https://apps.saleor.io/apps/v2/contentful.png"
+              },
+              "dark": {
+                "source": "https://apps.saleor.io/apps/v2/contentful.png"
+              }
+            }
+          }
+        ],
+        "repositoryUrl": "https://github.com/saleor/apps",
+        "manifestUrl": "https://{{ .Values.apps.cms.hostname }}/api/manifest",
+        "privacyUrl": "https://saleor.io/legal/privacy/",
+        "supportUrl": "https://saleor.io"
+      }
+      {{- $first = false }}
+      {{- end }}
+      {{- end }}
+      {{- if hasKey .Values.apps "search" }}
+      {{- if .Values.apps.search.enabled }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/search-hub.svg",
+          "color": "#c73a3f"
+        },
+        "name": {
+          "en": "Search"
+        },
+        "description": {
+          "en": "Search App synchronizes product catalog with Algolia."
+        },
+        "integrations": [
+          {
+            "name": "Algolia",
+            "logo": {
+              "light": {
+                "source": "https://apps.saleor.io/apps/v2/algolia.svg"
+              },
+              "dark": {
+                "source": "https://apps.saleor.io/apps/v2/algolia.svg"
+              }
+            }
+          }
+        ],
+        "repositoryUrl": "https://github.com/saleor/apps",
+        "manifestUrl": "https://{{ .Values.apps.search.hostname }}/api/manifest",
+        "privacyUrl": "https://saleor.io/legal/privacy/",
+        "supportUrl": "https://saleor.io"
+      }
+      {{- $first = false }}
+      {{- end }}
+      {{- end }}
+      {{- if hasKey .Values.apps "smtp" }}
+      {{- if .Values.apps.smtp.enabled }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          "source": "https://apps.saleor.io/apps/v2/smtp.svg",
+          "color": "#fff"
+        },
+        "name": {
+          "en": "SMTP"
+        },
+        "description": {
+          "en": "SMTP App is a Saleor app that allows sending emails via SMTP protocol"
+        },
+        "integrations": [
+          {
+            "name": "SMTP",
+            "logo": {
+              "light": {
+                "source": "https://apps.saleor.io/apps/v2/smtp.svg"
+              },
+              "dark": {
+                "source": "https://apps.saleor.io/apps/v2/smtp.svg"
+              }
+            }
+          }
+        ],
+        "repositoryUrl": "https://github.com/saleor/apps",
+        "manifestUrl": "https://{{ .Values.apps.smtp.hostname }}/api/manifest",
+        "privacyUrl": "https://saleor.io/legal/privacy/",
+        "supportUrl": "https://saleor.io"
+      }
+      {{- $first = false }}
+      {{- end }}
+      {{- end }}
+    ]

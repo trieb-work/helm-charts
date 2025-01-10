@@ -1,0 +1,30 @@
+{{- if .Values.marketplace.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-marketplace
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+  {{- with .Values.marketplace.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.marketplace.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.marketplace.hostname | quote }}
+      secretName: {{ default (printf "%s-marketplace-tls" .Release.Name) .Values.marketplace.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.marketplace.hostname | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-marketplace
+                port:
+                  name: http
+{{- end }}

@@ -27,6 +27,22 @@ common:
       cpu: 100m
       memory: 128Mi
 
+# Marketplace configuration
+# Provides a custom marketplace JSON endpoint for your Saleor apps. Access it at https://marketplace.apps.example.com/marketplace.json
+marketplace:
+  # Hostname where the marketplace JSON will be served
+  hostname: marketplace.apps.example.com
+  ingress:
+    # Enable ingress for the marketplace service
+    enabled: true
+    # Additional annotations for the ingress (e.g., for cert-manager)
+    annotations: {}
+    tls:
+      # Enable TLS for the marketplace ingress
+      enabled: true
+      # TLS secret name. Leave empty to use default: <release>-marketplace-tls
+      secretName: ""
+
 # Individual app configurations
 apps:
   smtp:
