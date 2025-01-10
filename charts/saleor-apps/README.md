@@ -103,7 +103,10 @@ Enable and configure the marketplace in your values.yaml:
 
 ```yaml
 marketplace:
-  hostname: marketplace.apps.example.com  # Your marketplace hostname
+  # Enable or disable the marketplace service
+  enabled: true
+  # Your marketplace hostname
+  hostname: marketplace.apps.example.com
   ingress:
     enabled: true
     annotations:

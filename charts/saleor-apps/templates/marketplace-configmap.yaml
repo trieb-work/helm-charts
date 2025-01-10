@@ -1,3 +1,4 @@
+{{- if .Values.marketplace.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -184,3 +185,5 @@ data:
       {{- end }}
       {{- end }}
     ]
+
+{{- end }}

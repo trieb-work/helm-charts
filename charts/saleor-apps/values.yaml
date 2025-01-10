@@ -30,6 +30,8 @@ common:
 # Marketplace configuration
 # Provides a custom marketplace JSON endpoint for your Saleor apps. Access it at https://marketplace.apps.example.com/marketplace.json
 marketplace:
+  # Enable or disable the marketplace service
+  enabled: true
   # Hostname where the marketplace JSON will be served
   hostname: marketplace.apps.example.com
   ingress:
