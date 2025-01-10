@@ -77,12 +77,27 @@ spec:
             failureThreshold: 3
           resources:
             {{- toYaml .Values.worker.resources | nindent 12 }}
+          volumeMounts:
+            {{- if include "saleor.readReplicaEnabled" . }}
+            - name: settings
+              mountPath: /app/saleor/settings.py
+              subPath: settings.py
+            {{- end }}
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: database-url
+            {{- if include "saleor.readReplicaEnabled" . }}
+            - name: DATABASE_URL_REPLICA
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: database-url-replica
+            - name: DB_CONN_MAX_AGE
+              value: {{ .Values.global.database.connMaxAge | quote }}
+            {{- end }}
             {{- if .Values.global.jwtRsaPrivateKey }}
             - name: RSA_PRIVATE_KEY
               valueFrom:
@@ -115,10 +130,16 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: secret-key
+            {{- include "saleor.s3Env" . | nindent 12 }}
             {{- with .Values.worker.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- include "saleor.s3Env" . | nindent 12 }}
+      volumes:
+        {{- if include "saleor.readReplicaEnabled" . }}
+        - name: settings
+          configMap:
+            name: {{ include "saleor.fullname" . }}-settings
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
