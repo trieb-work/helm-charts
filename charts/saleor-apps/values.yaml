@@ -38,7 +38,6 @@ apps:
     ingress:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
         secretName: ""  # Leave empty to use default name: <release>-smtp-tls
@@ -52,7 +51,6 @@ apps:
     ingress:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
         secretName: ""
@@ -66,7 +64,6 @@ apps:
     ingress:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
         secretName: ""
@@ -80,7 +77,6 @@ apps:
     ingress:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
         secretName: ""
@@ -94,7 +90,6 @@ apps:
     ingress:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
         secretName: ""
@@ -108,7 +103,6 @@ apps:
     ingress:
       enabled: true
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
         secretName: ""
