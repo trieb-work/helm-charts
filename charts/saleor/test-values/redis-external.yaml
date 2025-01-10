@@ -1,0 +1,10 @@
+global:
+  secretKey: "test-secret-key"
+
+redis:
+  enabled: false
+  external:
+    host: "my-redis.example.com"
+    port: 6379
+    password: "external-password"
+    database: 1

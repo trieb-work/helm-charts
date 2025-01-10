@@ -1,0 +1,8 @@
+global:
+  secretKey: "test-secret-key"
+
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: "test-password"

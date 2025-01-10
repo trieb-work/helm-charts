@@ -1,0 +1,5 @@
+global:
+  secretKey: "test-secret-key"
+  redisUrl: "redis://user:pass@redis.example.com:6379/0"
+redis:
+  enabled: false
