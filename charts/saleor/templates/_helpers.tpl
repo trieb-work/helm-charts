@@ -165,3 +165,12 @@ Get the database read replica URL
 {{- include "saleor.databaseUrl" . -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Determine if read replica is enabled
+*/}}
+{{- define "saleor.readReplicaEnabled" -}}
+{{- if or (and (not .Values.postgresql.enabled) .Values.global.database.replicaUrl) (and .Values.postgresql.enabled (eq .Values.postgresql.architecture "replication")) -}}
+{{- true -}}
+{{- end -}}
+{{- end -}}

@@ -85,6 +85,12 @@ api:
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
 
+  securityContext:  
+
+  podAnnotations:
+
+  imagePullSecrets:
+
 dashboard:
   enabled: true
   replicaCount: 1

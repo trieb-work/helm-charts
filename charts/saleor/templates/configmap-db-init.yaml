@@ -1,0 +1,43 @@
+{{- if include "saleor.readReplicaEnabled" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "saleor.fullname" . }}-db-init
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+data:
+  modify-settings.py: |
+    import fileinput
+    import sys
+    import os
+
+    def modify_settings():
+        replica_url = os.environ.get('DATABASE_URL_REPLICA')
+        if not replica_url:
+            print("No replica URL provided")
+            sys.exit(1)
+
+        with fileinput.FileInput('/app/saleor/settings.py', inplace=True, backup='.bak') as file:
+            in_database_block = False
+            for line in file:
+                if 'DATABASES = {' in line:
+                    in_database_block = True
+                    print(line, end='')
+                elif in_database_block and 'DATABASE_CONNECTION_REPLICA_NAME:' in line:
+                    # Found the replica configuration block
+                    print('    DATABASE_CONNECTION_REPLICA_NAME: dj_database_url.config(')
+                    print(f'        default=os.environ.get("DATABASE_URL_REPLICA"),')
+                    print('        conn_max_age=DB_CONN_MAX_AGE,')
+                    print('        test_options={"MIRROR": DATABASE_CONNECTION_DEFAULT_NAME},')
+                    print('    ),')
+                    in_database_block = False
+                    continue
+                elif in_database_block and '},' in line:
+                    in_database_block = False
+                    print(line, end='')
+                else:
+                    print(line, end='')
+
+    if __name__ == "__main__":
+        modify_settings()
+{{- end }}
