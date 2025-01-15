@@ -318,6 +318,8 @@ ingress:
         paths:
           - path: /graphql/
             pathType: Prefix
+          - path: /thumbnail/
+            pathType: Prefix
     tls:
       - secretName: saleor-api-tls
         hosts:

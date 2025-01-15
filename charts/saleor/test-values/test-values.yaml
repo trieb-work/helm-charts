@@ -101,6 +101,8 @@ ingress:
         paths:
           - path: /graphql/
             pathType: Prefix
+          - path: /thumbnail/
+            pathType: Prefix
     tls:
       - secretName: test-saleor-api-tls
         hosts:
@@ -163,5 +165,8 @@ storage:
       staticBucketName: test-saleor-publ
       mediaBucketName: test-saleor-publ
       mediaPrivateBucketName: test-saleor-private
-      queryStringAuth: true
+      queryStringAuth: false
       queryStringExpire: 3600
+      endpointUrl: https://fsn1.your-objectstorage.com
+      defaultAcl: public-read
+    credentials: {}  # Credentials will be set via --set flags
