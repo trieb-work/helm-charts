@@ -17,6 +17,9 @@ spec:
       labels:
         {{- include "saleor-apps.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: marketplace
+      annotations:
+        # Restart the pod if the values change 
+        checksum/marketplace-config: {{ toYaml (index .Values "marketplace") | sha256sum }}
     spec:
       containers:
         - name: nginx

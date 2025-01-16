@@ -71,3 +71,26 @@ apps:
         cert-manager.io/cluster-issuer: letsencrypt-prod
       tls:
         enabled: true
+
+
+  test-customer-app:
+    enabled: true
+    hostname: test-customer-app-test-saleor.eu.fsn1.trwrk.xyz
+    port: 8000  # Port that your app listens on. Optional, defaults to 3000
+    image:
+      registry: us-central1-docker.pkg.dev  # Required
+      repository: kencove-prod/kencove-docker-repo/saleor-customer-app  # Required
+      tag: latest  # Required
+    manifestPath: /api/manifest  # Optional, defaults to /api/manifest
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+    # Optional marketplace metadata
+    marketplace:
+      name: "This is a customer app for testing purposes for now"  # Required if app is enabled
+      description:
+        en: "My custom app description" # Optional

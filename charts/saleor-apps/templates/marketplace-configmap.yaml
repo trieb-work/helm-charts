@@ -174,7 +174,7 @@ data:
       }
       {{- $first = false }}
       {{- end }}
-      {{- if .Values.apps.klaviyo.enabled }}
+      {{- if (index .Values.apps "klaviyo").enabled }}
       {{- if not $first }},{{ end }}
       {
         "logo": {
@@ -201,11 +201,51 @@ data:
           }
         ],
         "repositoryUrl": "https://github.com/saleor/apps",
-        "manifestUrl": "https://{{ .Values.apps.klaviyo.hostname }}/api/manifest",
+        "manifestUrl": "https://{{ (index .Values.apps "klaviyo").hostname }}/api/manifest",
         "privacyUrl": "https://saleor.io/legal/privacy/",
         "supportUrl": "https://saleor.io"
       }
       {{- $first = false }}
+      {{- end }}
+      {{- range $appName, $appConfig := .Values.apps }}
+      {{- if and $appConfig.enabled $appConfig.marketplace }}
+      {{- if not $first }},{{ end }}
+      {
+        "logo": {
+          {{- if $appConfig.marketplace.logo }}
+          "source": {{ $appConfig.marketplace.logo.source | quote }},
+          "color": {{ $appConfig.marketplace.logo.color | quote }}
+          {{- else }}
+          "source": "https://apps.saleor.io/apps/v2/saleor-apps/placeholder.svg",
+          "color": "#3a56c7"
+          {{- end }}
+        },
+        "name": {
+          "en": {{ $appConfig.marketplace.name | quote }}
+        },
+        {{- if $appConfig.marketplace.description }}
+        "description": {
+          "en": {{ $appConfig.marketplace.description.en | quote }}
+        },
+        {{- end }}
+        {{- if $appConfig.marketplace.integrations }}
+        "integrations": {{ $appConfig.marketplace.integrations | toJson }},
+        {{- end }}
+        {{- if $appConfig.marketplace.repositoryUrl }}
+        "repositoryUrl": {{ $appConfig.marketplace.repositoryUrl | quote }},
+        {{- end }}
+        "manifestUrl": "https://{{ $appConfig.hostname }}{{ default "/api/manifest" $appConfig.manifestPath }}",
+        {{- if $appConfig.marketplace.privacyUrl }}
+        "privacyUrl": {{ $appConfig.marketplace.privacyUrl | quote }},
+        {{- end }}
+        {{- if $appConfig.marketplace.supportUrl }}
+        "supportUrl": {{ $appConfig.marketplace.supportUrl | quote }}
+        {{- else }}
+        "supportUrl": "https://saleor.io"
+        {{- end }}
+      }
+      {{- $first = false }}
+      {{- end }}
       {{- end }}
     ]
 
