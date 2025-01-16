@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: {{ $appName }}
-          image: "{{ $.Values.common.image.registry }}/{{ $.Values.common.image.repository }}/{{ $appName }}:{{ $appConfig.image.tag | default $.Values.common.image.tag }}"
+          image: "{{ $appConfig.image.registry | default $.Values.common.image.registry }}/{{ $appConfig.image.repository | default (printf "%s/%s" $.Values.common.image.repository $appName) }}:{{ $appConfig.image.tag | default $.Values.common.image.tag }}"
           imagePullPolicy: {{ $.Values.common.image.pullPolicy }}
           env:
             - name: SECRET_KEY

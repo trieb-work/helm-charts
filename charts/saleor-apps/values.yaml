@@ -13,7 +13,7 @@ redis:
     enabled: true
     password: ""
 
-# Common settings for all apps
+# Common settings for all default marketplace apps
 common:
   image:
     registry: ghcr.io
@@ -47,6 +47,41 @@ marketplace:
 
 # Individual app configurations
 apps:
+  # Example of how to add your own custom app:
+  # my-custom-app:
+  #   enabled: false
+  #   hostname: my-custom-app.apps.example.com
+  #   port: 8000  # Port that your app listens on. Optional, defaults to 3000
+  #   image:
+  #     registry: ghcr.io  # Required
+  #     repository: myorg/my-custom-app  # Required
+  #     tag: v1.0.0  # Required
+  #   manifestPath: /api/manifest  # Optional, defaults to /api/manifest
+  #   ingress:
+  #     enabled: true
+  #     annotations: {}
+  #     tls:
+  #       enabled: true
+  #       secretName: ""
+  #   # Optional marketplace metadata
+  #   marketplace:
+  #     name: "My Custom App"  # Required if app is enabled
+  #     logo:
+  #       source: "https://example.com/logo.svg" # Optional
+  #       color: "#000000" # Optional
+  #     description:
+  #       en: "My custom app description" # Optional
+  #     integrations:  # Optional
+  #       - name: "Integration Name"
+  #         logo:
+  #           light:
+  #             source: "https://example.com/logo-light.svg"
+  #           dark:
+  #             source: "https://example.com/logo-dark.svg"
+  #     privacyUrl: "https://example.com/privacy" # Optional
+  #     supportUrl: "https://example.com/support" # Optional
+  #     repositoryUrl: "https://github.com/myorg/my-custom-app" # Optional
+
   smtp:
     enabled: false
     hostname: smtp.apps.example.com
