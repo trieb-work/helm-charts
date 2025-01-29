@@ -35,12 +35,7 @@ spec:
             - name: HOSTNAME
               value: "0.0.0.0"
             - name: REDIS_URL
-              value: redis://{{ include "saleor-apps.fullname" $ }}-redis-master:6379
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "saleor-apps.fullname" $ }}-redis
-                  key: redis-password
+              value: {{ include "saleor-apps.redis.url" $ | quote }}
           ports:
             - name: http
               containerPort: {{ $appConfig.port }}

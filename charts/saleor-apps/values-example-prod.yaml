@@ -1,6 +1,7 @@
 global:
   domain: "test-saleor.eu.fsn1.trwrk.xyz"
   secretKey: "your-secret-key-here"  # Replace with actual secret key in production
+  #redisUrl: "redis://test-saleor-redis-master:6379"
 
 redis:
   auth:

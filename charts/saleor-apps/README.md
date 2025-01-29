@@ -66,9 +66,36 @@ helm install saleor-apps . -f my-values.yaml
 
 ### Redis Configuration
 
+The chart supports both internal and external Redis configurations. You can either:
+1. Use the built-in Redis (default)
+2. Connect to an external Redis instance
+
+#### Using External Redis
+
+To use an external Redis instance, simply set the full Redis URL in the global configuration:
+
+```yaml
+global:
+  redisUrl: "redis://user:password@your-redis-host:6379"
+```
+
+This takes precedence over any internal Redis configuration.
+
+#### Using Internal Redis
+
+By default, the chart will deploy a Redis instance using the Bitnami Redis chart. You can configure authentication:
+
+```yaml
+redis:
+  auth:
+    enabled: true  # Enable Redis password authentication
+    password: "your-password"  # Set your Redis password
+```
+
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `redis.enabled` | Enable Redis deployment | `true` |
+| `global.redisUrl` | External Redis URL (takes precedence if set) | `""` |
+| `redis.enabled` | Enable internal Redis deployment | `true` |
 | `redis.auth.enabled` | Enable Redis authentication | `true` |
 | `redis.auth.password` | Redis password | `""` |
 
