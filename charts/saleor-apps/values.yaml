@@ -7,6 +7,7 @@ global:
   # -- External Redis URL (if not using internal Redis)
   redisUrl: ""
 
+
 # Redis configuration
 redis:
   enabled: true
@@ -17,6 +18,8 @@ redis:
 
 # Common settings for all default marketplace apps
 common:
+  # set the APL name that should be used. Defaults to "redis", as we natively support that. Could be upstash or file as well
+  apl: "redis"
   image:
     registry: ghcr.io
     repository: trieb-work/saleor-apps

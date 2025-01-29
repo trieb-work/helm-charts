@@ -36,6 +36,8 @@ spec:
               value: "0.0.0.0"
             - name: REDIS_URL
               value: {{ include "saleor-apps.redis.url" $ | quote }}
+            - name: APL
+              value: {{ $.Values.common.apl | quote }}  
           ports:
             - name: http
               containerPort: {{ $appConfig.port }}
