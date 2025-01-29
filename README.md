@@ -59,6 +59,8 @@ apps:
         value: "https://saleor.example.com/graphql/"
 ```
 
+This chart is using the docker container from this repository: https://github.com/trieb-work/saleor-apps-docker. You can optionally build them yourself.
+
 For detailed configuration options and examples, see our [Saleor Apps Chart Documentation](charts/saleor-apps/README.md).
 
 ### Strapi
