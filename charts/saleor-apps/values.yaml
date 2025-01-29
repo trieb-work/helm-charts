@@ -92,7 +92,7 @@ apps:
     hostname: smtp.apps.example.com
     port: 3000
     image:
-      tag: "1.2.19"
+      tag: "1.2.22"
     ingress:
       enabled: true
       annotations:
@@ -118,7 +118,7 @@ apps:
     hostname: products-feed.apps.example.com
     port: 3000
     image:
-      tag: "1.19.16"
+      tag: "1.20.1"
     ingress:
       enabled: true
       annotations:
@@ -131,7 +131,7 @@ apps:
     hostname: app-avatax.apps.example.com
     port: 3000
     image:
-      tag: "1.12.3"
+      tag: "1.12.6"
     ingress:
       enabled: true
       annotations:
@@ -144,7 +144,7 @@ apps:
     hostname: cms-v2.apps.example.com
     port: 3000
     image:
-      tag: "2.9.16"
+      tag: "2.9.19"
     ingress:
       enabled: true
       annotations:
