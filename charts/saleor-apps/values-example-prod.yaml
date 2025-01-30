@@ -78,6 +78,9 @@ apps:
     enabled: true
     hostname: test-customer-app-test-saleor.eu.fsn1.trwrk.xyz
     port: 8000  # Port that your app listens on. Optional, defaults to 3000
+    extraEnvs:
+      - name: MY_CUSTOM_ENV
+        value: "custom-value"
     image:
       registry: us-central1-docker.pkg.dev  # Required
       repository: kencove-prod/kencove-docker-repo/saleor-customer-app  # Required

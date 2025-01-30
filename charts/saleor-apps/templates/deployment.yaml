@@ -38,6 +38,9 @@ spec:
               value: {{ include "saleor-apps.redis.url" $ | quote }}
             - name: APL
               value: {{ $.Values.common.apl | quote }}  
+            {{- if $appConfig.extraEnvs }}
+            {{- toYaml $appConfig.extraEnvs | nindent 12 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ $appConfig.port }}
