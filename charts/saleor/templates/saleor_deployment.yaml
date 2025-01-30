@@ -132,6 +132,11 @@ spec:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: redis-url
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "saleor.fullname" . }}-secrets
+                  key: celery-redis-url
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:

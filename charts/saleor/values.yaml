@@ -9,7 +9,9 @@ global:
   secretKey: ""
   # -- External Redis URL (if not using internal Redis)
   redisUrl: ""
-  # Database configuration
+  # -- External Celery Redis URL (if not using internal Redis). Use /0 for general usage and /1 for Celery for example
+  celeryRedisUrl: ""
+  # -- Database configuration
   database:
     # -- External primary database URL
     primaryUrl: ""
@@ -50,7 +52,7 @@ api:
 
   image:
     repository: ghcr.io/saleor/saleor
-    tag: "3.20.65"
+    tag: "3.20.68"
     pullPolicy: IfNotPresent
 
   extraEnv:
@@ -99,7 +101,7 @@ dashboard:
   
   image:
     repository: ghcr.io/saleor/saleor-dashboard
-    tag: "3.20.23"
+    tag: "3.20.25"
     pullPolicy: IfNotPresent
   
   # Just to render the apps marketplace. You can't install apps from here, but you can easily add a "marketplace" URL on your own (it is just a JSON)
@@ -137,7 +139,7 @@ worker:
   
   image:
     repository: ghcr.io/saleor/saleor
-    tag: "3.20.65"
+    tag: "3.20.68"
     pullPolicy: IfNotPresent
   
   extraEnv:
@@ -274,30 +276,6 @@ redis:
       requests:
         cpu: 100m
         memory: 128Mi
-  
-  # -- External Redis configuration (used when redis.enabled=false)
-  external:
-    # -- External Redis host (e.g., my-redis.example.com)
-    host: ""
-    # -- External Redis port
-    port: 6379
-    # -- External Redis database number
-    database: 0
-    # -- External Redis username (if using Redis ACLs)
-    username: ""
-    # -- External Redis password
-    password: ""
-    # -- Use existing secret for external Redis credentials
-    existingSecret: ""
-    # -- Key in existing secret that contains Redis password
-    existingSecretPasswordKey: ""
-    # -- Enable TLS for Redis connection
-    tls:
-      enabled: false
-      # -- Skip TLS verification
-      insecureSkipVerify: false
-      # -- Secret containing TLS certificates
-      certificatesSecret: ""
 
 ingress:
   enabled: true

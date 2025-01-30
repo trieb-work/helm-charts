@@ -1,0 +1,15 @@
+global:
+  secretKey: "test-secret-key-123"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+
+api:
+  enabled: true
+
+worker:
+  enabled: true
+
+redis:
+  enabled: true
+  auth:
+    enabled: false

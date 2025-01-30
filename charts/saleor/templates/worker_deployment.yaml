@@ -52,13 +52,13 @@ spec:
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           command: ["celery"]
-          args: ["-A", "saleor.celeryconf", "worker", "--loglevel=info"]
+          args: ["-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=info", "-B"]
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - celery -A saleor.celeryconf inspect ping -d celery@$HOSTNAME
+                - celery -A saleor inspect ping -d celery@$HOSTNAME
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 15
@@ -69,7 +69,7 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - celery -A saleor.celeryconf inspect ping -d celery@$HOSTNAME
+                - celery -A saleor inspect ping -d celery@$HOSTNAME
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 15
@@ -99,10 +99,14 @@ spec:
                   key: database-url
             {{- if include "saleor.readReplicaEnabled" . }}
             - name: DATABASE_URL_REPLICA
+              {{- if .Values.global.database.replicaUrl }}
+              value: {{ .Values.global.database.replicaUrl | quote }}
+              {{- else }}
               valueFrom:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
                   key: database-url-replica
+              {{- end }}
             - name: DB_CONN_MAX_AGE
               value: {{ .Values.global.database.connMaxAge | quote }}
             {{- end }}
@@ -126,7 +130,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ include "saleor.fullname" . }}-secrets
-                  key: redis-url
+                  key: celery-redis-url
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:

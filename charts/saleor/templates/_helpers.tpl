@@ -80,12 +80,27 @@ Get Redis password - either from values, existing secret, or generate new one
 {{- end -}}
 {{- end -}}
 
+{{/*
+Get internal Redis URL with database 0 for general usage
+*/}}
 {{- define "saleor.internalRedisUrl" -}}
 {{- if .Values.redis.auth.enabled -}}
 {{- $redisPassword := include "saleor.redisPassword" . -}}
 {{- printf "redis://:%s@%s-redis-master:6379/0" $redisPassword .Release.Name -}}
 {{- else -}}
 {{- printf "redis://%s-redis-master:6379/0" .Release.Name -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get internal Redis URL with database 1 for Celery
+*/}}
+{{- define "saleor.internalCeleryRedisUrl" -}}
+{{- if .Values.redis.auth.enabled -}}
+{{- $redisPassword := include "saleor.redisPassword" . -}}
+{{- printf "redis://:%s@%s-redis-master:6379/1" $redisPassword .Release.Name -}}
+{{- else -}}
+{{- printf "redis://%s-redis-master:6379/1" .Release.Name -}}
 {{- end -}}
 {{- end -}}
 
@@ -111,6 +126,31 @@ Get Redis URL - either from global value, external config, or internal Redis
 {{- end -}}
 {{- else -}}
 {{- include "saleor.internalRedisUrl" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get Celery Redis URL - either from global value, external config, or internal Redis
+*/}}
+{{- define "saleor.celeryRedisUrl" -}}
+{{- if .Values.global.celeryRedisUrl -}}
+{{- .Values.global.celeryRedisUrl -}}
+{{- else if not .Values.redis.enabled -}}
+{{- $host := required "External Redis host is required when redis.enabled=false" .Values.redis.external.host -}}
+{{- $port := .Values.redis.external.port | default "6379" -}}
+{{- $db := .Values.redis.external.celeryDatabase | default "1" -}}
+{{- $username := .Values.redis.external.username -}}
+{{- $password := .Values.redis.external.password -}}
+{{- $protocol := ternary "rediss" "redis" .Values.redis.external.tls.enabled -}}
+{{- if and $username $password -}}
+{{- printf "%s://%s:%s@%s:%s/%s" $protocol $username $password $host $port $db -}}
+{{- else if $password -}}
+{{- printf "%s://:%s@%s:%s/%s" $protocol $password $host $port $db -}}
+{{- else -}}
+{{- printf "%s://%s:%s/%s" $protocol $host $port $db -}}
+{{- end -}}
+{{- else -}}
+{{- include "saleor.internalCeleryRedisUrl" . -}}
 {{- end -}}
 {{- end -}}
 

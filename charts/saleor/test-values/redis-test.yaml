@@ -1,0 +1,27 @@
+# Test 1: Using internal Redis (default configuration)
+global:
+  secretKey: "test-secret-key"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+
+---
+# Test 2: Using external Redis URLs
+global:
+  secretKey: "test-secret-key"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+  redisUrl: "redis://external-redis:6379/0"
+  celeryRedisUrl: "redis://external-redis:6379/1"
+redis:
+  enabled: false
+
+---
+# Test 3: Using external Redis with authentication
+global:
+  secretKey: "test-secret-key"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+  redisUrl: "redis://user:pass@external-redis:6379/0"
+  celeryRedisUrl: "redis://user:pass@external-redis:6379/1"
+redis:
+  enabled: false

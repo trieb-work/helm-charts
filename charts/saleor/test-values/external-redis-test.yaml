@@ -1,0 +1,22 @@
+global:
+  secretKey: "test-secret-key-123"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+
+api:
+  enabled: true
+
+worker:
+  enabled: true
+
+redis:
+  enabled: false
+  external:
+    host: "my-redis.example.com"
+    port: 6379
+    username: "myuser"
+    password: "mypassword"
+    tls:
+      enabled: true
+    database: "0"
+    celeryDatabase: "1"
