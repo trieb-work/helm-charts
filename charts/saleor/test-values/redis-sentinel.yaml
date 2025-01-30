@@ -1,4 +1,4 @@
-# Test case: Internal Redis with authentication
+# Test case: Redis with Sentinel architecture
 global:
   secretKey: "test-secret-key"
   database:
@@ -6,7 +6,12 @@ global:
 
 redis:
   enabled: true
+  architecture: replication
   auth:
     enabled: true
     password: "test-password"
-  architecture: standalone
+  sentinel:
+    enabled: true
+    masterSet: "mymaster"
+  replica:
+    replicaCount: 2

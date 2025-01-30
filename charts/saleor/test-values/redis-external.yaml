@@ -1,5 +1,8 @@
+# Test case: External Redis with password authentication
 global:
   secretKey: "test-secret-key"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
 
 redis:
   enabled: false
@@ -7,4 +10,5 @@ redis:
     host: "my-redis.example.com"
     port: 6379
     password: "external-password"
-    database: 1
+    tls:
+      enabled: false

@@ -1,5 +1,8 @@
+# Test case: External Redis with TLS and username/password authentication
 global:
   secretKey: "test-secret-key"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
 
 redis:
   enabled: false
@@ -8,6 +11,5 @@ redis:
     port: 6379
     username: "redis-user"
     password: "external-password"
-    database: 2
     tls:
       enabled: true

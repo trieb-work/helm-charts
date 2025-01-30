@@ -1,5 +1,12 @@
+# Test case: External Redis using global URLs
 global:
   secretKey: "test-secret-key"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+  # Redis URL for general usage (database 0)
   redisUrl: "redis://user:pass@redis.example.com:6379/0"
+  # Redis URL for Celery (database 1)
+  celeryRedisUrl: "redis://user:pass@redis.example.com:6379/1"
+
 redis:
   enabled: false
