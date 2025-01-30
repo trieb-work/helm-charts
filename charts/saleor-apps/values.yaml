@@ -155,7 +155,7 @@ apps:
     hostname: cms-v2.apps.example.com
     port: 3000
     image:
-      tag: "2.10.0"
+      tag: "2.11.0"
     ingress:
       enabled: true
       annotations:
