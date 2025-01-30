@@ -103,7 +103,7 @@ apps:
     extraEnvs: []
     port: 3000
     image:
-      tag: "1.3.0"
+      tag: "1.3.1"
     ingress:
       enabled: true
       annotations:
@@ -116,7 +116,7 @@ apps:
     hostname: search.apps.example.com
     port: 3000
     image:
-      tag: "1.23.0"
+      tag: "1.23.1"
     ingress:
       enabled: true
       annotations:
@@ -129,7 +129,7 @@ apps:
     hostname: products-feed.apps.example.com
     port: 3000
     image:
-      tag: "1.21.0"
+      tag: "1.21.1"
     ingress:
       enabled: true
       annotations:
@@ -142,7 +142,7 @@ apps:
     hostname: app-avatax.apps.example.com
     port: 3000
     image:
-      tag: "1.13.0"
+      tag: "1.13.1"
     ingress:
       enabled: true
       annotations:
@@ -155,7 +155,7 @@ apps:
     hostname: cms-v2.apps.example.com
     port: 3000
     image:
-      tag: "2.11.0"
+      tag: "2.11.1"
     ingress:
       enabled: true
       annotations:
@@ -168,7 +168,7 @@ apps:
     hostname: klaviyo.apps.example.com
     port: 3000
     image:
-      tag: "1.13.0"
+      tag: "1.13.1"
     ingress:
       enabled: true
       annotations:
