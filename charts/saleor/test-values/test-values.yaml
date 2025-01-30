@@ -53,13 +53,21 @@ global:
     6tKQ0JqxhYiaET1SuIz5IPB7LOLV
     -----END PRIVATE KEY-----
 
+  secretKey: "test-secret-key-123"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+
 api:
   enabled: true
   replicaCount: 2
   autoscaling:
     enabled: true
-
-
+  resources:
+    limits:
+      memory: "1Gi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
   extraEnv:
     - name: ALLOWED_HOSTS
       value: "test-saleor.eu.fsn1.trwrk.xyz"
@@ -77,12 +85,9 @@ dashboard:
   replicaCount: 2
   appsMarketplaceApiUrl: "https://marketplace-test-saleor.eu.fsn1.trwrk.xyz/marketplace.json"
 
-    
-
 worker:
   enabled: true
   replicaCount: 2
-    
 
 redis:
   enabled: true

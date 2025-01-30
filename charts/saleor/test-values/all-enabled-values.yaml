@@ -1,3 +1,9 @@
+# Test case: All features enabled
+global:
+  secretKey: "test-secret-key-123"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+
 api:
   enabled: true
   replicaCount: 2
@@ -8,6 +14,8 @@ api:
     repository: ghcr.io/saleor/saleor
     tag: "3.19"
     pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: true
 
 dashboard:
   enabled: true
@@ -37,6 +45,7 @@ postgresql:
   auth:
     database: saleor
     username: saleor
+    postgresPassword: "test-postgres-password"
   primary:
     persistence:
       size: 8Gi

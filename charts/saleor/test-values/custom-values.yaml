@@ -50,12 +50,18 @@ worker:
       cpu: 200m
       memory: 256Mi
 
+global:
+  secretKey: "test-secret-key-123"
+  database:
+    url: "postgres://postgres:postgres@localhost:5432/saleor"
+
 postgresql:
   enabled: true
   architecture: standalone
   auth:
     database: saleor
     username: saleor
+    postgresPassword: "test-postgres-password"
   primary:
     persistence:
       size: 4Gi

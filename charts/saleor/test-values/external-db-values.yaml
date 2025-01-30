@@ -1,6 +1,13 @@
 api:
   enabled: true
   replicaCount: 2
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
 
 dashboard:
   enabled: true
@@ -14,14 +21,14 @@ postgresql:
   enabled: false
 
 global:
+  secretKey: "test-secret-key-123"
   database:
-    primaryUrl: "postgresql://user:pass@primary-db:5432/saleor"
-    replicaUrls: 
-      - "postgresql://user:pass@replica1-db:5432/saleor"
-      - "postgresql://user:pass@replica2-db:5432/saleor"
+    primaryUrl: "postgres://saleor:password@external-db.example.com:5432/saleor"
     maxConnections: 150
     connectionTimeout: 5
 
 redis:
   enabled: true
+  auth:
+    enabled: true
   architecture: standalone
