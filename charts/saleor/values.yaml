@@ -63,11 +63,6 @@ api:
     # -- List of allowed client hosts for CORS. Must match the exact domain used to access the dashboard.
     - name: ALLOWED_CLIENT_HOSTS
       value: "*"
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: postgresql-credentials  # Will be templated in deployment
-          key: database-url
 
   service:
     type: ClusterIP
