@@ -74,6 +74,33 @@ entries:
   saleor:
   - apiVersion: v2
     appVersion: "3.20"
+    created: "2025-01-30T23:44:18.642050945Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.12.5
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.1.0
+    description: A Helm chart for deploying Saleor e-commerce platform with Dashboard
+    digest: 1618757fbccba23d6cb1f53c2f1c533711fe2a859286b4f36e2e9ff06bc5be6f
+    keywords:
+    - saleor
+    - ecommerce
+    - graphql
+    - dashboard
+    maintainers:
+    - email: dev@saleor.io
+      name: Saleor Maintainers
+    name: saleor
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-2.0.2/saleor-2.0.2.tgz
+    version: 2.0.2
+  - apiVersion: v2
+    appVersion: "3.20"
     created: "2025-01-30T23:07:11.518829294Z"
     dependencies:
     - condition: postgresql.enabled
@@ -1349,6 +1376,23 @@ entries:
     - https://github.com/trieb-work/helm-charts/releases/download/saleor-0.1.26/saleor-0.1.26.tgz
     version: 0.1.26
   saleor-apps:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-01-30T23:44:18.760140433Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.x.x
+    description: A Helm chart for deploying Saleor Apps with shared Redis
+    digest: bf8d1eee53892c908be15f460babb547f47313fc913fe193a8126f5efb975d13
+    maintainers:
+    - name: trieb.work
+    name: saleor-apps
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-apps-0.3.2/saleor-apps-0.3.2.tgz
+    version: 0.3.2
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2025-01-30T21:33:45.521879365Z"
@@ -2825,4 +2869,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2025-01-30T23:07:11.519250774Z"
+generated: "2025-01-30T23:44:18.760508801Z"
