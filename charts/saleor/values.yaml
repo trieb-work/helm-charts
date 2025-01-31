@@ -293,6 +293,9 @@ ingress:
             pathType: Prefix
           - path: /thumbnail/
             pathType: Prefix
+          # This is important for the Saleor Apps to work with Saleor  
+          - path: /.well-known/jwks.json
+            pathType: Exact
     tls:
       - secretName: saleor-api-tls
         hosts:
