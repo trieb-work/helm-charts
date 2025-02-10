@@ -44,6 +44,7 @@ marketplace:
     enabled: true
     # Additional annotations for the ingress (e.g., for cert-manager)
     annotations: {}
+    className: ""
     tls:
       # Enable TLS for the marketplace ingress
       enabled: true
@@ -106,7 +107,8 @@ apps:
       tag: "1.3.1"
     ingress:
       enabled: true
-      annotations:
+      annotations: {}
+      className: ""
       tls:
         enabled: true
         secretName: ""  # Leave empty to use default name: <release>-smtp-tls
@@ -119,7 +121,8 @@ apps:
       tag: "1.23.1"
     ingress:
       enabled: true
-      annotations:
+      annotations: {}
+      className: ""
       tls:
         enabled: true
         secretName: ""
@@ -132,7 +135,8 @@ apps:
       tag: "1.21.1"
     ingress:
       enabled: true
-      annotations:
+      annotations: {}
+      className: ""
       tls:
         enabled: true
         secretName: ""
@@ -145,7 +149,8 @@ apps:
       tag: "1.13.1"
     ingress:
       enabled: true
-      annotations:
+      annotations: {}
+      className: ""
       tls:
         enabled: true
         secretName: ""
@@ -158,7 +163,8 @@ apps:
       tag: "2.11.1"
     ingress:
       enabled: true
-      annotations:
+      annotations: {}
+      className: ""
       tls:
         enabled: true
         secretName: ""
@@ -171,7 +177,8 @@ apps:
       tag: "1.13.1"
     ingress:
       enabled: true
-      annotations:
+      annotations: {}
+      className: ""
       tls:
         enabled: true
         secretName: ""

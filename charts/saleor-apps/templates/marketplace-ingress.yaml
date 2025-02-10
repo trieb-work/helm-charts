@@ -10,6 +10,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  {{- if .Values.marketplace.ingress.className }}
+  ingressClassName: {{ .Values.marketplace.ingress.className }}
+  {{- end }}
   {{- if .Values.marketplace.ingress.tls.enabled }}
   tls:
     - hosts:

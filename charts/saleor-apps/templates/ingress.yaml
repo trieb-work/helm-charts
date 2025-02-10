@@ -13,7 +13,10 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: nginx
+  {{- if $appConfig.ingress.className }}
+  ingressClassName: {{ $appConfig.ingress.className }}
+  {{- end }}
+
   {{- if $appConfig.ingress.tls }}
   tls:
     - hosts:
