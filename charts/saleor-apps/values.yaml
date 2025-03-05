@@ -1,7 +1,5 @@
 # Global settings
 global:
-  # Domain where the apps will be exposed
-  domain: "apps.example.com"
   # Secret key used by all apps
   secretKey: ""
   # -- External Redis URL (if not using internal Redis)
