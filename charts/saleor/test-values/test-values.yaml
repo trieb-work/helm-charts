@@ -56,6 +56,7 @@ global:
   secretKey: "test-secret-key-123"
   database:
     url: "postgres://postgres:postgres@localhost:5432/saleor"
+    replicaUrl: "postgres://postgres:postgres@localhost-read:5432/saleor"
 
 api:
   enabled: true

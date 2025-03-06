@@ -185,18 +185,6 @@ Get the database URL with password from postgresql-credentials secret
 {{- end -}}
 
 {{/*
-Get the database read URLs with password from postgresql-credentials secret
-*/}}
-{{- define "saleor.databaseReadUrls" -}}
-{{- if .Values.global.database.replicaUrls -}}
-{{- .Values.global.database.replicaUrls | toJson -}}
-{{- else if and .Values.postgresql.enabled (eq .Values.postgresql.architecture "replication") -}}
-{{- $postgresqlPassword := include "saleor.postgresqlPassword" . -}}
-{{- printf "[\"postgresql://%s:%s@%s-postgresql-read:5432/%s\"]" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Get the database read replica URL
 */}}
 {{- define "saleor.databaseReplicaUrl" -}}
