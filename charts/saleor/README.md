@@ -62,7 +62,7 @@ global:
   
   database:
     primaryUrl: ""        # External primary database URL
-    replicaUrls: []      # External read replica URLs
+    replicaUrl: ""        # External read replica URL
     maxConnections: 150
     connectionTimeout: 5
 ```
@@ -92,19 +92,30 @@ The private key will be automatically mounted in both the API and worker service
 
 Note: If `jwtRsaPrivateKey` is not set, Saleor will use a temporary key in development mode, but this is not suitable for production use.
 
-### Database Options
+### Database Configuration
 
-#### Internal PostgreSQL
+The chart offers several options for configuring the database, including support for read replicas:
+
+#### 1. Using the Built-in PostgreSQL Database
+
+By default, the chart will deploy a PostgreSQL instance and automatically manage the credentials:
 
 ```yaml
 postgresql:
   enabled: true
-  architecture: replication  # standalone or replication
+  # Choose between standalone or replication architecture
+  architecture: replication  # or 'standalone'
   auth:
     username: saleor
     database: saleor
-    existingSecret: ""
+    # Optional: Provide specific passwords, otherwise they will be auto-generated
+    existingSecret: postgresql-credentials
+    secretKeys:
+      userPasswordKey: password
+      adminPasswordKey: postgresql-password
+      replicationPasswordKey: replication-password  # Required for replication
   
+  # Primary database configuration
   primary:
     persistence:
       size: 50Gi
@@ -112,14 +123,24 @@ postgresql:
       requests:
         cpu: 2
         memory: 4Gi
-    
+  
+  # Read replica configuration (only used when architecture: replication)
   readReplicas:
     replicaCount: 1
     persistence:
       size: 50Gi
 ```
 
-#### External Database
+When using the built-in PostgreSQL with `architecture: replication`:
+- A read-only replica service is created at `<release>-postgresql-read`
+- Saleor automatically uses this replica for read operations to reduce load on the primary
+- The primary database at `<release>-postgresql-primary` is still used for all write operations
+
+The PostgreSQL credentials are stored in a Kubernetes secret named `postgresql-credentials`. This secret is marked with `helm.sh/resource-policy: keep` to ensure the credentials persist across Helm upgrades.
+
+#### 2. Using an External Database
+
+To use an external database, disable the built-in PostgreSQL and provide your database URLs:
 
 ```yaml
 postgresql:
@@ -127,10 +148,36 @@ postgresql:
 
 global:
   database:
-    primaryUrl: "postgresql://user:pass@primary-db:5432/saleor"
-    replicaUrls: 
-      - "postgresql://user:pass@replica1-db:5432/saleor"
+    primaryUrl: "postgresql://user:password@your-db-host:5432/saleor"
+    replicaUrl: "postgresql://user:password@your-read-replica:5432/saleor"  # Optional
+    maxConnections: 150
+    connectionTimeout: 5
 ```
+
+When configuring external databases:
+- The `primaryUrl` is required and will be used for all operations if no replica is configured
+- The `replicaUrl` is optional - when provided, Saleor will use it for read operations to reduce load on the primary
+- Only a single read replica is supported
+
+#### Managing Database Credentials
+
+If you're using the built-in PostgreSQL, you have two options for managing credentials:
+
+1. **Auto-generated passwords**: If you don't provide passwords, they will be automatically generated during installation
+2. **Manual secret management**: Create the secret before installation:
+   ```bash
+   kubectl create secret generic postgresql-credentials \
+     --from-literal=password=user-password \
+     --from-literal=postgresql-password=admin-password \
+     --from-literal=replication-password=replication-password  # Only needed for replication
+   ```
+
+Important notes about database passwords:
+- Generated passwords are preserved across Helm upgrades via the `helm.sh/resource-policy: keep` annotation
+- To rotate passwords:
+  1. Delete the existing `postgresql-credentials` secret
+  2. Either let the chart generate new passwords or provide new ones in your values
+  3. Upgrade the release
 
 ### Redis Configuration
 
@@ -200,73 +247,6 @@ global:
   - Set `redis.external.tls.enabled: true`
   - The connection will use the `rediss://` protocol
   - You can optionally skip TLS verification with `redis.external.tls.insecureSkipVerify: true`
-
-### Database Configuration
-
-The chart offers several options for configuring the database:
-
-#### 1. Using the Built-in PostgreSQL Database
-
-By default, the chart will deploy a PostgreSQL instance and automatically manage the credentials:
-
-```yaml
-postgresql:
-  enabled: true
-  architecture: standalone  # or 'replication' for primary-replica setup
-  auth:
-    username: saleor
-    database: saleor
-    # Optional: Provide a specific password
-    password: "your-password"  # If not set, a random password will be generated
-```
-
-The PostgreSQL credentials are stored in a Kubernetes secret named `postgresql-credentials`. This secret is marked with `helm.sh/resource-policy: keep` to ensure the credentials persist across Helm upgrades.
-
-#### 2. Using an Existing PostgreSQL Secret
-
-If you want to manage the database credentials yourself, you can create a secret named `postgresql-credentials` before installing the chart:
-
-```bash
-kubectl create secret generic postgresql-credentials \
-  --from-literal=user=saleor \
-  --from-literal=database=saleor \
-  --from-literal=password=your-password
-```
-
-Then configure the chart to use PostgreSQL but without specifying a password:
-
-```yaml
-postgresql:
-  enabled: true
-  auth:
-    username: saleor
-    database: saleor
-```
-
-#### 3. Using an External Database
-
-To use an external database, disable the built-in PostgreSQL and provide your database URL:
-
-```yaml
-postgresql:
-  enabled: false
-
-global:
-  database:
-    primaryUrl: "postgresql://user:password@your-db-host:5432/saleor"
-    # Optional: Add read replicas
-    replicaUrls:
-      - "postgresql://user:password@your-read-replica:5432/saleor"
-```
-
-### Important Notes About Database Passwords
-
-- If you're using the built-in PostgreSQL and don't provide a password, a random one will be generated during the first installation
-- The generated password will be preserved across Helm upgrades thanks to the `helm.sh/resource-policy: keep` annotation
-- If you need to rotate the password:
-  1. Delete the existing `postgresql-credentials` secret
-  2. Either let the chart generate a new password or provide a new one in your values
-  3. Upgrade the release
 
 ### API Configuration
 
