@@ -37,9 +37,18 @@ data:
     from sentry_sdk.integrations.logging import ignore_logger
     
     from . import PatchedSubscriberExecutionContext, __version__
+    from .core.db.patch import patch_db
     from .core.languages import LANGUAGES as CORE_LANGUAGES
     from .core.schedules import initiated_promotion_webhook_schedule
-    from .graphql.executor import patch_executor
+    from .graphql.graphql_core import (
+        patch_execution_context,
+        patch_execution_result,
+        patch_executor,
+    )
+    from .graphql.promise import patch_promise
+    from .patch_gzip import patch_gzip
+    from .patch_local import patch_local
+    from .plugins.openid_connect.patch import patch_authlib
     
     django_stubs_ext.monkeypatch()
     
@@ -119,7 +128,6 @@ data:
         ),
         "replica": dj_database_url.config(
             env="DATABASE_URL_REPLICA",
-            default=os.environ.get("DATABASE_URL_REPLICA"),
             conn_max_age=DB_CONN_MAX_AGE,
             test_options={"MIRROR": "default"},
         ),
@@ -1021,4 +1029,34 @@ data:
     # Disable Django warnings regarding too long cache keys being incompatible with
     # memcached to avoid leaking key values.
     warnings.filterwarnings("ignore", category=CacheKeyWarning)
+    
+    
+    # Patch Promise to remove all references that could result in reference cycles, allowing memory to be freed
+    # immediately, without the need of a deep garbage collection cycle.
+    patch_promise()
+    
+    # Patch `OAuth2Session` and `TokenAuth` to remove all references that could result in reference cycles,
+    # allowing memory to be freed immediately, without the need of a deep garbage collection cycle.
+    patch_authlib()
+    
+    # Patch `Local` to remove all references that could result in reference cycles,
+    # allowing memory to be freed immediately, without the need of a deep garbage collection cycle.
+    patch_local()
+    
+    # Patch `DatabaseClient`, `DatabaseCreation`, `DatabaseFeatures`, `DatabaseIntrospection`, `DatabaseOperations`,
+    # `BaseDatabaseValidation` and `DatabaseErrorWrapper` to remove all references that could result in reference cycles,
+    # allowing memory to be freed immediately, without the need of a deep garbage collection cycle.
+    patch_db()
+    
+    # Patch `_WriteBufferStream` from `gizip` to remove all references that could result in reference cycles,
+    # allowing memory to be freed immediately, without the need of a deep garbage collection cycle.
+    patch_gzip()
+    
+    # Patch `ExecutionContext` to remove all references that could result in reference cycles,
+    # allowing memory to be freed immediately, without the need of a deep garbage collection cycle.
+    patch_execution_context()
+    
+    # Patch `ExecutionResult` to remove all references that could result in reference cycles,
+    # allowing memory to be freed immediately, without the need of a deep garbage collection cycle.
+    patch_execution_result()
 {{- end }}
