@@ -4,6 +4,8 @@ global:
   secretKey: ""
   # -- External Redis URL (if not using internal Redis)
   redisUrl: ""
+  # -- Log level for all Saleor apps (can be 'info', 'debug', or 'trace')
+  appLogLevel: "info"
 
 
 # Redis configuration
