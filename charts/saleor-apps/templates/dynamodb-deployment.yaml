@@ -1,0 +1,138 @@
+{{- if (index .Values.apps "app-avatax") }}
+{{- if (get (index .Values.apps "app-avatax") "enabled") }}
+{{- if (get (index .Values.apps "app-avatax") "dynamodb").enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-dynamodb" (include "saleor-apps.fullname" .) }}
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dynamodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "saleor-apps.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: dynamodb
+  template:
+    metadata:
+      labels:
+        {{- include "saleor-apps.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: dynamodb
+    spec:
+      containers:
+        - name: dynamodb
+          image: "amazon/dynamodb-local:latest"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "-jar"
+            - "DynamoDBLocal.jar"
+            - "-sharedDb"
+            - "-dbPath"
+            - "/home/dynamodblocal/data"
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /home/dynamodblocal/data
+          resources:
+            {{- if (get (get (index .Values.apps "app-avatax") "dynamodb") "resources") }}
+            {{- toYaml (get (get (index .Values.apps "app-avatax") "dynamodb") "resources") | nindent 12 }}
+            {{- else }}
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            {{- end }}
+          # DynamoDB Local doesn't have a health check endpoint, so we'll use a TCP socket check
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-dynamodb-setup" (include "saleor-apps.fullname" .) }}
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dynamodb-setup
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        {{- include "saleor-apps.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: dynamodb-setup
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: aws-cli
+          image: "amazon/aws-cli:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-dynamodb" (include "saleor-apps.fullname" .) }}
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-dynamodb" (include "saleor-apps.fullname" .) }}
+                  key: secret-access-key
+            - name: AWS_DEFAULT_REGION
+              value: {{ (get (get (index .Values.apps "app-avatax") "dynamodb") "region") }}
+            - name: DYNAMODB_LOGS_TABLE_NAME
+              value: {{ (get (get (index .Values.apps "app-avatax") "dynamodb") "logsTableName") }}
+            - name: DYNAMODB_ENDPOINT
+              value: "http://{{ printf "%s-dynamodb" (include "saleor-apps.fullname" .) }}:8000"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Wait for DynamoDB to be ready
+              echo "Waiting for DynamoDB to be ready..."
+              for i in {1..30}; do
+                if aws dynamodb list-tables --endpoint-url ${DYNAMODB_ENDPOINT} 2>/dev/null; then
+                  echo "DynamoDB is ready!"
+                  break
+                fi
+                echo "DynamoDB not ready yet, retrying in 2 seconds (attempt $i/30)..."
+                sleep 2
+              done
+
+              # Create the table
+              echo "Creating table ${DYNAMODB_LOGS_TABLE_NAME}..."
+              aws dynamodb create-table \
+                --table-name ${DYNAMODB_LOGS_TABLE_NAME} \
+                --attribute-definitions AttributeName=PK,AttributeType=S AttributeName=SK,AttributeType=S \
+                --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
+                --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+                --endpoint-url ${DYNAMODB_ENDPOINT} || echo "Table might already exist, continuing..."
+
+              # Verify the table was created
+              echo "Verifying table creation..."
+              aws dynamodb describe-table --table-name ${DYNAMODB_LOGS_TABLE_NAME} --endpoint-url ${DYNAMODB_ENDPOINT}
+              
+              echo "DynamoDB setup complete"
+{{- end }}
+{{- end }}
+{{- end }}
