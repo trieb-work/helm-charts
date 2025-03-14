@@ -147,6 +147,28 @@ apps:
     port: 3000
     image:
       tag: "1.13.1"
+    # DynamoDB configuration for Avatax app
+    dynamodb:
+      # -- Enable or disable DynamoDB deployment for Avatax app
+      enabled: false
+      # -- DynamoDB table name for Avatax client logs
+      logsTableName: "avatax-client-logs"
+      # -- Time to live for logs in DynamoDB (in days)
+      logsItemTtlInDays: 14
+      # -- AWS region for DynamoDB
+      region: "us-east-1"
+      # -- AWS access key ID for DynamoDB (will be auto-generated if not provided)
+      accessKeyId: ""
+      # -- AWS secret access key for DynamoDB (will be auto-generated if not provided)
+      secretAccessKey: ""
+      # -- Resource limits for DynamoDB container
+      resources:
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
     ingress:
       enabled: true
       annotations: {}

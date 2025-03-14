@@ -40,6 +40,29 @@ spec:
               value: {{ $.Values.common.apl | quote }}
             - name: APP_LOG_LEVEL
               value: {{ $.Values.global.appLogLevel | quote }}
+            {{- if eq $appName "app-avatax" }}
+            {{- if (get $appConfig "dynamodb").enabled }}
+            # DynamoDB environment variables for Avatax app
+            - name: DYNAMODB_LOGS_TABLE_NAME
+              value: {{ (get $appConfig "dynamodb").logsTableName | quote }}
+            - name: DYNAMODB_LOGS_ITEM_TTL_IN_DAYS
+              value: {{ (get $appConfig "dynamodb").logsItemTtlInDays | quote }}
+            - name: AWS_REGION
+              value: {{ (get $appConfig "dynamodb").region | quote }}
+            - name: AWS_ENDPOINT_URL
+              value: "http://{{ printf "%s-dynamodb" (include "saleor-apps.fullname" $) }}:8000"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-dynamodb" (include "saleor-apps.fullname" $) }}
+                  key: access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-dynamodb" (include "saleor-apps.fullname" $) }}
+                  key: secret-access-key
+            {{- end }}
+            {{- end }}
             {{- if $appConfig.extraEnvs }}
             {{- toYaml $appConfig.extraEnvs | nindent 12 }}
             {{- end }}

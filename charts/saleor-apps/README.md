@@ -61,7 +61,6 @@ helm install saleor-apps . -f my-values.yaml
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `global.domain` | Base domain for all apps | `apps.example.com` |
 | `global.secretKey` | Secret key for app security | `""` |
 
 ### Redis Configuration
@@ -119,6 +118,53 @@ Each app supports the following configuration parameters:
 | `apps.<app-name>.port` | Container port | `3000` |
 | `apps.<app-name>.ingress.enabled` | Enable ingress | `true` |
 | `apps.<app-name>.ingress.annotations` | Ingress annotations | `{}` |
+
+### Avatax DynamoDB Support
+
+The Avatax app can optionally use DynamoDB for storing client logs. When enabled, the chart will:
+
+1. Deploy a local DynamoDB instance
+2. Create a table for Avatax client logs
+3. Configure the Avatax app to use this DynamoDB instance
+
+#### Configuration
+
+Enable and configure DynamoDB for Avatax in your values.yaml:
+
+```yaml
+apps:
+  app-avatax:
+    enabled: true
+    hostname: avatax.your-domain.com
+    # Enable the built-in DynamoDB deployment
+    dynamodb:
+      enabled: true
+      # Optional: customize these settings if needed
+      logsTableName: "avatax-client-logs"
+      logsItemTtlInDays: 14
+      region: "us-east-1"
+      # Optional: provide your own AWS credentials
+      # accessKeyId: "your-access-key"
+      # secretAccessKey: "your-secret-key"
+```
+
+When DynamoDB is enabled:
+1. A DynamoDB local instance is deployed in your cluster
+2. The required table is automatically created during installation
+3. All necessary environment variables are set on the Avatax app
+4. No additional configuration is needed for the app to work with DynamoDB
+
+#### Using with External AWS DynamoDB
+
+If you want to use an external AWS DynamoDB instance instead of the local one:
+
+1. Set `apps.app-avatax.dynamodb.enabled` to `false`
+2. Provide the AWS credentials and region
+3. Set the appropriate environment variables in the Avatax app configuration
+
+#### AWS Credentials
+
+By default, the chart uses dummy credentials ("dynamodb-local") for local development and testing. For production environments, you should provide actual AWS credentials.
 
 ## Marketplace Service
 
