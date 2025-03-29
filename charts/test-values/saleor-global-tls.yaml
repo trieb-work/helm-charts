@@ -1,0 +1,63 @@
+# Test case for Saleor with global TLS enabled
+global:
+  secretKey: "test-secret-key"
+  # Global TLS configuration
+  tls:
+    enabled: true
+    secretName: "wildcard-test-tls"
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  architecture: standalone
+  auth:
+    database: postgres
+    postgresPassword: "test-postgres-password"
+    existingSecret: postgresql-credentials
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "test-redis-password"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  
+  api:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: api-test-saleor.eu.fsn1.trwrk.xyz
+        paths:
+          - path: /graphql/
+            pathType: Prefix
+          - path: /thumbnail/
+            pathType: Prefix
+          - path: /.well-known/jwks.json
+            pathType: Exact
+    # This TLS config should be ignored when global.tls.enabled is true
+    tls:
+      - secretName: saleor-api-specific-tls
+        hosts:
+          - api-test-saleor.eu.fsn1.trwrk.xyz
+  
+  dashboard:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: dashboard-test-saleor.eu.fsn1.trwrk.xyz
+        paths:
+          - path: /
+            pathType: Prefix
+    # This TLS config should be ignored when global.tls.enabled is true
+    tls:
+      - secretName: saleor-dashboard-specific-tls
+        hosts:
+          - dashboard-test-saleor.eu.fsn1.trwrk.xyz

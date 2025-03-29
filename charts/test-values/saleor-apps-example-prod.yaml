@@ -1,0 +1,109 @@
+global:
+  domain: "test-saleor.eu.fsn1.trwrk.xyz"
+  secretKey: "your-secret-key-here"  # Replace with actual secret key in production
+  #redisUrl: "redis://test-saleor-redis-master:6379"
+
+redis:
+  auth:
+    enabled: true
+    password: "your-redis-password-here"  # Replace with actual password in production
+
+marketplace:
+  hostname: marketplace-test-saleor.eu.fsn1.trwrk.xyz
+  ingress:
+    enabled: true
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      enabled: true
+
+# Enable all apps for testing
+apps:  
+  smtp:
+    enabled: true
+    hostname: smtp-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  products-feed:
+    enabled: true
+    hostname: products-feed-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  search:
+    enabled: true
+    hostname: search-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  app-avatax:
+    enabled: true
+    hostname: app-avatax-test-saleor.eu.fsn1.trwrk.xyz
+    # Enable DynamoDB for Avatax
+    dynamodb:
+      enabled: true
+      logsTableName: "avatax-client-logs"
+      logsItemTtlInDays: 14
+      region: "us-east-1"
+      # Using dummy credentials for local DynamoDB
+      accessKeyId: "dynamodb-local"
+      secretAccessKey: "dynamodb-local"
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  cms-v2:
+    enabled: true
+    hostname: cms-v2-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+  
+  klaviyo:
+    enabled: true
+    hostname: klaviyo-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+
+
+  test-customer-app:
+    enabled: true
+    hostname: test-customer-app-test-saleor.eu.fsn1.trwrk.xyz
+    port: 8000  # Port that your app listens on. Optional, defaults to 3000
+    extraEnvs:
+      - name: MY_CUSTOM_ENV
+        value: "custom-value"
+    image:
+      registry: us-central1-docker.pkg.dev  # Required
+      repository: kencove-prod/kencove-docker-repo/saleor-customer-app  # Required
+      tag: latest  # Required
+    manifestPath: /api/manifest  # Optional, defaults to /api/manifest
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        enabled: true
+        secretName: ""
+    # Optional marketplace metadata
+    marketplace:
+      name: "This is a customer app for testing purposes for now"  # Required if app is enabled
+      description:
+        en: "My custom app description" # Optional

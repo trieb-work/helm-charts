@@ -23,6 +23,12 @@ global:
     connectionTimeout: 5
     # -- Database connection max age in seconds (0 to disable connection persistence)
     connMaxAge: 0
+  # -- Global TLS certificate configuration
+  tls:
+    # -- Enable global TLS certificate
+    enabled: false
+    # -- Existing TLS secret name to use for all ingress resources
+    secretName: ""
 
 # -- Service Mesh Configuration
 serviceMesh:

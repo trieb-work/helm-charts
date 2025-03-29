@@ -6,7 +6,12 @@ global:
   redisUrl: ""
   # -- Log level for all Saleor apps (can be 'info', 'debug', or 'trace')
   appLogLevel: "info"
-
+  # -- Global TLS certificate configuration
+  tls:
+    # -- Enable global TLS certificate
+    enabled: false
+    # -- Existing TLS secret name to use for all ingress resources
+    secretName: ""
 
 # Redis configuration
 redis:

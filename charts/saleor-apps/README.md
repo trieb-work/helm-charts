@@ -63,6 +63,10 @@ helm install saleor-apps . -f my-values.yaml
 |-----------|-------------|---------|
 | `global.domain` | Base domain for all apps | `apps.example.com` |
 | `global.secretKey` | Secret key for app security | `""` |
+| `global.redisUrl` | External Redis URL (takes precedence if set) | `""` |
+| `global.appLogLevel` | Log level for all Saleor apps | `"info"` |
+| `global.tls.enabled` | Enable global TLS certificate for all ingress resources | `false` |
+| `global.tls.secretName` | Existing TLS secret name to use for all ingress resources | `""` |
 
 ### Redis Configuration
 

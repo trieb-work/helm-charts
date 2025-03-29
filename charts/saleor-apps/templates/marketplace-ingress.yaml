@@ -13,11 +13,15 @@ spec:
   {{- if .Values.marketplace.ingress.className }}
   ingressClassName: {{ .Values.marketplace.ingress.className }}
   {{- end }}
-  {{- if .Values.marketplace.ingress.tls.enabled }}
+  {{- if or .Values.global.tls.enabled .Values.marketplace.ingress.tls.enabled }}
   tls:
     - hosts:
         - {{ .Values.marketplace.hostname | quote }}
+      {{- if .Values.global.tls.enabled }}
+      secretName: {{ .Values.global.tls.secretName }}
+      {{- else }}
       secretName: {{ default (printf "%s-marketplace-tls" .Release.Name) .Values.marketplace.ingress.tls.secretName }}
+      {{- end }}
   {{- end }}
   rules:
     - host: {{ .Values.marketplace.hostname | quote }}

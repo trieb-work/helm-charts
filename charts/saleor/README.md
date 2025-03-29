@@ -59,6 +59,12 @@ global:
   redisUrl: ""
   # -- RSA private key for JWT signing
   jwtRsaPrivateKey: ""
+  # -- Global TLS certificate configuration
+  tls:
+    # -- Enable global TLS certificate
+    enabled: false
+    # -- Existing TLS secret name to use for all ingress resources
+    secretName: "my-wildcard-tls-secret"
   
   database:
     primaryUrl: ""        # External primary database URL
@@ -66,6 +72,8 @@ global:
     maxConnections: 150
     connectionTimeout: 5
 ```
+
+The `global.tls` configuration allows you to enable a global TLS certificate for all ingress resources. When enabled, you can specify an existing TLS secret name to use for all ingress resources. This can be useful for deploying a wildcard TLS certificate for your domain.
 
 ### JWT Configuration
 

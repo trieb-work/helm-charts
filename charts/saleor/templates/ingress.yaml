@@ -21,14 +21,22 @@ spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.api.tls }}
+  {{- if or .Values.global.tls.enabled .Values.ingress.api.tls }}
   tls:
+    {{- if .Values.global.tls.enabled }}
+    - hosts:
+        {{- range .Values.ingress.api.hosts }}
+        - {{ .host | quote }}
+        {{- end }}
+      secretName: {{ .Values.global.tls.secretName }}
+    {{- else }}
     {{- range .Values.ingress.api.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
       secretName: {{ .secretName }}
+    {{- end }}
     {{- end }}
   {{- end }}
   rules:
@@ -64,14 +72,22 @@ spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.dashboard.tls }}
+  {{- if or .Values.global.tls.enabled .Values.ingress.dashboard.tls }}
   tls:
+    {{- if .Values.global.tls.enabled }}
+    - hosts:
+        {{- range .Values.ingress.dashboard.hosts }}
+        - {{ .host | quote }}
+        {{- end }}
+      secretName: {{ .Values.global.tls.secretName }}
+    {{- else }}
     {{- range .Values.ingress.dashboard.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
       secretName: {{ .secretName }}
+    {{- end }}
     {{- end }}
   {{- end }}
   rules:

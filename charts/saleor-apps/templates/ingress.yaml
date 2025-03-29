@@ -17,11 +17,15 @@ spec:
   ingressClassName: {{ $appConfig.ingress.className }}
   {{- end }}
 
-  {{- if $appConfig.ingress.tls }}
+  {{- if or $.Values.global.tls.enabled $appConfig.ingress.tls.enabled }}
   tls:
     - hosts:
         - {{ $appConfig.hostname | quote }}
+      {{- if $.Values.global.tls.enabled }}
+      secretName: {{ $.Values.global.tls.secretName }}
+      {{- else }}
       secretName: {{ $appConfig.ingress.tls.secretName | default (printf "%s-%s-tls" (include "saleor-apps.fullname" $) $appName) }}
+      {{- end }}
   {{- end }}
   rules:
     - host: {{ $appConfig.hostname | quote }}
