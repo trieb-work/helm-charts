@@ -49,6 +49,15 @@ apps:
   app-avatax:
     enabled: true
     hostname: app-avatax-test-saleor.eu.fsn1.trwrk.xyz
+    # Enable DynamoDB for Avatax
+    dynamodb:
+      enabled: true
+      logsTableName: "avatax-client-logs"
+      logsItemTtlInDays: 14
+      region: "us-east-1"
+      # Using dummy credentials for local DynamoDB
+      accessKeyId: "dynamodb-local"
+      secretAccessKey: "dynamodb-local"
     ingress:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod

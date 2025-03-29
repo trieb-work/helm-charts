@@ -1,0 +1,23 @@
+{{- if (index .Values.apps "app-avatax") }}
+{{- if (get (index .Values.apps "app-avatax") "enabled") }}
+{{- if (get (index .Values.apps "app-avatax") "dynamodb").enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-dynamodb" (include "saleor-apps.fullname" .) }}
+  labels:
+    {{- include "saleor-apps.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dynamodb
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "saleor-apps.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: dynamodb
+{{- end }}
+{{- end }}
+{{- end }}
