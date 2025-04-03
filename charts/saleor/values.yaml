@@ -134,6 +134,7 @@ dashboard:
     runAsUser: 0
     runAsGroup: 0
   
+# Worker deployment = exactly one beat scheduler and multiple celery workers  
 worker:
   enabled: true
   replicaCount: 1
@@ -159,6 +160,16 @@ worker:
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
 
+  scheduler: 
+    resources:
+      requests:
+        cpu: 250m
+        memory: 200Mi
+      limits:
+        cpu: 300m
+        memory: 400Mi
+
+        
 migrations:
   # -- Enable automatic database migrations after install/upgrade
   enabled: false

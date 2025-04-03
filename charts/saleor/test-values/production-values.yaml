@@ -1,3 +1,6 @@
+global:
+  secretKey: "qdfwd"
+
 api:
   enabled: true
   replicaCount: 3

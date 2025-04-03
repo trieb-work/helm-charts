@@ -219,3 +219,66 @@ true
 false
 {{- end -}}
 {{- end -}}
+
+{{/*
+Common environment variables for Celery worker and beat scheduler
+*/}}
+{{- define "saleor.celery.env" -}}
+
+{{- if and .Values.ingress.api.enabled .Values.ingress.api.hosts }}
+{{- with index .Values.ingress.api.hosts 0 }}
+{{- if .host }}
+- name: PUBLIC_URL
+  value: {{ printf "https://%s" .host | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "saleor.fullname" . }}-secrets
+      key: database-url
+{{- if include "saleor.readReplicaEnabled" . }}
+- name: DATABASE_URL_REPLICA
+  {{- if .Values.global.database.replicaUrl }}
+  value: {{ .Values.global.database.replicaUrl | quote }}
+  {{- else }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "saleor.fullname" . }}-secrets
+      key: database-url-replica
+  {{- end }}
+- name: DB_CONN_MAX_AGE
+  value: {{ .Values.global.database.connMaxAge | quote }}
+{{- end }}
+{{- if .Values.global.jwtRsaPrivateKey }}
+- name: RSA_PRIVATE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "saleor.fullname" . }}-secrets
+      key: jwt-private-key
+{{- end }}
+- name: DATABASE_CONNECTION_TIMEOUT
+  value: {{ .Values.global.database.connectionTimeout | default "5" | quote }}
+- name: DATABASE_MAX_CONNECTIONS
+  value: {{ .Values.global.database.maxConnections | default "150" | quote }}
+- name: REDIS_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "saleor.fullname" . }}-secrets
+      key: redis-url
+- name: CELERY_BROKER_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "saleor.fullname" . }}-secrets
+      key: celery-redis-url
+- name: SECRET_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "saleor.fullname" . }}-secrets
+      key: secret-key
+{{- include "saleor.s3Env" . }}
+{{- with .Values.worker.extraEnv }}
+{{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
