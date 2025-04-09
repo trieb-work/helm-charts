@@ -21,9 +21,11 @@ spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if or .Values.global.tls.enabled .Values.ingress.api.tls }}
+  {{- $globalTlsEnabled := and (hasKey .Values.global "tls") (hasKey .Values.global.tls "enabled") .Values.global.tls.enabled -}}
+  {{- $apiTlsExists := hasKey .Values.ingress.api "tls" -}}
+  {{- if or $globalTlsEnabled $apiTlsExists }}
   tls:
-    {{- if .Values.global.tls.enabled }}
+    {{- if $globalTlsEnabled }}
     - hosts:
         {{- range .Values.ingress.api.hosts }}
         - {{ .host | quote }}
@@ -72,9 +74,11 @@ spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if or .Values.global.tls.enabled .Values.ingress.dashboard.tls }}
+  {{- $globalTlsEnabled := and (hasKey .Values.global "tls") (hasKey .Values.global.tls "enabled") .Values.global.tls.enabled -}}
+  {{- $dashboardTlsExists := hasKey .Values.ingress.dashboard "tls" -}}
+  {{- if or $globalTlsEnabled $dashboardTlsExists }}
   tls:
-    {{- if .Values.global.tls.enabled }}
+    {{- if $globalTlsEnabled }}
     - hosts:
         {{- range .Values.ingress.dashboard.hosts }}
         - {{ .host | quote }}

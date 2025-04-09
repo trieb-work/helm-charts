@@ -1,0 +1,55 @@
+# Test case for Saleor with TLS completely disabled
+global:
+  secretKey: "test-secret-key"
+  # Global TLS configuration disabled
+  tls:
+    enabled: false
+    secretName: ""
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  architecture: standalone
+  auth:
+    database: postgres
+    postgresPassword: "test-postgres-password"
+    existingSecret: postgresql-credentials
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "test-redis-password"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  
+  api:
+    enabled: true
+    annotations: {}
+    hosts:
+      - host: api-test-saleor.eu.fsn1.trwrk.xyz
+        paths:
+          - path: /graphql/
+            pathType: Prefix
+          - path: /thumbnail/
+            pathType: Prefix
+          - path: /.well-known/jwks.json
+            pathType: Exact
+    # No TLS configuration at all
+    tls: []
+  
+  dashboard:
+    enabled: true
+    annotations: {}
+    hosts:
+      - host: dashboard-test-saleor.eu.fsn1.trwrk.xyz
+        paths:
+          - path: /
+            pathType: Prefix
+    # No TLS configuration at all
+    tls: []

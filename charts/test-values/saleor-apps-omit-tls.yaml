@@ -1,0 +1,71 @@
+# Test case for Saleor-apps with TLS settings completely omitted
+global:
+  secretKey: "test-secret-key"
+  appLogLevel: "info"
+  # No TLS configuration at all
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "test-redis-password"
+
+# Marketplace configuration
+marketplace:
+  enabled: true
+  hostname: marketplace-test-saleor.eu.fsn1.trwrk.xyz
+  ingress:
+    enabled: true
+    annotations: {}
+    # Need to explicitly disable TLS to override the default value
+    tls:
+      enabled: false
+
+# Individual app configurations
+apps:
+  smtp:
+    enabled: true
+    hostname: smtp-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations: {}
+      # Need to explicitly disable TLS to override the default value
+      tls:
+        enabled: false
+  
+  products-feed:
+    enabled: true
+    hostname: products-feed-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations: {}
+      # Need to explicitly disable TLS to override the default value
+      tls:
+        enabled: false
+  
+  search:
+    enabled: true
+    hostname: search-test-saleor.eu.fsn1.trwrk.xyz
+    ingress:
+      annotations: {}
+      # Need to explicitly disable TLS to override the default value
+      tls:
+        enabled: false
+  
+  app-avatax:
+    enabled: true
+    hostname: app-avatax-test-saleor.eu.fsn1.trwrk.xyz
+    # Enable DynamoDB for Avatax
+    dynamodb:
+      enabled: true
+      logsTableName: "avatax-client-logs"
+      logsItemTtlInDays: 14
+      region: "us-east-1"
+      # Using dummy credentials for local DynamoDB
+      accessKeyId: "dynamodb-local"
+      secretAccessKey: "dynamodb-local"
+    ingress:
+      annotations: {}
+      # Need to explicitly disable TLS to override the default value
+      tls:
+        enabled: false
