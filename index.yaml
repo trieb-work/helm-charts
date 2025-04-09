@@ -74,6 +74,33 @@ entries:
   saleor:
   - apiVersion: v2
     appVersion: 3.20.80
+    created: "2025-04-09T12:06:49.504526934Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.12.5
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.1.0
+    description: A Helm chart for deploying Saleor e-commerce platform with Dashboard
+    digest: f70d503050273a46318aa4d08ded71073b303188c080dbac0ebe133bfe4fb77b
+    keywords:
+    - saleor
+    - ecommerce
+    - graphql
+    - dashboard
+    maintainers:
+    - email: info@trieb.work
+      name: trieb.work
+    name: saleor
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-2.1.1/saleor-2.1.1.tgz
+    version: 2.1.1
+  - apiVersion: v2
+    appVersion: 3.20.80
     created: "2025-04-03T14:48:03.892062972Z"
     dependencies:
     - condition: postgresql.enabled
@@ -1538,6 +1565,24 @@ entries:
     - https://github.com/trieb-work/helm-charts/releases/download/saleor-0.1.26/saleor-0.1.26.tgz
     version: 0.1.26
   saleor-apps:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-04-09T12:06:49.728425409Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.x.x
+    description: A Helm chart for deploying Saleor Apps with shared Redis and DynamoDB
+      support for Avatax
+    digest: 9c72d1e73551c9a9b31f9c543552d670cdbb3f352bdbb0f7a753123d6f8c57ac
+    maintainers:
+    - name: trieb.work
+    name: saleor-apps
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-apps-0.4.3/saleor-apps-0.4.3.tgz
+    version: 0.4.3
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2025-03-29T15:31:23.055487602Z"
@@ -3118,4 +3163,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2025-04-03T14:48:03.892598632Z"
+generated: "2025-04-09T12:06:49.729192559Z"
