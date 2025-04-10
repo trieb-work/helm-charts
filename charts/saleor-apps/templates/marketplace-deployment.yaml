@@ -29,7 +29,11 @@ spec:
               name: http
           volumeMounts:
             - name: marketplace-config
-              mountPath: /usr/share/nginx/html
+              mountPath: /usr/share/nginx/html/marketplace.json
+              subPath: marketplace.json
+            - name: extensions-config
+              mountPath: /usr/share/nginx/html/extensions.json
+              subPath: extensions.json
             - name: nginx-config
               mountPath: /etc/nginx/conf.d
           resources:
@@ -46,6 +50,12 @@ spec:
             items:
               - key: marketplace.json
                 path: marketplace.json
+        - name: extensions-config
+          configMap:
+            name: {{ .Release.Name }}-extensions
+            items:
+              - key: extensions.json
+                path: extensions.json
         - name: nginx-config
           configMap:
             name: {{ .Release.Name }}-marketplace-nginx
@@ -62,8 +72,14 @@ data:
         listen 80;
         server_name _;
 
-        location / {
-            root /usr/share/nginx/html;
+        location /marketplace.json {
+            alias /usr/share/nginx/html/marketplace.json;
+            add_header Content-Type application/json;
+            add_header Access-Control-Allow-Origin "*";
+        }
+
+        location /extensions.json {
+            alias /usr/share/nginx/html/extensions.json;
             add_header Content-Type application/json;
             add_header Access-Control-Allow-Origin "*";
         }
