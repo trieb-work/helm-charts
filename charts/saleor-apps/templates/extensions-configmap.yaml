@@ -619,6 +619,42 @@ data:
             {{- $first = false }}
             {{- end }}
           ]
+        },
+        {
+          "id": "custom",
+          "name": {
+            "en": "Custom"
+          },
+          "extensions": [
+            {{- $first := true }}
+            {{- range $appName, $appConfig := .Values.apps }}
+            {{- if and $appConfig.enabled (not (or (eq $appName "app-adyen") (eq $appName "stripe") (eq $appName "authorizenet") (eq $appName "juspay") (eq $appName "klarna") (eq $appName "dummy-payment-app") (eq $appName "app-avatax") (eq $appName "taxjar") (eq $appName "cms-v2") (eq $appName "search") (eq $appName "klaviyo") (eq $appName "products-feed") (eq $appName "segment-v2") (eq $appName "smtp") (eq $appName "invoices") (eq $appName "crm") (eq $appName "slack") (eq $appName "sendgrid") (eq $appName "checkout-prices-poc"))) }}
+            {{- if not $first }},{{ end }}
+            {
+              "id": {{ default (printf "saleor.app.%s" $appName) (index $appConfig "id") | quote }},
+              "name": {
+                "en": {{ default $appName (index $appConfig "marketplace" "name") | quote }}
+              },
+              "description": {
+                "en": {{ default (printf "Custom app: %s" $appName) (index $appConfig "marketplace" "description" "en") | quote }}
+              },
+              "logo": {
+                "light": {
+                  "source": "https://apps.saleor.io/apps/v2/saleor-apps/placeholder.svg"
+                },
+                "dark": {
+                  "source": "https://apps.saleor.io/apps/v2/saleor-apps/placeholder.svg"
+                }
+              },
+              "type": "APP",
+              "kind": "EXTERNAL",
+              "manifestUrl": "https://{{ $appConfig.hostname }}{{ default "/api/manifest" $appConfig.manifestPath }}",
+              "repositoryUrl": {{ default null (index $appConfig "marketplace" "repositoryUrl") }}
+            }
+            {{- $first = false }}
+            {{- end }}
+            {{- end }}
+          ]
         }
       ]
     }
