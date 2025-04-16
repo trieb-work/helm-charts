@@ -37,7 +37,7 @@ data:
               "type": "APP",
               "kind": "OFFICIAL",
               "manifestUrl": "https://{{ (index .Values.apps "app-adyen").hostname }}/api/manifest",
-              "repositoryUrl": null
+              "repositoryUrl": "https://github.com/saleor/apps"
             }
             {{- $first = false }}
             {{- end }}
@@ -649,7 +649,7 @@ data:
               "type": "APP",
               "kind": "EXTERNAL",
               "manifestUrl": "https://{{ $appConfig.hostname }}{{ default "/api/manifest" $appConfig.manifestPath }}",
-              "repositoryUrl": {{ default null (index $appConfig "marketplace" "repositoryUrl") }}
+              "repositoryUrl": {{ if (index $appConfig "marketplace" "repositoryUrl") }}{{ index $appConfig "marketplace" "repositoryUrl" | quote }}{{ else }}null{{ end }}
             }
             {{- $first = false }}
             {{- end }}

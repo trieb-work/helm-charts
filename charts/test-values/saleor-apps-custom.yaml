@@ -1,0 +1,115 @@
+global:
+  domain: test-saleor.eu.fsn1.trwrk.xyz
+  database:
+    url: postgresql://postgres:postgres@postgresql:5432/postgres
+    replicaUrl: postgresql://postgres:postgres@postgresql-read:5432/postgres
+
+marketplace:
+  enabled: true
+  hostname: test-marketplace-test-saleor.eu.fsn1.trwrk.xyz
+  ingress:
+    enabled: true
+    className: nginx
+    annotations: {}
+
+apps:
+  customer-app:
+    enabled: true
+    hostname: test-customer-app-test-saleor.eu.fsn1.trwrk.xyz
+    port: 8000  # Port that your app listens on. Optional, defaults to 3000
+    extraEnvs:
+      - name: KENCOVE_API
+        value: https://test-customer-app-test-saleor.eu.fsn1.trwrk.xyz
+      - name: KENCOVE_API_TOKEN_ENDPOINT
+        value: ${COGNITO_API_TOKEN_ENDPOINT} 
+    image:
+      registry: us-central1-docker.pkg.dev  # Required
+      repository: kencove-prod/kencove-docker-repo/saleor-customer-app  # Required
+      tag: latest  # Required
+    ingress:
+      enabled: true
+      className: nginx
+      annotations: {}
+    # Optional marketplace metadata
+    marketplace:
+      name: "Customer App"  # Required if app is enabled
+      description:
+        en: "This is the customer app that triggers the creation of a new customer in Odoo, so that we can run tax exemptions on them" # Optional
+  
+  authorizenet:
+    enabled: true
+    port: 8000
+    hostname: test-authorizenet-test-saleor.eu.fsn1.trwrk.xyz
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-payment-authorize-net-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations: {}
+    extraEnvs:
+      - name: AUTHORIZE_API_LOGIN_ID
+        value: ${AUTHORIZE_API_LOGIN_ID}
+      - name: AUTHORIZE_TRANSACTION_KEY
+        value: ${AUTHORIZE_TRANSACTION_KEY}  
+      - name: AUTHORIZE_PUBLIC_CLIENT_KEY
+        value: ${AUTHORIZE_PUBLIC_CLIENT_KEY}
+      - name: AUTHORIZE_ENVIRONMENT
+        value: ${AUTHORIZE_ENVIRONMENT}  
+      - name: AUTHORIZE_SIGNATURE_KEY
+        value: ${AUTHORIZE_SIGNATURE_KEY}
+      - name: APP_API_BASE_URL
+        value: ${AUTHORIZE_API_BASE_URL}  
+    marketplace:
+      name: "Authorize.net"
+      description:
+        en: "This is the custom saleor app that handles the payment with Authorize.net"
+
+  shipping:
+    enabled: true
+    port: 8000
+    hostname: test-shipping-test-saleor.eu.fsn1.trwrk.xyz
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-shipping-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations: {}
+    marketplace:
+      name: "Shipping"
+      description:
+        en: "This is the custom saleor app that handles the shipping calculations."
+    extraEnvs:
+      - name: KENCOVE_SHIPPING_API_URL
+        value: ${KENCOVE_SHIPPING_API_URL}    
+
+  manual-payment:
+    enabled: true
+    port: 8000
+    hostname: test-manual-payment-test-saleor.eu.fsn1.trwrk.xyz
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-manual-payment-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations: {}
+    marketplace:
+      name: "Manual Payment"
+      description:
+        en: "This is the custom saleor app that allows the manual payment processing, like echeck and prepayment. Needs valid cognito credentials to authenticate"    
+    extraEnvs:
+      - name: KENCOVE_API_CLIENT_ID
+        value: ${KENCOVE_API_CLIENT_ID}
+      - name: KENCOVE_API_CLIENT_SECRET
+        value: ${KENCOVE_API_CLIENT_SECRET}
+      - name: KENCOVE_API_SCOPE
+        value: ${KENCOVE_API_SCOPE}
+      - name: KENCOVE_API_TOKEN_ENDPOINT
+        value: ${KENCOVE_API_TOKEN_ENDPOINT}
+      - name: KENCOVE_API_URL
+        value: ${KENCOVE_API_URL}
