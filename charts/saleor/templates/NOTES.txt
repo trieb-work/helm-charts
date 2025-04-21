@@ -12,9 +12,7 @@ To learn more about the release, try:
 You can access the application at:
 {{- range .Values.ingress.api.hosts }}
   API: {{ if $.Values.ingress.api.tls }}https{{ else }}http{{ end }}://{{ .host }}/graphql/
-{{- end }}
-{{- range .Values.ingress.dashboard.hosts }}
-  Dashboard: {{ if $.Values.ingress.dashboard.tls }}https{{ else }}http{{ end }}://{{ .host }}/dashboard/
+  Dashboard: {{ if $.Values.ingress.api.tls }}https{{ else }}http{{ end }}://{{ .host }}/dashboard/
 {{- end }}
 
 {{- else }}
@@ -91,20 +89,21 @@ Get the application URL by running these commands:
 {{- if .Values.dashboard.enabled }}
 {{- if contains "NodePort" .Values.dashboard.service.type }}
 Get the dashboard URL by running these commands:
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "saleor.fullname" . }}-dashboard)
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "saleor.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=dashboard" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8081/dashboard/ to use your dashboard"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8081:$CONTAINER_PORT
 {{- else if contains "LoadBalancer" .Values.dashboard.service.type }}
 Get the dashboard URL by running these commands:
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "saleor.fullname" . }}-dashboard'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "saleor.fullname" . }}-dashboard --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.dashboard.service.port }}
+  echo http://$SERVICE_IP:{{ .Values.dashboard.service.port }}/dashboard/
 {{- else if contains "ClusterIP" .Values.dashboard.service.type }}
 Get the dashboard URL by running these commands:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "saleor.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=dashboard" -o jsonpath="{.items[0].metadata.name}")
   export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8081 to use your dashboard"
+  echo "Visit http://127.0.0.1:8081/dashboard/ to use your dashboard"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8081:$CONTAINER_PORT
 {{- end }}
 {{- end }}

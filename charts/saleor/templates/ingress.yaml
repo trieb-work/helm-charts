@@ -9,7 +9,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}-api
+  name: {{ $fullName }}
   labels:
     {{- include "saleor.labels" . | nindent 4 }}
     app.kubernetes.io/component: api
@@ -22,23 +22,32 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   {{- $globalTlsEnabled := and (hasKey .Values.global "tls") (hasKey .Values.global.tls "enabled") .Values.global.tls.enabled -}}
-  {{- $apiTlsExists := hasKey .Values.ingress.api "tls" -}}
+  {{- $apiTlsExists := and (hasKey .Values.ingress.api "tls") (ne (len .Values.ingress.api.tls) 0) -}}
+  {{- $globalTlsSecretExists := and $globalTlsEnabled (hasKey .Values.global.tls "secretName") (ne .Values.global.tls.secretName "") -}}
   {{- if or $globalTlsEnabled $apiTlsExists }}
   tls:
-    {{- if $globalTlsEnabled }}
+    {{- if and $globalTlsEnabled $globalTlsSecretExists }}
     - hosts:
         {{- range .Values.ingress.api.hosts }}
         - {{ .host | quote }}
         {{- end }}
       secretName: {{ .Values.global.tls.secretName }}
-    {{- else }}
+    {{- else if $apiTlsExists }}
     {{- range .Values.ingress.api.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
+      {{- if .secretName }}
       secretName: {{ .secretName }}
+      {{- end }}
     {{- end }}
+    {{- else if $globalTlsEnabled }}
+    # TLS enabled but no secret specified - using global ingress fallback certificate
+    - hosts:
+        {{- range .Values.ingress.api.hosts }}
+        - {{ .host | quote }}
+        {{- end }}
     {{- end }}
   {{- end }}
   rules:
@@ -55,53 +64,9 @@ spec:
                 port:
                   name: http
           {{- end }}
-    {{- end }}
-{{- end }}
----
-{{- if .Values.ingress.dashboard.enabled -}}
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ $fullName }}-dashboard
-  labels:
-    {{- include "saleor.labels" . | nindent 4 }}
-    app.kubernetes.io/component: dashboard
-  annotations:
-    {{- with .Values.ingress.dashboard.annotations }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
-  {{- end }}
-  {{- $globalTlsEnabled := and (hasKey .Values.global "tls") (hasKey .Values.global.tls "enabled") .Values.global.tls.enabled -}}
-  {{- $dashboardTlsExists := hasKey .Values.ingress.dashboard "tls" -}}
-  {{- if or $globalTlsEnabled $dashboardTlsExists }}
-  tls:
-    {{- if $globalTlsEnabled }}
-    - hosts:
-        {{- range .Values.ingress.dashboard.hosts }}
-        - {{ .host | quote }}
-        {{- end }}
-      secretName: {{ .Values.global.tls.secretName }}
-    {{- else }}
-    {{- range .Values.ingress.dashboard.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-    {{- end }}
-  {{- end }}
-  rules:
-    {{- range .Values.ingress.dashboard.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType }}
+          {{- if $.Values.dashboard.enabled }}
+          - path: /dashboard/
+            pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}-dashboard

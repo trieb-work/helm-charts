@@ -314,22 +314,7 @@ ingress:
           - path: /.well-known/jwks.json
             pathType: Exact
     tls:
-      - secretName: saleor-api-tls
-        hosts:
-          - chart-example.local
-  
-  dashboard:
-    enabled: true
-    # -- Additional annotations for Dashboard ingress
-    annotations:
-    #  cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    hosts:
-      - host: chart-example.local
-        paths:
-          - path: /dashboard/
-            pathType: Prefix
-    tls:
-      - secretName: saleor-dashboard-tls
+      - secretName: saleor-tls
         hosts:
           - chart-example.local
 
