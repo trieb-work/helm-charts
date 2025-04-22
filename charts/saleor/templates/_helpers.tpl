@@ -180,7 +180,13 @@ Get the database URL with password from postgresql-credentials secret
 {{- .Values.global.database.primaryUrl -}}
 {{- else if .Values.postgresql.enabled -}}
 {{- $postgresqlPassword := include "saleor.postgresqlPassword" . -}}
+{{- if or (not .Values.postgresql.architecture) (eq .Values.postgresql.architecture "standalone") -}}
+{{- printf "postgresql://%s:%s@%s-postgresql:5432/%s" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
+{{- else if eq .Values.postgresql.architecture "replication" -}}
 {{- printf "postgresql://%s:%s@%s-postgresql-primary:5432/%s" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
+{{- else -}}
+{{- printf "postgresql://%s:%s@%s-postgresql:5432/%s" "postgres" $postgresqlPassword (include "saleor.fullname" .) "postgres" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
