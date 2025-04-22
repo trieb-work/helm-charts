@@ -73,9 +73,7 @@ Get Redis password - either from values, existing secret, or generate new one
 {{- if $secret -}}
 {{- index $secret.data "redis-password" | b64dec -}}
 {{- else -}}
-{{- $generatedPassword := randAlphaNum 32 -}}
-{{- $_ := set .Values.redis.auth "password" $generatedPassword -}}
-{{- $generatedPassword -}}
+{{- fail "You must set .Values.redis.auth.password on first install!" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -165,9 +163,7 @@ Get PostgreSQL password - either from values, existing secret, or generate new o
 {{- if $secret -}}
 {{- index $secret.data "postgresql-password" | b64dec -}}
 {{- else -}}
-{{- $generatedPassword := randAlphaNum 32 -}}
-{{- $_ := set .Values.postgresql.auth "postgresPassword" $generatedPassword -}}
-{{- $generatedPassword -}}
+{{- fail "You must set .Values.postgresql.auth.postgresPassword on first install!" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}} 

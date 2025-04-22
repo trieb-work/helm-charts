@@ -312,7 +312,7 @@ ingress:
             pathType: Prefix
           # This is important for the Saleor Apps to work with Saleor  
           - path: /.well-known/jwks.json
-            pathType: Exact
+            pathType: ImplementationSpecific
     tls:
       - secretName: saleor-tls
         hosts:

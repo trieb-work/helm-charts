@@ -505,6 +505,46 @@ The migration job is designed with safety in mind:
 - It's executed after the database is ready but before the new API version starts
 - The job history is preserved for debugging purposes
 
+## Mandatory Values & Security
+
+> **Important:** For a successful and secure installation, you must set the following values explicitly:
+
+| Value | Description | Example |
+|-------|-------------|---------|
+| `global.secretKey` | Django secret key for cryptographic signing | `mySuperSecretKey123` |
+| `postgresql.auth.postgresPassword` | PostgreSQL password for the `postgres` user | `strongPostgresPass` |
+| `redis.auth.password` | Redis password (if internal Redis is enabled and auth is enabled) | `strongRedisPass` |
+
+- If you do not set these values on first install, the chart will **fail-fast** with a clear error message.
+- These values are **never randomly generated** by the chart to prevent accidental credential loss and ensure deterministic, secure deployments.
+- For upgrades, the chart will use the existing Kubernetes Secrets if present.
+
+### Example install command
+
+```bash
+helm install my-saleor trieb-work/saleor \
+  --set global.secretKey="mySuperSecretKey123" \
+  --set postgresql.auth.postgresPassword="strongPostgresPass" \
+  --set redis.auth.password="strongRedisPass"
+```
+
+### Minimal values.yaml example
+
+```yaml
+global:
+  secretKey: mySuperSecretKey123
+postgresql:
+  auth:
+    postgresPassword: strongPostgresPass
+redis:
+  auth:
+    password: strongRedisPass
+```
+
+### Notes
+- If using **external PostgreSQL or Redis**, set the corresponding URLs instead and disable the internal services.
+- See the [values.yaml](./values.yaml) for all configuration options.
+
 ## Getting Started
 
 ### Initial Setup
