@@ -36,6 +36,20 @@ common:
     requests:
       cpu: 100m
       memory: 128Mi
+  # -- Health check probes configuration
+  probes:
+    # -- HTTP path to use for health checks (if not specified, TCP socket check will be used)
+    path: ""
+    # -- Number of seconds to wait before performing first probe
+    initialDelaySeconds: 10
+    # -- How often to perform probe
+    periodSeconds: 10
+    # -- Number of seconds after which probe times out
+    timeoutSeconds: 5
+    # -- Minimum consecutive successes for the probe to be considered successful
+    successThreshold: 1
+    # -- Minimum consecutive failures for the probe to be considered failed
+    failureThreshold: 3
 
 # Marketplace configuration
 # Provides a custom marketplace JSON endpoint for your Saleor apps. Access it at https://marketplace.apps.example.com/marketplace.json

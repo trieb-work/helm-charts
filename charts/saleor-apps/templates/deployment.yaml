@@ -70,6 +70,38 @@ spec:
             - name: http
               containerPort: {{ $appConfig.port }}
               protocol: TCP
+          {{- if $appConfig.probes | default $.Values.common.probes }}
+          {{- with $appConfig.probes | default $.Values.common.probes }}
+          livenessProbe:
+            {{- if .path }}
+            httpGet:
+              path: {{ .path }}
+              port: http
+            {{- else }}
+            tcpSocket:
+              port: http
+            {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 5 }}
+            successThreshold: {{ .successThreshold | default 1 }}
+            failureThreshold: {{ .failureThreshold | default 3 }}
+          readinessProbe:
+            {{- if .path }}
+            httpGet:
+              path: {{ .path }}
+              port: http
+            {{- else }}
+            tcpSocket:
+              port: http
+            {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            timeoutSeconds: {{ .timeoutSeconds | default 5 }}
+            successThreshold: {{ .successThreshold | default 1 }}
+            failureThreshold: {{ .failureThreshold | default 3 }}
+          {{- end }}
+          {{- end }}
           resources:
             {{- toYaml $.Values.common.resources | nindent 12 }}
 {{- end }}
