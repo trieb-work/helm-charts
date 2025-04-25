@@ -74,6 +74,33 @@ entries:
   saleor:
   - apiVersion: v2
     appVersion: 3.20.80
+    created: "2025-04-25T10:56:58.332887418Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.12.5
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.1.0
+    description: A Helm chart for deploying Saleor e-commerce platform with Dashboard
+    digest: d8064c7951dd934529b8a1198ac570e25407af3378209304c7f2eaec5fc83401
+    keywords:
+    - saleor
+    - ecommerce
+    - graphql
+    - dashboard
+    maintainers:
+    - email: info@trieb.work
+      name: trieb.work
+    name: saleor
+    type: application
+    urls:
+    - https://github.com/trieb-work/helm-charts/releases/download/saleor-2.2.4/saleor-2.2.4.tgz
+    version: 2.2.4
+  - apiVersion: v2
+    appVersion: 3.20.80
     created: "2025-04-25T08:19:47.808999453Z"
     dependencies:
     - condition: postgresql.enabled
@@ -3343,4 +3370,4 @@ entries:
     urls:
     - https://github.com/trieb-work/helm-charts/releases/download/strapi-0.1.0/strapi-0.1.0.tgz
     version: 0.1.0
-generated: "2025-04-25T08:19:47.810695294Z"
+generated: "2025-04-25T10:56:58.333279707Z"
