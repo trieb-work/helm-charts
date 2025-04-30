@@ -165,7 +165,7 @@ apps:
     hostname: app-avatax.apps.example.com
     port: 3000
     image:
-      tag: "1.13.1"
+      tag: "1.16.2"
     # DynamoDB configuration for Avatax app
     dynamodb:
       # -- Enable or disable DynamoDB deployment for Avatax app
@@ -196,12 +196,12 @@ apps:
         enabled: true
         secretName: ""
 
-  cms-v2:
+  cms:
     enabled: false
-    hostname: cms-v2.apps.example.com
+    hostname: cms.apps.example.com
     port: 3000
     image:
-      tag: "2.11.1"
+      tag: "2.12.3"
     ingress:
       enabled: true
       annotations: {}
