@@ -1,8 +1,8 @@
 apiVersion: v2
 name: saleor-apps
-description: A Helm chart for deploying Saleor Apps with shared Redis and DynamoDB support for Avatax
+description: A Helm chart for deploying Saleor Apps with shared Redis and DynamoDB support for Avatax. Includes the official Saleor apps by default and allows to add custom apps.
 type: application
-version: 0.4.8
+version: 0.4.9
 appVersion: "1.0.0"
 maintainers:
   - name: trieb.work
