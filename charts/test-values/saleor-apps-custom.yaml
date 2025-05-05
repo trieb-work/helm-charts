@@ -35,7 +35,10 @@ apps:
       name: "Customer App"  # Required if app is enabled
       description:
         en: "This is the customer app that triggers the creation of a new customer in Odoo, so that we can run tax exemptions on them" # Optional
-  
+  smtp: 
+    enabled: true
+
+    
   authorizenet:
     enabled: true
     port: 8000

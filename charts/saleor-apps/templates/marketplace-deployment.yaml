@@ -18,8 +18,10 @@ spec:
         {{- include "saleor-apps.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: marketplace
       annotations:
-        # Restart the pod if the values change 
+        # Restart the pod if the marketplace values change 
         checksum/marketplace-config: {{ toYaml (index .Values "marketplace") | sha256sum }}
+        # Restart the pod if the extensions values change
+        checksum/extensions-config: {{ toYaml (index .Values "extensions") | sha256sum }}
     spec:
       containers:
         - name: nginx
