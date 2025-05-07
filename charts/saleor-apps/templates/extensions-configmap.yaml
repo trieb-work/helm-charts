@@ -633,10 +633,10 @@ data:
             {
               "id": {{ default (printf "saleor.app.%s" $appName) (hasKey $appConfig "id" | ternary $appConfig.id "") | quote }},
               "name": {
-                "en": {{ $appName | quote }}
+                "en": {{ default $appName (hasKey $appConfig "marketplace" | ternary (hasKey (index $appConfig "marketplace") "name" | ternary (index $appConfig "marketplace" "name") $appName) $appName) | quote }}
               },
               "description": {
-                "en": {{ printf "Custom app: %s" $appName | quote }}
+                "en": {{ default (printf "Custom app: %s" $appName) (hasKey $appConfig "marketplace" | ternary (hasKey (index $appConfig "marketplace") "description" | ternary (hasKey (index $appConfig "marketplace" "description") "en" | ternary (index $appConfig "marketplace" "description" "en") (printf "Custom app: %s" $appName)) (printf "Custom app: %s" $appName)) (printf "Custom app: %s" $appName)) | quote }}
               },
               "logo": {
                 "light": {
@@ -649,7 +649,7 @@ data:
               "type": "APP",
               "kind": "EXTERNAL",
               "manifestUrl": "https://{{ $appConfig.hostname }}{{ default "/api/manifest" $appConfig.manifestPath }}",
-              "repositoryUrl": null
+              "repositoryUrl": {{ if (and (hasKey $appConfig "marketplace") (hasKey (index $appConfig "marketplace") "repositoryUrl")) }}{{ index $appConfig "marketplace" "repositoryUrl" | quote }}{{ else }}null{{ end }}
             }
             {{- $first = false }}
             {{- end }}
