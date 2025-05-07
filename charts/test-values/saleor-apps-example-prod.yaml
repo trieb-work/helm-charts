@@ -64,9 +64,9 @@ apps:
       tls:
         enabled: true
   
-  cms-v2:
+  cms:
     enabled: true
-    hostname: cms-v2-test-saleor.eu.fsn1.trwrk.xyz
+    hostname: cms-test-saleor.eu.fsn1.trwrk.xyz
     ingress:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod

@@ -1,0 +1,205 @@
+global:
+  appLogLevel: debug
+
+common:
+  image:
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Marketplace configuration
+# Provides a custom marketplace JSON endpoint for your Saleor apps. Access it at https://marketplace.apps.example.com/marketplace.json
+marketplace:
+  enabled: true
+  hostname: marketplace.apps.kencove-storefront-46529933-staging.example.com
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      # kubernetes.io/tls-acme: "true"
+
+redis:
+  enabled: false
+
+apps:
+  smtp:
+    enabled: true
+    hostname: smtp.apps.kencove-storefront-46529933-staging.example.com
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+  search:
+    enabled: true
+    hostname: search.apps.kencove-storefront-46529933-staging.example.com
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+  products-feed:
+    enabled: true
+    hostname: products-feed.apps.kencove-storefront-46529933-staging.example.com
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+  app-avatax:
+    enabled: true
+    hostname: app-avatax.apps.kencove-storefront-46529933-staging.example.com
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+    dynamodb:
+      enabled: true
+  cms:
+    enabled: true
+    hostname: cms.apps.kencove-storefront-46529933-staging.example.com
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+  klaviyo:
+    enabled: false
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+  customer-app:
+    enabled: true
+    hostname: customer-app.apps.kencove-storefront-46529933-staging.example.com
+    port: 8000  # Port that your app listens on. Optional, defaults to 3000
+    extraEnvs:
+      - name: KENCOVE_API
+      # example: https://api-kencove.gc.staging-kencove.com/lookup/customer_code
+        value: ${KENCOVE_API_CUSTOMER_LOOKUP}
+      - name: KENCOVE_API_TOKEN_ENDPOINT
+        value: ${COGNITO_API_TOKEN_ENDPOINT} 
+    image:
+      registry: us-central1-docker.pkg.dev  # Required
+      repository: kencove-prod/kencove-docker-repo/saleor-customer-app  # Required
+      tag: latest  # Required
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+    # Optional marketplace metadata
+    marketplace:
+      name: "Customer App"  # Required if app is enabled
+      description:
+        en: "This is the customer app that triggers the creation of a new customer in Odoo, so that we can run tax exemptions on them" # Optional
+  
+  authorizenet:
+    enabled: true
+    hostname: authorizenet.apps.kencove-storefront-46529933-staging.example.com
+    port: 8000
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-payment-authorize-net-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+    extraEnvs:
+      - name: AUTHORIZE_API_LOGIN_ID
+        value: ${AUTHORIZE_API_LOGIN_ID}
+      - name: AUTHORIZE_TRANSACTION_KEY
+        value: ${AUTHORIZE_TRANSACTION_KEY}  
+      - name: AUTHORIZE_PUBLIC_CLIENT_KEY
+        value: ${AUTHORIZE_PUBLIC_CLIENT_KEY}
+      - name: AUTHORIZE_ENVIRONMENT
+        value: ${AUTHORIZE_ENVIRONMENT}  
+      - name: AUTHORIZE_SIGNATURE_KEY
+        value: ${AUTHORIZE_SIGNATURE_KEY}
+      - name: APP_API_BASE_URL
+        value: ${AUTHORIZE_API_BASE_URL}  
+    marketplace:
+      name: "Authorize.net"
+      description:
+        en: "This is the custom saleor app that handles the payment with Authorize.net"
+
+  shipping:
+    enabled: true
+    hostname: shipping.apps.kencove-storefront-46529933-staging.example.com
+    port: 8000
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-shipping-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+    marketplace:
+      name: "Shipping"
+      description:
+        en: "This is the custom saleor app that handles the shipping calculations."
+    extraEnvs:
+      - name: KENCOVE_SHIPPING_API_URL
+        value: ${KENCOVE_SHIPPING_API_URL}    
+
+  manual-payment:
+    enabled: true
+    hostname: manual-payment.apps.kencove-storefront-46529933-staging.example.com
+    port: 8000
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-manual-payment-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+    marketplace:
+      name: "Manual Payment"
+      description:
+        en: "This is the custom saleor app that allows the manual payment processing, like echeck and prepayment. Needs valid cognito credentials to authenticate"    
+    extraEnvs:
+      - name: KENCOVE_API_CLIENT_ID
+        value: ${KENCOVE_API_CLIENT_ID}
+      - name: KENCOVE_API_CLIENT_SECRET
+        value: ${KENCOVE_API_CLIENT_SECRET}
+      - name: KENCOVE_API_SCOPE
+        value: ${KENCOVE_API_SCOPE}
+      - name: KENCOVE_API_TOKEN_ENDPOINT
+        value: ${KENCOVE_API_TOKEN_ENDPOINT}
+      - name: KENCOVE_API_URL
+        value: ${KENCOVE_API_URL}    
+  loyalty:
+    enabled: true
+    hostname: loyalty.apps.kencove-storefront-46529933-staging.example.com
+    port: 8000
+    image: 
+      registry: us-central1-docker.pkg.dev
+      repository: kencove-prod/kencove-docker-repo/saleor-loyalty-app
+      tag: latest   
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        # kubernetes.io/tls-acme: "true"
+    marketplace:
+      name: "Loyalty"
+      description:
+        en: "This is the custom saleor app that handles the loyalty points and discounts."
+    extraEnvs:
+      - name: ODOO_API_URL
+        value: ${ODOO_API_URL}
+      - name: ODOO_DB
+        value: ${ODOO_DB}

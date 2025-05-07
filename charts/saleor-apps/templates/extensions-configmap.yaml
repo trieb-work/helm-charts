@@ -234,7 +234,7 @@ data:
           },
           "extensions": [
             {{- $first := true }}
-            {{- if (index .Values.apps "cms-v2").enabled }}
+            {{- if (index .Values.apps "cms").enabled }}
             {{- if not $first }},{{ end }}
             {
               "id": "saleor.app.cms2",
@@ -254,12 +254,12 @@ data:
               },
               "type": "APP",
               "kind": "OFFICIAL",
-              "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
+              "manifestUrl": "https://{{ default "cms.apps.example.com" (hasKey (index .Values.apps "cms") "hostname" | ternary (index .Values.apps "cms" "hostname") "cms.apps.example.com") }}/api/manifest",
               "repositoryUrl": "https://github.com/saleor/apps"
             }
             {{- $first = false }}
             {{- end }}
-            {{- if (index .Values.apps "cms-v2").enabled }}
+            {{- if (index .Values.apps "cms").enabled }}
             {{- if not $first }},{{ end }}
             {
               "id": "saleor.app.cms2",
@@ -279,12 +279,12 @@ data:
               },
               "type": "APP",
               "kind": "OFFICIAL",
-              "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
+              "manifestUrl": "https://{{ default "cms.apps.example.com" (hasKey (index .Values.apps "cms") "hostname" | ternary (index .Values.apps "cms" "hostname") "cms.apps.example.com") }}/api/manifest",
               "repositoryUrl": "https://github.com/saleor/apps"
             }
             {{- $first = false }}
             {{- end }}
-            {{- if (index .Values.apps "cms-v2").enabled }}
+            {{- if (index .Values.apps "cms").enabled }}
             {{- if not $first }},{{ end }}
             {
               "id": "saleor.app.cms2",
@@ -304,12 +304,12 @@ data:
               },
               "type": "APP",
               "kind": "OFFICIAL",
-              "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
+              "manifestUrl": "https://{{ default "cms.apps.example.com" (hasKey (index .Values.apps "cms") "hostname" | ternary (index .Values.apps "cms" "hostname") "cms.apps.example.com") }}/api/manifest",
               "repositoryUrl": "https://github.com/saleor/apps"
             }
             {{- $first = false }}
             {{- end }}
-            {{- if (index .Values.apps "cms-v2").enabled }}
+            {{- if (index .Values.apps "cms").enabled }}
             {{- if not $first }},{{ end }}
             {
               "id": "saleor.app.cms2",
@@ -329,12 +329,12 @@ data:
               },
               "type": "APP",
               "kind": "OFFICIAL",
-              "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
+              "manifestUrl": "https://{{ default "cms.apps.example.com" (hasKey (index .Values.apps "cms") "hostname" | ternary (index .Values.apps "cms" "hostname") "cms.apps.example.com") }}/api/manifest",
               "repositoryUrl": "https://github.com/saleor/apps"
             }
             {{- $first = false }}
             {{- end }}
-            {{- if (index .Values.apps "cms-v2").enabled }}
+            {{- if (index .Values.apps "cms").enabled }}
             {{- if not $first }},{{ end }}
             {
               "id": "saleor.app.cms2",
@@ -354,7 +354,7 @@ data:
               },
               "type": "APP",
               "kind": "OFFICIAL",
-              "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
+              "manifestUrl": "https://{{ default "cms.apps.example.com" (hasKey (index .Values.apps "cms") "hostname" | ternary (index .Values.apps "cms" "hostname") "cms.apps.example.com") }}/api/manifest",
               "repositoryUrl": "https://github.com/saleor/apps"
             }
             {{- $first = false }}
@@ -628,15 +628,15 @@ data:
           "extensions": [
             {{- $first := true }}
             {{- range $appName, $appConfig := .Values.apps }}
-            {{- if and $appConfig.enabled (not (or (eq $appName "app-adyen") (eq $appName "stripe") (eq $appName "authorizenet") (eq $appName "juspay") (eq $appName "klarna") (eq $appName "dummy-payment-app") (eq $appName "app-avatax") (eq $appName "taxjar") (eq $appName "cms-v2") (eq $appName "search") (eq $appName "klaviyo") (eq $appName "products-feed") (eq $appName "segment-v2") (eq $appName "smtp") (eq $appName "invoices") (eq $appName "crm") (eq $appName "slack") (eq $appName "sendgrid") (eq $appName "checkout-prices-poc"))) }}
+            {{- if and $appConfig.enabled (not (or (eq $appName "app-adyen") (eq $appName "stripe") (eq $appName "authorizenet") (eq $appName "juspay") (eq $appName "klarna") (eq $appName "dummy-payment-app") (eq $appName "app-avatax") (eq $appName "taxjar") (eq $appName "cms") (eq $appName "search") (eq $appName "klaviyo") (eq $appName "products-feed") (eq $appName "segment-v2") (eq $appName "smtp") (eq $appName "invoices") (eq $appName "crm") (eq $appName "slack") (eq $appName "sendgrid") (eq $appName "checkout-prices-poc"))) }}
             {{- if not $first }},{{ end }}
             {
-              "id": {{ default (printf "saleor.app.%s" $appName) (index $appConfig "id") | quote }},
+              "id": {{ default (printf "saleor.app.%s" $appName) (hasKey $appConfig "id" | ternary $appConfig.id "") | quote }},
               "name": {
-                "en": {{ default $appName (index $appConfig "marketplace" "name") | quote }}
+                "en": {{ $appName | quote }}
               },
               "description": {
-                "en": {{ default (printf "Custom app: %s" $appName) (index $appConfig "marketplace" "description" "en") | quote }}
+                "en": {{ printf "Custom app: %s" $appName | quote }}
               },
               "logo": {
                 "light": {
@@ -649,7 +649,7 @@ data:
               "type": "APP",
               "kind": "EXTERNAL",
               "manifestUrl": "https://{{ $appConfig.hostname }}{{ default "/api/manifest" $appConfig.manifestPath }}",
-              "repositoryUrl": {{ if (index $appConfig "marketplace" "repositoryUrl") }}{{ index $appConfig "marketplace" "repositoryUrl" | quote }}{{ else }}null{{ end }}
+              "repositoryUrl": null
             }
             {{- $first = false }}
             {{- end }}

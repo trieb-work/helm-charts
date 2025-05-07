@@ -118,7 +118,7 @@ apps:
   #     repositoryUrl: "https://github.com/myorg/my-custom-app" # Optional
 
   smtp:
-    enabled: false
+    enabled: true
     hostname: smtp.apps.example.com
     extraEnvs: []
     port: 3000
@@ -133,7 +133,7 @@ apps:
         secretName: ""  # Leave empty to use default name: <release>-smtp-tls
 
   search:
-    enabled: false
+    enabled: true
     hostname: search.apps.example.com
     port: 3000
     image:
@@ -147,7 +147,7 @@ apps:
         secretName: ""
 
   products-feed:
-    enabled: false
+    enabled: true
     hostname: products-feed.apps.example.com
     port: 3000
     image:

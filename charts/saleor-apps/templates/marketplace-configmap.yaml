@@ -75,7 +75,7 @@ data:
       }
       {{- $first = false }}
       {{- end }}
-      {{- if (index .Values.apps "cms-v2").enabled }}
+      {{- if (index .Values.apps "cms").enabled }}
       {{- if not $first }},{{ end }}
       {
         "logo": {
@@ -102,7 +102,7 @@ data:
           }
         ],
         "repositoryUrl": "https://github.com/saleor/apps",
-        "manifestUrl": "https://{{ (index .Values.apps "cms-v2").hostname }}/api/manifest",
+        "manifestUrl": "https://{{ default "cms.apps.example.com" (hasKey (index .Values.apps "cms") "hostname" | ternary (index .Values.apps "cms" "hostname") "cms.apps.example.com") }}/api/manifest",
         "privacyUrl": "https://saleor.io/legal/privacy/",
         "supportUrl": "https://saleor.io"
       }

@@ -22,10 +22,10 @@ spec:
     spec:
       containers:
         - name: {{ $appName }}
-          {{- if and $appConfig.image (hasKey $appConfig.image "registry") (hasKey $appConfig.image "repository") (hasKey $appConfig.image "tag") }}
+          {{- if and (hasKey $appConfig "image") (hasKey $appConfig.image "registry") (hasKey $appConfig.image "repository") (hasKey $appConfig.image "tag") }}
           image: "{{ $appConfig.image.registry }}/{{ $appConfig.image.repository }}:{{ $appConfig.image.tag }}"
           {{- else }}
-          image: "{{ $.Values.common.image.registry }}/{{ $appConfig.image.repository | default (printf "%s/saleor-app-%s" $.Values.common.image.repository (hasPrefix "app-" $appName | ternary (trimPrefix "app-" $appName) $appName)) }}:{{ $appConfig.image.tag | default $.Values.common.image.tag }}"
+          image: "{{ $.Values.common.image.registry }}/{{ printf "%s/saleor-app-%s" $.Values.common.image.repository (hasPrefix "app-" $appName | ternary (trimPrefix "app-" $appName) $appName) }}:{{ default $.Values.common.image.tag (hasKey $appConfig "image" | ternary (hasKey $appConfig.image "tag" | ternary $appConfig.image.tag "") "") }}"
           {{- end }}
           imagePullPolicy: {{ $.Values.common.image.pullPolicy }}
           env:
