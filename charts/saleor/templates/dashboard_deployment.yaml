@@ -86,6 +86,10 @@ spec:
               value: "/dashboard/"
             - name: APPS_MARKETPLACE_API_URL
               value: {{ .Values.dashboard.appsMarketplaceApiUrl | quote }}
+            {{- if .Values.dashboard.appsExtensionsApiUrl }}
+            - name: EXTENSIONS_API_URL
+              value: {{ .Values.dashboard.appsExtensionsApiUrl | quote }}
+            {{- end }}
             - name: IS_CLOUD_INSTANCE
               value: {{ include "saleor.isCloudInstance" . | quote }}
             {{- if .Values.dashboard.extraEnv }}

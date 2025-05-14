@@ -105,8 +105,11 @@ dashboard:
     tag: "3.20.37"
     pullPolicy: IfNotPresent
   
-  # Just to render the apps marketplace. You can't install apps from here, but you can easily add a "marketplace" URL on your own (it is just a JSON)
+  # Just to render the apps marketplace. You can't install apps from here, but you can easily add a "marketplace" URL on your own (it is just a JSON). Got replaced in more recend version with the "extensions"
   appsMarketplaceApiUrl: "https://apps.saleor.io/api/v2/saleor-apps"
+
+  # Just to render the apps extensions. You can't install apps from here, but you can easily add a "extensions" URL on your own (it is just a JSON)
+  appsExtensionsApiUrl: "https://apps.saleor.io/api/v2/saleor-apps"
   isCloudInstance: false
   
   extraEnv: []
