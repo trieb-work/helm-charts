@@ -58,7 +58,7 @@ api:
 
   image:
     repository: ghcr.io/saleor/saleor
-    tag: "3.20.80"
+    tag: "3.21.2"
     pullPolicy: IfNotPresent
 
   extraEnv:
@@ -102,7 +102,7 @@ dashboard:
   
   image:
     repository: ghcr.io/saleor/saleor-dashboard
-    tag: "3.20.37"
+    tag: "3.21.0"
     pullPolicy: IfNotPresent
   
   # Just to render the apps marketplace. You can't install apps from here, but you can easily add a "marketplace" URL on your own (it is just a JSON). Got replaced in more recend version with the "extensions"
@@ -144,7 +144,7 @@ worker:
   
   image:
     repository: ghcr.io/saleor/saleor
-    tag: "3.20.80"
+    tag: "3.21.2"
     pullPolicy: IfNotPresent
   
   extraEnv:
