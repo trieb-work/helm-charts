@@ -11,6 +11,14 @@ global:
   redisUrl: ""
   # -- External Celery Redis URL (if not using internal Redis). Use /0 for general usage and /1 for Celery for example
   celeryRedisUrl: ""
+  # -- Global image configuration for Saleor components
+  image:
+    # -- Global image repository for Saleor components
+    repository: ghcr.io/saleor/saleor
+    # -- Global image tag for Saleor components
+    tag: "3.21.2"
+    # -- Global image pull policy for Saleor components
+    pullPolicy: IfNotPresent
   # -- Database configuration
   database:
     # -- External primary database URL
@@ -55,11 +63,6 @@ commonAnnotations: {}
 api:
   enabled: true
   replicaCount: 2
-
-  image:
-    repository: ghcr.io/saleor/saleor
-    tag: "3.21.2"
-    pullPolicy: IfNotPresent
 
   extraEnv:
     # -- List of allowed hosts for Django. Must be exact hostnames, wildcards (*) are not supported.
@@ -141,11 +144,6 @@ dashboard:
 worker:
   enabled: true
   replicaCount: 1
-  
-  image:
-    repository: ghcr.io/saleor/saleor
-    tag: "3.21.2"
-    pullPolicy: IfNotPresent
   
   extraEnv:
   
