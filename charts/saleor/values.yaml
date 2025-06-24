@@ -220,6 +220,34 @@ storage:
       defaultAcl: ""  # Options: "private", "public-read"
       queryStringAuth: false     # Enable signed URLs for media access
       queryStringExpire: 3600    # Signed URLs expiration in seconds (1 hour)
+      endpointUrl: ""          # Custom S3 endpoint URL for non-AWS S3-compatible storage
+
+  # Google Cloud Storage configuration
+  gcs:
+    enabled: false
+    # GCS credentials - these will be stored in a secret
+    credentials:
+      # Provide JSON key file content directly
+      jsonKey: ""  # Example: '{"type": "service_account", "project_id": "your-project-id", ...}'
+    
+    # GCS bucket configuration
+    config:
+      
+      # Static files configuration (CSS, JS, email templates)
+      staticBucketName: ""    # Example: "my-saleor-static"
+      customEndpoint: ""      # Example: "https://storage.googleapis.com" (optional)
+      
+      # Media files configuration (product images, category images)
+      mediaBucketName: ""     # Example: "my-saleor-media"
+      mediaCustomEndpoint: "" # Example: "https://storage.googleapis.com" (optional)
+      
+      # Private files configuration (webhook payloads, private data)
+      mediaPrivateBucketName: "" # Example: "my-saleor-private"
+      
+      # Access control and URL settings
+      defaultAcl: ""  # Options: "publicRead", leave empty for private
+      queryStringAuth: false     # Enable signed URLs for media access
+      queryStringExpire:   # Signed URLs expiration in seconds (1 day)
 
 postgresql:
   enabled: true

@@ -89,6 +89,11 @@ spec:
               mountPath: /app/saleor/settings.py
               subPath: settings.py
             {{- end }}
+            {{- if and .Values.storage.gcs.enabled .Values.storage.gcs.credentials.jsonKey }}
+            - name: gcs-credentials
+              mountPath: /var/secrets/google
+              readOnly: true
+            {{- end }}
           env:
             - name: PORT
               value: {{ .Values.api.service.port | quote }}
@@ -146,11 +151,17 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- end }}
             {{- include "saleor.s3Env" . | nindent 12 }}
+            {{- include "saleor.gcsEnv" . | nindent 12 }}
       volumes:
         {{- if include "saleor.readReplicaEnabled" . }}
         - name: settings
           configMap:
             name: {{ include "saleor.fullname" . }}-settings
+        {{- end }}
+        {{- if and .Values.storage.gcs.enabled .Values.storage.gcs.credentials.jsonKey }}
+        - name: gcs-credentials
+          secret:
+            secretName: {{ include "saleor.fullname" . }}-gcs-credentials
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
