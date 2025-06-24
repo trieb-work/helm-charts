@@ -304,6 +304,9 @@ ingress:
     annotations:
     # Optional: enable standard Let's Encrypt setup
     #  cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Allow bigger body sizes to upload images
+      nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+
     hosts:
       - host: chart-example.local
         paths:
