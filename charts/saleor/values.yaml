@@ -105,7 +105,7 @@ dashboard:
   
   image:
     repository: ghcr.io/saleor/saleor-dashboard
-    tag: "3.21.0"
+    tag: "3.21.3"
     pullPolicy: IfNotPresent
   
   # Just to render the apps marketplace. You can't install apps from here, but you can easily add a "marketplace" URL on your own (it is just a JSON). Got replaced in more recend version with the "extensions"
