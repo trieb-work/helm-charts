@@ -16,7 +16,7 @@ global:
     # -- Global image repository for Saleor components
     repository: ghcr.io/saleor/saleor
     # -- Global image tag for Saleor components
-    tag: "3.21.2"
+    tag: "3.21.7"
     # -- Global image pull policy for Saleor components
     pullPolicy: IfNotPresent
   # -- Database configuration
