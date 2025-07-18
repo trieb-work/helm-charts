@@ -108,6 +108,8 @@ dashboard:
     tag: "3.21.3"
     pullPolicy: IfNotPresent
   
+  # Extensions and marketplace URL can be setup using the Saleor Apps helmchart from us. Follow the instructions there.
+
   # Just to render the apps marketplace. You can't install apps from here, but you can easily add a "marketplace" URL on your own (it is just a JSON). Got replaced in more recend version with the "extensions"
   appsMarketplaceApiUrl: "https://apps.saleor.io/api/v2/saleor-apps"
 
