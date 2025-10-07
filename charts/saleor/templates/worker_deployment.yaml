@@ -83,6 +83,11 @@ spec:
               mountPath: /app/saleor/settings.py
               subPath: settings.py
             {{- end }}
+            {{- if and .Values.storage.gcs.enabled .Values.storage.gcs.credentials.jsonKey }}
+            - name: gcs-credentials
+              mountPath: /var/secrets/google
+              readOnly: true
+            {{- end }}
           env:
             {{- include "saleor.celery.env" . | nindent 12 }}
          
@@ -91,6 +96,11 @@ spec:
         - name: settings
           configMap:
             name: {{ include "saleor.fullname" . }}-settings
+        {{- end }}
+        {{- if and .Values.storage.gcs.enabled .Values.storage.gcs.credentials.jsonKey }}
+        - name: gcs-credentials
+          secret:
+            secretName: {{ include "saleor.fullname" . }}-gcs-credentials
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

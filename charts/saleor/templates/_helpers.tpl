@@ -280,6 +280,7 @@ Common environment variables for Celery worker and beat scheduler
       name: {{ include "saleor.fullname" . }}-secrets
       key: secret-key
 {{- include "saleor.s3Env" . | nindent 0 }}
+{{- include "saleor.gcsEnv" . | nindent 0 }}
 {{- with .Values.worker.extraEnv }}
 {{- toYaml . | nindent 2 }}
 {{- end }}
