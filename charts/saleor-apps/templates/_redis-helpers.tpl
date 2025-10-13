@@ -8,7 +8,7 @@ Priority:
 {{- if .Values.global.redisUrl -}}
 {{- .Values.global.redisUrl -}}
 {{- else -}}
-{{- $redisHost := printf "%s-redis-master" .Release.Name -}}
+{{- $redisHost := printf "%s-redis" .Release.Name -}}
 {{- if .Values.redis.auth.enabled -}}
 {{- printf "redis://:%s@%s:6379" .Values.redis.auth.password $redisHost -}}
 {{- else -}}

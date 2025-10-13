@@ -8,6 +8,6 @@ maintainers:
   - name: trieb.work
 dependencies:
   - name: redis
-    version: "22.0.7"
-    repository: https://charts.bitnami.com/bitnami
+    version: "0.6.4"
+    repository: oci://registry-1.docker.io/cloudpirates
     condition: redis.enabled
