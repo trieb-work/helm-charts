@@ -1,0 +1,321 @@
+# Saleor Staging Environment Configuration
+# For vapaus-europe-north1-staging GKE cluster
+# Generated secrets included - keep this file secure!
+
+global:
+  # Django secret key for cryptographic signing
+  secretKey: "FgoaRiokLZRn49vQVWDuHT9J2EOyWH0qnhOoSLQUABuNCT614W"
+
+  # RSA private key for JWT signing (required for production mode)
+  jwtRsaPrivateKey: |
+    -----BEGIN PRIVATE KEY-----
+    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
+    KEZTp9P8IvItUS0HhtbsCnd+lAEsZA==
+    -----END PRIVATE KEY-----
+
+  # Global image configuration
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.21.8"
+    pullPolicy: IfNotPresent
+
+  # Database configuration (using built-in PostgreSQL)
+  database:
+    maxConnections: 100
+    connectionTimeout: 5
+    connMaxAge: 0
+
+  # TLS disabled for staging (HTTP only)
+  tls:
+    enabled: false
+
+# API Server Configuration
+api:
+  enabled: true
+  replicaCount: 1
+
+  # Environment variables
+  extraEnv:
+    # Allow all hosts for staging (configure specific domains for production)
+    - name: ALLOWED_HOSTS
+      value: "saleor.staging-vapaus.com,localhost,127.0.0.1"
+    # CORS configuration - add your Cloud Run domain here if needed
+    - name: ALLOWED_CLIENT_HOSTS
+      value: "saleor.staging-vapaus.com"
+    # Disable debug mode for staging
+    - name: DEBUG
+      value: "False"
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  # Resource allocation for staging
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+  # Autoscaling disabled for staging (enable for production)
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+# Dashboard Configuration
+dashboard:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/saleor/saleor-dashboard
+    tag: "3.21.3"
+    pullPolicy: IfNotPresent
+
+  # Apps marketplace URLs
+  appsMarketplaceApiUrl: "https://apps.saleor.io/api/v2/saleor-apps"
+  appsExtensionsApiUrl: "https://apps.saleor.io/api/v2/saleor-apps"
+  isCloudInstance: false
+
+  extraEnv: []
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  autoscaling:
+    enabled: false
+
+# Celery Worker Configuration
+worker:
+  enabled: true
+  replicaCount: 1
+
+  extraEnv: []
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+  autoscaling:
+    enabled: false
+
+  # Celery Beat Scheduler resources
+  scheduler:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+# Database Migrations
+migrations:
+  enabled: true
+  extraEnv: []
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+# Storage Configuration
+# Using persistent volumes for staging (no S3/GCS)
+storage:
+  s3:
+    enabled: false
+  gcs:
+    enabled: false
+
+# PostgreSQL Configuration (Built-in)
+postgresql:
+  enabled: true
+  architecture: standalone
+
+  # Override image repository to use Bitnami legacy catalog
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.4.0-debian-12-r9"
+
+  auth:
+    database: saleor
+    username: saleor
+    # Use manually created secret to avoid encoding issues
+    existingSecret: saleor-postgresql
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: user-password
+      replicationPasswordKey: replication-password
+
+  primary:
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: ""  # Uses default GKE storage class
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+    # PostgreSQL tuning for staging
+    extendedConfiguration: |
+      work_mem = 32MB
+      maintenance_work_mem = 128MB
+      shared_buffers = 256MB
+      temp_buffers = 8MB
+      max_connections = 100
+
+# Redis Configuration (Built-in)
+redis:
+  enabled: true
+  architecture: standalone
+
+  # Override image repository to use Bitnami legacy catalog
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/redis
+    tag: "7.4.1-debian-12-r3"
+
+  auth:
+    enabled: true
+    # Use manually created secret to avoid encoding issues
+    existingSecret: saleor-redis
+    existingSecretPasswordKey: redis-password
+
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+      storageClass: ""  # Uses default GKE storage class
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  className: "nginx"
+
+  # Common annotations for nginx ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+
+  # API Ingress
+  api:
+    enabled: true
+    annotations: {}
+    hosts:
+      - host: saleor.staging-vapaus.com
+        paths:
+          - path: /graphql/
+            pathType: Prefix
+          - path: /thumbnail/
+            pathType: Prefix
+          - path: /.well-known/jwks.json
+            pathType: ImplementationSpecific
+    # TLS disabled for staging
+    tls: []
+
+# Service Account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# Security Context
+podSecurityContext: {}
+
+securityContext: {}
+
+# Node Selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Common labels and annotations
+commonLabels: {}
+commonAnnotations: {}
+
