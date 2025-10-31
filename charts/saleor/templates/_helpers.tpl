@@ -231,7 +231,11 @@ Common environment variables for Celery worker and beat scheduler
 {{- with index .Values.ingress.api.hosts 0 }}
 {{- if .host }}
 - name: PUBLIC_URL
+  {{- if $.Values.ingress.api.tls }}
   value: {{ printf "https://%s" .host | quote }}
+  {{- else }}
+  value: {{ printf "http://%s" .host | quote }}
+  {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
